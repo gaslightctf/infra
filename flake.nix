@@ -14,39 +14,29 @@
 
     terranix.url = "github:terranix/terranix";
     terranix.inputs.nixpkgs.follows = "nixpkgs";
+
+    colmena.url = "github:zhaofengli/colmena";
+    colmena.inputs.nixpkgs.follows = "nixpkgs";
+
+    srvos.url = "github:nix-community/srvos";
+    srvos.inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  nixConfig = {
+    extra-substituters = ["https://colmena.cachix.org"];
+    extra-trusted-public-keys = ["colmena.cachix.org-1:7BzpDnjjH8ki2CT3f6GdOk7QAzPOl+1t3LvTLXqYcSg="];
   };
 
   outputs = inputs @ {flake-parts, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+
       imports = [
         inputs.terranix.flakeModule
-        inputs.devshell.flakeModule
+        ./terranix.nix
 
+        inputs.devshell.flakeModule
         ./devshell.nix
       ];
-
-      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
-      perSystem = {
-        config,
-        self',
-        inputs',
-        pkgs,
-        system,
-        ...
-      }: {
-        terranix = {
-          exportDevShells = false;
-
-          terranixConfigurations.default = {
-            terraformWrapper.package = pkgs.opentofu.withPlugins (p: with p; [hashicorp_google]);
-            modules = [./terranix];
-          };
-        };
-      };
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
-      };
     };
 }
