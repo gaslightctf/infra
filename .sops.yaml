@@ -1,0 +1,5 @@
+creation_rules:
+  - key_groups:
+      - age:
+          - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
+    path_regex: secrets/.+.(yaml|json|env)$
