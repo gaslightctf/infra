@@ -1,11 +1,12 @@
 {
   imports = [
+    ./vars.nix
     ./backend.nix
+
+    ./infra
   ];
 
-  resource.terraform_data.hello = {
-    provisioner.local-exec = {
-      command = "echo 'Hello World'";
-    };
+  terraform.required_providers = {
+    google.source = "hashicorp/google";
   };
 }

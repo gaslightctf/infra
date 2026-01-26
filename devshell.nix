@@ -27,6 +27,27 @@
         }
 
         {
+          name = "tofu-dev";
+          help = "Run tofu with the dev config";
+          category = "tofu";
+          command = ''
+            nix run .#dev -- $@
+          '';
+        }
+        {
+          name = "tofu-prod";
+          help = "Run tofu with the prod config";
+          category = "tofu";
+          command = ''
+            nix run .#prod -- $@
+          '';
+        }
+
+        {
+          package = pkgs.yq;
+        }
+
+        {
           name = "countdown";
           help = "Display countdown to gaslightCTF 2026";
           command = ''
