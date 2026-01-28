@@ -1,9 +1,18 @@
-{lib, ...}: {
-  vars.hello_message = {};
+{
+  lib,
+  config,
+  ...
+}: let
+  keys = import ../../data/keys.nix;
+  sshKeys = lib.splitString "\n" (lib.trim keys.users.sportshead.ssh);
+in {
+  vars.hello_message = {sensitive = false;};
 
-  resource.terraform_data.hello = {
-    provisioner.local-exec = {
-      command = "echo 'Hello \${var.hello_message}'";
-    };
+  instances.eevee = {
+    enable = true;
+    bastion = true;
   };
+
+  instances.vaporeon.enable = true;
+  instances.jolteon.enable = true;
 }

@@ -10,6 +10,11 @@ in {
       type = types.attrsOf (
         types.submodule {
           options = {
+            sensitive = mkOption {
+              type = types.bool;
+              default = true;
+            };
+
             ephemeral = mkOption {
               type = types.bool;
               default = false;
@@ -29,8 +34,7 @@ in {
     variable = builtins.mapAttrs (n: v:
       assert lib.assertMsg (builtins.match "^[a-zA-Z_][a-zA-Z0-9_]*$" n != null)
       "vars.<name> must be a valid Bash identifier (got: '${n}')"; {
-        inherit (v) ephemeral type;
-        sensitive = true;
+        inherit (v) sensitive ephemeral type;
       })
     config.vars;
   };

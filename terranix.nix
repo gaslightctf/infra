@@ -15,7 +15,7 @@
       # shellcheck source=/dev/null
       source <(
         ${pkgs.sops}/bin/sops decrypt ${secretFile} |
-        ${pkgs.yq}/bin/yq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""'
+        ${pkgs.yq}/bin/yq -r 'to_entries | .[] | "export \(.key)=\(.value | @sh)"'
       )
     '';
   in {
@@ -28,7 +28,6 @@
           prefixText =
             # bash
             ''
-              ${sopsToEnv ./secrets/tf/backend.yaml}
               ${sopsToEnv ./secrets/tf/prod.yaml}
 
               ln -sf ${cfg.prod.result.terraformConfiguration} ${cfg.prod.workdir}/config.tf.json
@@ -44,7 +43,6 @@
           prefixText =
             # bash
             ''
-              ${sopsToEnv ./secrets/tf/backend.yaml}
               ${sopsToEnv ./secrets/tf/dev.yaml}
 
               ln -sf ${cfg.dev.result.terraformConfiguration} ${cfg.dev.workdir}/config.tf.json

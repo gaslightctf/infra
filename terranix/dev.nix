@@ -1,3 +1,5 @@
 {lib, ...}: {
-  terraform.backend.s3.key = lib.mkForce "dev:terraform.tfstate";
+  custom.instance_extra = {
+    machine_type = lib.mkForce "e2-medium";
+  };
 }
