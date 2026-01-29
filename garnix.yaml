@@ -1,4 +1,6 @@
 builds:
-  exclude: []
+  exclude:
+    - 'packages.*.*'
   include:
-  - 'devShell.*'
+    - '*.x86_64-linux.*'
+    - '*.aarch64-darwin.*'
