@@ -4,7 +4,7 @@
     inputs',
     ...
   }: let
-    gen-sops-yaml = "${pkgs.nix}/bin/nix eval --json -f ./data/gen/.sops.yaml.nix | ${pkgs.yj}/bin/yj -jy";
+    gen-sops-yaml = "${pkgs.nix}/bin/nix eval --json -f ./data/sops.yaml.nix | ${pkgs.yj}/bin/yj -jy";
   in {
     devshells.default = rec {
       name = "gaslightCTF infra";

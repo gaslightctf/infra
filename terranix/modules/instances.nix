@@ -6,7 +6,7 @@
   inherit (lib) mkOption types;
 
   keys = import ../../data/keys.nix;
-  sshKeys = lib.splitString "\n" (lib.trim keys.users.sportshead.ssh);
+  sshKeys = keys.users.sportshead.ssh;
 in {
   options = {
     custom.instance_extra = mkOption {

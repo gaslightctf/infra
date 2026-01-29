@@ -1,7 +1,7 @@
 let
-  keys = import ../keys.nix;
+  keys = import ./keys.nix;
 
-  admins = [keys.users.sportshead.age];
+  admins = keys.users.sportshead.age;
 in {
   creation_rules = [
     {
