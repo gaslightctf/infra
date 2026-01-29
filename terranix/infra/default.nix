@@ -1,16 +1,11 @@
 {
-  lib,
-  config,
-  ...
-}: let
-  keys = import ../../data/keys.nix;
-  sshKeys = lib.splitString "\n" (lib.trim keys.users.sportshead.ssh);
-in {
-  vars.hello_message = {sensitive = false;};
+  imports = [
+    ./network.nix
+  ];
 
   instances.eevee = {
     enable = true;
-    bastion = true;
+    tags = ["server"];
   };
 
   instances.vaporeon.enable = true;
