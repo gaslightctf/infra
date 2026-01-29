@@ -9,6 +9,9 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
 
+    treefmt.url = "github:numtide/treefmt-nix";
+    treefmt.inputs.nixpkgs.follows = "nixpkgs";
+
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -32,11 +35,16 @@
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
 
       imports = [
+        inputs.devshell.flakeModule
+        ./devshell.nix
+
+        inputs.treefmt.flakeModule
+        ./treefmt.nix
+
         inputs.terranix.flakeModule
         ./terranix.nix
 
-        inputs.devshell.flakeModule
-        ./devshell.nix
+        ./colmena
       ];
     };
 }
