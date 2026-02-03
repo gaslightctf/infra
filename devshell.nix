@@ -61,8 +61,8 @@
           command = ''
             #!/bin/bash
 
-            START_DATE="2026-08-21T12:00:00Z"
-            END_DATE="2026-08-24T12:00:00Z"
+            START_DATE="2026-08-14T12:00:00Z"
+            END_DATE="2026-08-17T12:00:00Z"
 
             current_epoch=$(date +%s)
             start_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$START_DATE" +%s 2>/dev/null || date -d "$START_DATE" +%s)
