@@ -1,5 +1,4 @@
 {
-  colmena,
   nixpkgs,
   srvos,
   ...
