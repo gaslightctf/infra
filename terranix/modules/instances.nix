@@ -93,5 +93,12 @@ in {
         }
       )
       instances;
+
+    resource.google_compute_instance_group_membership = lib.mapAttrs (name: cfg:
+      lib.mkIf cfg.enable {
+        instance = lib.tfRef "google_compute_instance.${name}.id";
+        instance_group = lib.tfRef "google_compute_instance_group.kanto.id";
+      })
+    config.instances;
   };
 }

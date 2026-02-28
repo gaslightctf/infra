@@ -9,6 +9,7 @@
 
   terraform.required_providers = {
     google.source = "hashicorp/google";
+    cloudflare.source = "cloudflare/cloudflare";
   };
 
   vars.gcp_credentials = {ephemeral = true;};
@@ -19,5 +20,10 @@
     project = lib.tfRef "var.gcp_project";
     region = "europe-north1";
     zone = "europe-north1-a";
+  };
+
+  vars.cf_api_token = {ephemeral = true;};
+  provider.cloudflare = {
+    api_token = lib.tfRef "var.cf_api_token";
   };
 }

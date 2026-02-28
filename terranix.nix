@@ -2,12 +2,11 @@
   perSystem = {
     pkgs,
     config,
-    lib,
     ...
   }: let
     cfg = config.terranix.terranixConfigurations;
 
-    tofu = pkgs.opentofu.withPlugins (p: with p; [hashicorp_google]);
+    tofu = pkgs.opentofu.withPlugins (p: with p; [hashicorp_google cloudflare_cloudflare]);
 
     sopsToEnv = secretFile:
     # bash

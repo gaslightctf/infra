@@ -5,7 +5,7 @@ gaslightCTF infrastructure as code. Manages the following resources:
 - `terranix/`
   - [x] GCE network, subnet, firewall
     - [x] GCE subnet, firewall
-    - [ ] GCE network LB
+    - [x] GCE network LB
   - [x] GCE instances
   - [ ] Cloudflare DNS records
 - `colmena/`

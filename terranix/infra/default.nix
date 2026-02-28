@@ -1,6 +1,7 @@
 {
   imports = [
     ./network.nix
+    ./network-lb.nix
   ];
 
   instances.eevee = {
