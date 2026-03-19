@@ -26,7 +26,7 @@ let
       }
     ];
 in
-{
+builtins.toJSON {
   creation_rules = builtins.concatLists [
     [
       {

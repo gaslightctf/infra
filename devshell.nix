@@ -7,11 +7,9 @@
     }:
     let
       gen-sops-yaml = ''
-        ${pkgs.nix}/bin/nix eval \
-          --extra-experimental-features nix-command \
-          --extra-experimental-features pipe-operators \
-          --json -f ./data/sops.yaml.nix | ${pkgs.yj}/bin/yj -jy
-      '';
+        ${pkgs.nix}/bin/nix-instantiate \
+                  --extra-experimental-features pipe-operators \
+                  --eval --raw ./data/sops.yaml.nix | ${pkgs.yj}/bin/yj -jy'';
     in
     {
       devshells.default = rec {
