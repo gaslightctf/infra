@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   perSystem =
     {
@@ -42,7 +43,9 @@
               '';
           };
           workdir = "\"$PRJ_ROOT\"/.tf/prod";
-          modules = [ ./terranix ];
+          modules = [
+            (inputs.import-tree ./terranix)
+          ];
         };
 
         terranixConfigurations.dev = {
@@ -58,8 +61,8 @@
           };
           workdir = "\"$PRJ_ROOT\"/.tf/dev";
           modules = [
-            ./terranix
-            ./terranix/dev.nix
+            (inputs.import-tree ./terranix)
+            ./terranix/_dev.nix
           ];
         };
       };

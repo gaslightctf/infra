@@ -1,13 +1,5 @@
 { lib, ... }:
 {
-  imports =
-    builtins.map (file: ./modules/${file}) (builtins.attrNames (builtins.readDir ./modules))
-    ++ [
-      ./backend.nix
-
-      ./infra
-    ];
-
   terraform.required_providers = {
     google.source = "hashicorp/google";
     cloudflare.source = "cloudflare/cloudflare";
