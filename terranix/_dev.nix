@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-  custom.instance_extra = {
+  custom.instanceExtra = {
     machine_type = lib.mkForce "e2-medium";
   };
 }

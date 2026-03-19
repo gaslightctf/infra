@@ -11,7 +11,7 @@ let
 in
 {
   options = {
-    custom.instance_extra = mkOption {
+    custom.instanceExtra = mkOption {
       type = types.raw;
       default = { };
     };
@@ -30,7 +30,7 @@ in
               };
 
               extraConfig = mkOption {
-                type = types.attrsOf types.anything;
+                type = types.raw;
                 default = { };
               };
             };
@@ -80,7 +80,7 @@ in
             provisioner.remote-exec.inline = [ "echo $(hostname) ready at $(date -R)" ];
           }
           cfg.extraConfig
-          config.custom.instance_extra
+          config.custom.instanceExtra
         ]
       )
     ) config.instances;

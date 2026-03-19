@@ -33,7 +33,7 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{ flake-parts, import-tree, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -43,6 +43,9 @@
       ];
 
       imports = [
+        (import-tree ./colmena)
+        (import-tree ./nixos)
+
         inputs.devshell.flakeModule
         ./devshell.nix
 
@@ -51,8 +54,6 @@
 
         inputs.terranix.flakeModule
         ./terranix.nix
-
-        ./colmena
       ];
     };
 }

@@ -1,25 +1,28 @@
 {
-  nixpkgs,
-  srvos,
+  self,
+  lib,
+  inputs,
   ...
 }:
 {
-  flake.colmenaHive = {
-    meta = {
-      nixpkgs = import nixpkgs {
-        system = "x86_64-linux";
-      };
+  flake = {
+    options.colmena = lib.mkOption {
+      type = lib.types.attrsOf lib.types.anything;
     };
 
-    default = {
-      imports = [
-        srvos.nixosModules.server
-        srvos.nixosModules.mixins-trusted-nix-caches
-      ];
-    };
+    config = {
+      colmenaHive = inputs.colmena.lib.makeHive (
+        self.colmena
+        // {
+          meta = {
+            nixpkgs = import inputs.nixpkgs {
+              system = "x86_64-linux";
+            };
 
-    eevee = {
-      imports = [ srvos.nixosModules.mixins-nginx ];
+            allowApplyAll = false;
+          };
+        }
+      );
     };
   };
 }
