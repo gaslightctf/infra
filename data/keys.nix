@@ -11,4 +11,22 @@
       ];
     };
   };
+
+  dev = {
+    eevee = {
+      age = "age1fvjqf253fgnk404mr7jgqnjs3sp2hdcfkw678xaqcz2a5lrfvctq2w594e";
+      ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOiKbK4HfLqvMB5KnPisXYRZjxttoTl/yMpjdbWiOcwW";
+    };
+    jolteon = {
+      age = "age1pf3qqud8nd29q3retkn65kcvavsgsetatp9lmx8mx00yfjwknsms99xvmt";
+      ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFNXrB0YGqqOskQJmvgvVSzxUMfOgeHjsQq3PznSQJN2";
+    };
+    vaporeon = {
+      age = "age1dfzes5yf7u4ukh5snwpc4wv2k0urxr4l33parhdwhd4qe4ey647qyft9hj";
+      ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMMP3OR/3mOxhtQ96nyaZkIRN4CefpQCF9TQkN0I/N0E";
+    };
+  };
+
+  prod = {
+  };
 }

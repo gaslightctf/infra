@@ -4,7 +4,12 @@
     inputs',
     ...
   }: let
-    gen-sops-yaml = "${pkgs.nix}/bin/nix eval --extra-experimental-features nix-command --json -f ./data/sops.yaml.nix | ${pkgs.yj}/bin/yj -jy";
+    gen-sops-yaml = ''
+      ${pkgs.nix}/bin/nix eval \
+        --extra-experimental-features nix-command \
+        --extra-experimental-features pipe-operators \
+        --json -f ./data/sops.yaml.nix | ${pkgs.yj}/bin/yj -jy
+    '';
   in {
     devshells.default = rec {
       name = "gaslightCTF infra";
@@ -21,6 +26,10 @@
         }
         {
           package = pkgs.sops;
+          category = "secrets";
+        }
+        {
+          package = pkgs.ssh-to-age;
           category = "secrets";
         }
 
@@ -58,35 +67,35 @@
         {
           name = "countdown";
           help = "Display countdown to gaslightCTF 2026";
-          command = ''
-            #!/bin/bash
+          command =
+            # bash
+            ''
+              START_DATE="2026-08-14T12:00:00Z"
+              END_DATE="2026-08-17T12:00:00Z"
 
-            START_DATE="2026-08-14T12:00:00Z"
-            END_DATE="2026-08-17T12:00:00Z"
+              current_epoch=$(date +%s)
+              start_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$START_DATE" +%s 2>/dev/null || date -d "$START_DATE" +%s)
+              end_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$END_DATE" +%s 2>/dev/null || date -d "$END_DATE" +%s)
 
-            current_epoch=$(date +%s)
-            start_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$START_DATE" +%s 2>/dev/null || date -d "$START_DATE" +%s)
-            end_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$END_DATE" +%s 2>/dev/null || date -d "$END_DATE" +%s)
+              if [ $current_epoch -lt $start_epoch ]; then
+                  diff=$((start_epoch - current_epoch))
+                  echo -n "gaslightCTF starts in: "
+              else
+                  diff=$((end_epoch - current_epoch))
+                  if [ $diff -lt 0 ]; then
+                      echo "gaslightCTF 2026 has ended!"
+                      exit 0
+                  fi
+                  echo -n "gaslightCTF ends in: "
+              fi
 
-            if [ $current_epoch -lt $start_epoch ]; then
-                diff=$((start_epoch - current_epoch))
-                echo -n "gaslightCTF starts in: "
-            else
-                diff=$((end_epoch - current_epoch))
-                if [ $diff -lt 0 ]; then
-                    echo "gaslightCTF 2026 has ended!"
-                    exit 0
-                fi
-                echo -n "gaslightCTF ends in: "
-            fi
+              days=$((diff / 86400))
+              hours=$(((diff % 86400) / 3600))
+              minutes=$(((diff % 3600) / 60 ))
+              seconds=$((diff % 60))
 
-            days=$((diff / 86400))
-            hours=$(((diff % 86400) / 3600))
-            minutes=$(((diff % 3600) / 60 ))
-            seconds=$((diff % 60))
-
-            echo -e "\033[1;31m''${days}d ''${hours}h ''${minutes}m ''${seconds}s\033[0m"
-          '';
+              echo -e "\033[1;31m''${days}d ''${hours}h ''${minutes}m ''${seconds}s\033[0m"
+            '';
         }
 
         {
@@ -95,6 +104,34 @@
           command = ''
             ${gen-sops-yaml} > .sops.yaml
           '';
+        }
+
+        {
+          name = "fetch-host-keys";
+          help = "Fetch the ssh and age keys of the VMs from the supplied tf-output";
+          command =
+            # bash
+            ''
+              set -euo pipefail
+
+              JSON_FILE="''${1:?Usage: $0 <path-to-tf-output.json>}"
+
+              instances=$(${pkgs.jq}/bin/jq -r 'to_entries[] | select(.key | endswith("_ip_public")) | .key | gsub("_ip_public$"; "")' "$JSON_FILE")
+
+              for instance in $instances; do
+                  echo "    $instance = {"
+
+                  public_ip=$(${pkgs.jq}/bin/jq -r ".''${instance}_ip_public.value" "$JSON_FILE")
+
+                  age_key=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null | ${pkgs.ssh-to-age}/bin/ssh-to-age)
+                  echo "        age = \"$age_key\";"
+
+                  ssh_key=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null | cut -d' ' -f2-)
+                  echo "        ssh = \"$ssh_key\";"
+
+                  echo "    };"
+              done
+            '';
         }
       ];
     };
