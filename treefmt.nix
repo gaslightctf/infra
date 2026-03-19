@@ -1,17 +1,22 @@
 {
-  perSystem = {...}: {
-    treefmt = {
-      programs.alejandra.enable = true;
+  perSystem =
+    { ... }:
+    {
+      treefmt = {
+        programs.nixfmt.enable = true;
 
-      programs.prettier = {
-        enable = true;
-        includes = ["*.md" "garnix.yaml"];
+        programs.prettier = {
+          enable = true;
+          includes = [
+            "*.md"
+            "garnix.yaml"
+          ];
 
-        settings = {
-          tabWidth = 2;
-          printWidth = 100;
+          settings = {
+            tabWidth = 2;
+            printWidth = 100;
+          };
         };
       };
     };
-  };
 }

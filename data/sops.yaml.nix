@@ -5,28 +5,33 @@ let
 
   admins = keys.users.sportshead.age;
 
-  mkRules = env:
-    (mapAttrsToList (hostname: {age, ...}: {
+  mkRules =
+    env:
+    (mapAttrsToList (
+      hostname:
+      { age, ... }:
+      {
         path_regex = "secrets/${env}/${hostname}\\.(yaml|json|env)$";
-        key_groups = [{age = admins ++ [age];}];
-      })
-      keys.${env})
+        key_groups = [ { age = admins ++ [ age ]; } ];
+      }
+    ) keys.${env})
     ++ [
       {
         path_regex = "secrets/${env}/shared+\\.(yaml|json|env)$";
         key_groups = [
           {
-            age = admins ++ mapAttrsToList (_: {age, ...}: age) keys.${env};
+            age = admins ++ mapAttrsToList (_: { age, ... }: age) keys.${env};
           }
         ];
       }
     ];
-in {
+in
+{
   creation_rules = builtins.concatLists [
     [
       {
         path_regex = "secrets/tf/.+\\.(yaml|json|env)$";
-        key_groups = [{age = admins;}];
+        key_groups = [ { age = admins; } ];
       }
     ]
 
@@ -35,7 +40,7 @@ in {
 
     [
       {
-        key_groups = [{age = admins;}];
+        key_groups = [ { age = admins; } ];
       }
     ]
   ];

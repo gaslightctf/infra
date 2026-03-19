@@ -2,44 +2,52 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkOption types;
 
   keys = import ../../data/keys.nix;
   sshKeys = keys.users.sportshead.ssh;
-in {
+in
+{
   options = {
     custom.instance_extra = mkOption {
       type = types.raw;
-      default = {};
+      default = { };
     };
 
     instances = mkOption {
       type = types.attrsOf (
-        types.submodule ({name, ...}: {
-          options = {
-            enable = lib.mkEnableOption name;
+        types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = lib.mkEnableOption name;
 
-            tags = mkOption {
-              type = types.listOf types.str;
-              default = [];
-            };
+              tags = mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+              };
 
-            extraConfig = mkOption {
-              type = types.attrsOf types.anything;
-              default = {};
+              extraConfig = mkOption {
+                type = types.attrsOf types.anything;
+                default = { };
+              };
             };
-          };
-        })
+          }
+        )
       );
     };
   };
 
   config = {
-    resource.google_compute_instance = lib.mapAttrs (name: cfg:
-      assert lib.assertMsg (cfg.enable -> builtins.match "^[a-z]([-a-z0-9]*[a-z0-9])$" name != null)
-      "instance name '${name}' does not match the regex '^[a-z]([-a-z0-9]*[a-z0-9])$'";
-        lib.mkIf cfg.enable (lib.mkMerge [
+    resource.google_compute_instance = lib.mapAttrs (
+      name: cfg:
+      assert lib.assertMsg (
+        cfg.enable -> builtins.match "^[a-z]([-a-z0-9]*[a-z0-9])$" name != null
+      ) "instance name '${name}' does not match the regex '^[a-z]([-a-z0-9]*[a-z0-9])$'";
+      lib.mkIf cfg.enable (
+        lib.mkMerge [
           {
             inherit name;
             inherit (cfg) tags;
@@ -69,36 +77,33 @@ in {
 
               host = lib.tfRef "self.network_interface.0.access_config.0.nat_ip";
             };
-            provisioner.remote-exec.inline = ["echo $(hostname) ready at $(date -R)"];
+            provisioner.remote-exec.inline = [ "echo $(hostname) ready at $(date -R)" ];
           }
           cfg.extraConfig
           config.custom.instance_extra
-        ]))
-    config.instances;
-
-    output = let
-      instances = lib.filterAttrs (_: cfg: cfg.enable) config.instances;
-    in
-      lib.mapAttrs' (
-        name: cfg: {
-          name = "${name}_ip";
-          value.value = lib.tfRef "google_compute_instance.${name}.network_interface.0.network_ip";
-        }
+        ]
       )
-      instances
-      // lib.mapAttrs' (
-        name: cfg: {
-          name = "${name}_ip_public";
-          value.value = lib.tfRef "google_compute_instance.${name}.network_interface.0.access_config.0.nat_ip";
-        }
-      )
-      instances;
+    ) config.instances;
 
-    resource.google_compute_instance_group_membership = lib.mapAttrs (name: cfg:
+    output =
+      let
+        instances = lib.filterAttrs (_: cfg: cfg.enable) config.instances;
+      in
+      lib.mapAttrs' (name: cfg: {
+        name = "${name}_ip";
+        value.value = lib.tfRef "google_compute_instance.${name}.network_interface.0.network_ip";
+      }) instances
+      // lib.mapAttrs' (name: cfg: {
+        name = "${name}_ip_public";
+        value.value = lib.tfRef "google_compute_instance.${name}.network_interface.0.access_config.0.nat_ip";
+      }) instances;
+
+    resource.google_compute_instance_group_membership = lib.mapAttrs (
+      name: cfg:
       lib.mkIf cfg.enable {
         instance = lib.tfRef "google_compute_instance.${name}.id";
         instance_group = lib.tfRef "google_compute_instance_group.kanto.id";
-      })
-    config.instances;
+      }
+    ) config.instances;
   };
 }

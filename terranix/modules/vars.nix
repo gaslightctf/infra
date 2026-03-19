@@ -2,9 +2,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkOption types;
-in {
+in
+{
   options = {
     vars = mkOption {
       type = types.attrsOf (
@@ -31,11 +33,14 @@ in {
   };
 
   config = {
-    variable = builtins.mapAttrs (n: v:
-      assert lib.assertMsg (builtins.match "^[a-zA-Z_][a-zA-Z0-9_]*$" n != null)
-      "vars.<name> must be a valid Bash identifier (got: '${n}')"; {
+    variable = builtins.mapAttrs (
+      n: v:
+      assert lib.assertMsg (
+        builtins.match "^[a-zA-Z_][a-zA-Z0-9_]*$" n != null
+      ) "vars.<name> must be a valid Bash identifier (got: '${n}')";
+      {
         inherit (v) sensitive ephemeral type;
-      })
-    config.vars;
+      }
+    ) config.vars;
   };
 }

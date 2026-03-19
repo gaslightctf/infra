@@ -1,6 +1,8 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   pallet-town-cidr = "10.6.7.0/24";
-in {
+in
+{
   resource.google_compute_network.kanto = {
     name = "kanto";
     auto_create_subnetworks = false;
@@ -20,11 +22,11 @@ in {
     allow = [
       {
         protocol = "tcp";
-        ports = ["22"];
+        ports = [ "22" ];
       }
     ];
 
-    source_ranges = ["0.0.0.0/0"];
+    source_ranges = [ "0.0.0.0/0" ];
   };
 
   # https://docs.k3s.io/installation/requirements#inbound-rules-for-k3s-nodes
@@ -36,12 +38,15 @@ in {
       {
         # embedded etcd
         protocol = "tcp";
-        ports = ["2379" "2380"];
+        ports = [
+          "2379"
+          "2380"
+        ];
       }
     ];
 
-    source_tags = ["server"];
-    target_tags = ["server"];
+    source_tags = [ "server" ];
+    target_tags = [ "server" ];
   };
 
   resource.google_compute_firewall.k3s-agent-server = {
@@ -52,12 +57,12 @@ in {
       {
         # k3s server
         protocol = "tcp";
-        ports = ["6443"];
+        ports = [ "6443" ];
       }
     ];
 
-    source_ranges = [pallet-town-cidr];
-    target_tags = ["server"];
+    source_ranges = [ pallet-town-cidr ];
+    target_tags = [ "server" ];
   };
 
   resource.google_compute_firewall.k3s-agent-agent = {
@@ -68,15 +73,15 @@ in {
       {
         # flannel vxlan
         protocol = "udp";
-        ports = ["8472"];
+        ports = [ "8472" ];
       }
       {
         # kubelet metrics
         protocol = "tcp";
-        ports = ["10250"];
+        ports = [ "10250" ];
       }
     ];
 
-    source_ranges = [pallet-town-cidr];
+    source_ranges = [ pallet-town-cidr ];
   };
 }

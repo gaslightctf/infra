@@ -2,7 +2,8 @@
   nixpkgs,
   srvos,
   ...
-}: {
+}:
+{
   flake.colmenaHive = {
     meta = {
       nixpkgs = import nixpkgs {
@@ -11,11 +12,14 @@
     };
 
     default = {
-      imports = [srvos.nixosModules.server srvos.nixosModules.mixins-trusted-nix-caches];
+      imports = [
+        srvos.nixosModules.server
+        srvos.nixosModules.mixins-trusted-nix-caches
+      ];
     };
 
     eevee = {
-      imports = [srvos.nixosModules.mixins-nginx];
+      imports = [ srvos.nixosModules.mixins-nginx ];
     };
   };
 }

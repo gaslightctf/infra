@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   imports =
     builtins.map (file: ./modules/${file}) (builtins.attrNames (builtins.readDir ./modules))
     ++ [
@@ -12,8 +13,10 @@
     cloudflare.source = "cloudflare/cloudflare";
   };
 
-  vars.gcp_credentials = {ephemeral = true;};
-  vars.gcp_project = {};
+  vars.gcp_credentials = {
+    ephemeral = true;
+  };
+  vars.gcp_project = { };
   provider.google = {
     credentials = lib.tfRef "var.gcp_credentials";
 
@@ -22,7 +25,9 @@
     zone = "europe-north1-a";
   };
 
-  vars.cf_api_token = {ephemeral = true;};
+  vars.cf_api_token = {
+    ephemeral = true;
+  };
   provider.cloudflare = {
     api_token = lib.tfRef "var.cf_api_token";
   };

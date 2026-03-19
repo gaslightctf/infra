@@ -1,5 +1,8 @@
-{lib, ...}: {
-  vars.backend_bucket = {sensitive = false;};
+{ lib, ... }:
+{
+  vars.backend_bucket = {
+    sensitive = false;
+  };
   terraform.backend.s3 = {
     bucket = lib.tfRef "var.backend_bucket";
     key = "terraform.tfstate";

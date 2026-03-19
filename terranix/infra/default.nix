@@ -6,7 +6,7 @@
 
   instances.eevee = {
     enable = true;
-    tags = ["server"];
+    tags = [ "server" ];
   };
 
   instances.vaporeon.enable = true;
