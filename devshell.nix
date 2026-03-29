@@ -57,8 +57,13 @@
           }
 
           {
+            package = pkgs.just;
+            category = "util";
+          }
+          {
             package = config.files.writer.drv;
             help = "Write generated files (see data/files)";
+            category = "util";
           }
 
           {
@@ -107,19 +112,21 @@
 
                 instances=$(${pkgs.jq}/bin/jq -r 'to_entries[] | select(.key | endswith("_ip_public")) | .key | gsub("_ip_public$"; "")' "$JSON_FILE")
 
+                echo "{"
                 for instance in $instances; do
-                    echo "    $instance = {"
+                    echo "  $instance = {"
 
                     public_ip=$(${pkgs.jq}/bin/jq -r ".''${instance}_ip_public.value" "$JSON_FILE")
 
                     age_key=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null | ${pkgs.ssh-to-age}/bin/ssh-to-age)
-                    echo "        age = \"$age_key\";"
+                    echo "    age = \"$age_key\";"
 
                     ssh_key=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null | cut -d' ' -f2-)
-                    echo "        ssh = \"$ssh_key\";"
+                    echo "    ssh = \"$ssh_key\";"
 
-                    echo "    };"
+                    echo "  };"
                 done
+                echo "}"
               '';
           }
         ];

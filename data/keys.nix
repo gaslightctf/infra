@@ -12,21 +12,6 @@
     };
   };
 
-  dev = {
-    eevee = {
-      age = "age1p9yevf70q0f49k2v5tg8c8yev3zmjdwnkk9269avg6gx2heceq4q56nrzq";
-      ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBmcBQX3EY9edA+2DH+tQqM/Mk5JxZivMNEWvW6HoZcI";
-    };
-    jolteon = {
-      age = "age19x2fu7nhp9dcf7nd072ujmhvkhmp8vwvwjfarxxml26ams4v0d4qmttj5g";
-      ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpnYrm/DEKpGOAjbTvEeA8x7T2FPgq5XaxD5hV6T/yy";
-    };
-    vaporeon = {
-      age = "age1nvc9h09z0ayjrwzymr4hdtc46yys5mxrrt3dn7f6rfyjeh0em3zsnlhhj5";
-      ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBgx1cneCtzjur7wTSp6WRUKC/ZJ8C5InUfAKU5uXsnt";
-    };
-  };
-
-  prod = {
-  };
+  dev = import ./keys.dev.nix;
+  prod = import ./keys.prod.nix;
 }

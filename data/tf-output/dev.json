@@ -27,7 +27,7 @@
   "vaporeon_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.31"
+    "value": "10.6.7.32"
   },
   "vaporeon_ip_public": {
     "sensitive": false,

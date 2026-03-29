@@ -19,10 +19,7 @@ gaslightCTF infrastructure as code. Manages the following resources:
 
 - add `instances.[name].enable = true` to ./terranix/infra/default.nix
   - `tofu-dev apply`
-  - `tofu-dev output -json > data/tf-output/dev.json`
-- `fetch-host-keys data/tf-output/dev.json`, update ./data/keys.nix
-  - `gen-sops-yaml`
-  - `sops updatekeys secrets/**/*`
+- `just sync dev`, update ./data/keys.nix
 
 ## terranix
 
