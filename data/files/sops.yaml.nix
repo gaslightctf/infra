@@ -1,7 +1,7 @@
 let
   mapAttrsToList = f: a: builtins.attrValues <| builtins.mapAttrs f a;
 
-  keys = import ./keys.nix;
+  keys = import ../keys.nix;
 
   admins = keys.users.sportshead.age;
 
@@ -25,23 +25,36 @@ let
         ];
       }
     ];
+
+  sops-yaml = {
+    creation_rules = builtins.concatLists [
+      [
+        {
+          path_regex = "secrets/tf/.+\\.(yaml|json|env)$";
+          key_groups = [ { age = admins; } ];
+        }
+      ]
+
+      (mkRules "dev")
+      (mkRules "prod")
+
+      [
+        {
+          key_groups = [ { age = admins; } ];
+        }
+      ]
+    ];
+  };
 in
-builtins.toJSON {
-  creation_rules = builtins.concatLists [
-    [
-      {
-        path_regex = "secrets/tf/.+\\.(yaml|json|env)$";
-        key_groups = [ { age = admins; } ];
-      }
-    ]
-
-    (mkRules "dev")
-    (mkRules "prod")
-
-    [
-      {
-        key_groups = [ { age = admins; } ];
-      }
-    ]
-  ];
+{
+  perSystem =
+    { pkgs, ... }:
+    {
+      files.files = [
+        {
+          path_ = ".sops.yaml";
+          drv = pkgs.writers.writeYAML ".sops.yaml" sops-yaml;
+        }
+      ];
+    };
 }

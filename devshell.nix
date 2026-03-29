@@ -3,14 +3,9 @@
     {
       pkgs,
       inputs',
+      config,
       ...
     }:
-    let
-      gen-sops-yaml = ''
-        ${pkgs.nix}/bin/nix-instantiate \
-                  --extra-experimental-features pipe-operators \
-                  --eval --raw ./data/sops.yaml.nix | ${pkgs.yj}/bin/yj -jy'';
-    in
     {
       devshells.default = rec {
         name = "gaslightCTF infra";
@@ -62,7 +57,8 @@
           }
 
           {
-            package = pkgs.yq;
+            package = config.files.writer.drv;
+            help = "Write generated files (see data/files)";
           }
 
           {
@@ -100,14 +96,6 @@
           }
 
           {
-            name = "gen-sops-yaml";
-            help = "Generate the .sops.yaml file";
-            command = ''
-              ${gen-sops-yaml} > .sops.yaml
-            '';
-          }
-
-          {
             name = "fetch-host-keys";
             help = "Fetch the ssh and age keys of the VMs from the supplied tf-output";
             command =
@@ -136,16 +124,5 @@
           }
         ];
       };
-
-      checks.sops-yaml = pkgs.runCommand "check-sops-yaml" { } ''
-        cd ${./.}
-        generated=$(${gen-sops-yaml})
-        if ! diff -u .sops.yaml <(echo "$generated"); then
-          echo "ERROR: .sops.yaml does not match generated output"
-          echo "Run 'gen-sops-yaml' to update it"
-          exit 1
-        fi
-        touch $out
-      '';
     };
 }

@@ -6,6 +6,7 @@
 
     import-tree.url = "github:vic/import-tree";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    files.url = "github:mightyiam/files";
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
@@ -54,6 +55,9 @@
 
         inputs.terranix.flakeModule
         ./terranix.nix
+
+        inputs.files.flakeModules.default
+        (import-tree ./data/files)
       ];
     };
 }
