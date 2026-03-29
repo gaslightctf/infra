@@ -56,13 +56,13 @@ in
 
             machine_type = "t2d-standard-4";
 
-            boot_disk.initialize_params.image = "debian-cloud/debian-12";
+            boot_disk.initialize_params.image = "debian-cloud/debian-13";
             metadata.ssh-keys = lib.join "\n" (lib.map (x: "root:${x}") sshKeys);
             metadata_startup_script = ''
               # nixos will have ssh started when it boots
               systemctl stop sshd || true
 
-              curl https://raw.githubusercontent.com/elitak/nixos-infect/7563801d3ae68c975e4027f4e31a3906dca95f30/nixos-infect | PROVIDER=gcp NIX_CHANNEL=nixos-25.11 bash 2>&1 | tee /tmp/infect.log
+              curl https://codeberg.org/whitequark/nixos-bite/raw/commit/3fe72bc8cc1a455fbca96b67feca1e2fef9a92a4/nixos-bite.sh | bash -s reboot 2>&1 | tee /tmp/bite.log
             '';
 
             network_interface = {
