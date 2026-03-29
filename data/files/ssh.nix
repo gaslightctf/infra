@@ -29,7 +29,7 @@
       sshConfig =
         lib.concatLines
         <|
-          [ "UserKnownHostsFile ${pkgs.writers.writeText "known_hosts" knownHosts}" ]
+          [ "UserKnownHostsFile \${PRJ_ROOT}/data/ssh/known_hosts" ]
           ++ (map (n: ''
             Host dev-${n}
               User root
@@ -46,6 +46,10 @@
         {
           path_ = "data/ssh/config";
           drv = pkgs.writers.writeText "ssh-config" sshConfig;
+        }
+        {
+          path_ = "data/ssh/known_hosts";
+          drv = pkgs.writers.writeText "known_hosts" knownHosts;
         }
       ];
     };

@@ -1,4 +1,4 @@
-UserKnownHostsFile /nix/store/n9ddk7jh3fwisrrgknphn1xlx18mn9kx-known_hosts
+UserKnownHostsFile ${PRJ_ROOT}/data/ssh/known_hosts
 Host dev-eevee
   User root
   HostName 35.217.35.128
