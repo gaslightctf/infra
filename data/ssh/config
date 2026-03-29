@@ -1,0 +1,13 @@
+UserKnownHostsFile /nix/store/n9ddk7jh3fwisrrgknphn1xlx18mn9kx-known_hosts
+Host dev-eevee
+  User root
+  HostName 35.217.35.128
+
+Host dev-jolteon
+  User root
+  HostName 35.217.27.89
+
+Host dev-vaporeon
+  User root
+  HostName 35.217.19.242
+

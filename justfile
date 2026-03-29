@@ -8,3 +8,6 @@ sync env="dev": && sync-sops
 sync-sops:
     write-files
     sops updatekeys secrets/**/*
+
+ssh host:
+    ssh -F $PRJ_ROOT/data/ssh/config {{host}}

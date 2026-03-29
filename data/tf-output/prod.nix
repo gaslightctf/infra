@@ -1,1 +1,1 @@
-builtins.fromJSON (builtins.readFile "./prod.json")
+builtins.fromJSON (builtins.readFile ./prod.json)

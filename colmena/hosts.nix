@@ -15,8 +15,8 @@ let
   devOutputs = import ../data/tf-output/dev.nix;
   devInstances = getInstances devOutputs;
 
-  # TODO: prod
-  prodInstances = [ ];
+  prodOutputs = import ../data/tf-output/prod.nix;
+  prodInstances = getInstances prodOutputs;
 in
 {
   flake.colmena =
@@ -40,7 +40,7 @@ in
         name = "prod-${n}";
         value = {
           deployment = {
-            targetHost = devOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value;
+            targetHost = prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value;
             tags = [ "prod" ];
           };
 
