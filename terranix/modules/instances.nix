@@ -65,9 +65,18 @@ in
               curl https://codeberg.org/whitequark/nixos-bite/raw/commit/3fe72bc8cc1a455fbca96b67feca1e2fef9a92a4/nixos-bite.sh | bash -s reboot 2>&1 | tee /tmp/bite.log
             '';
 
+            shielded_instance_config = {
+              enable_secure_boot = false;
+              enable_vtpm = false;
+              enable_integrity_monitoring = false;
+            };
+
             network_interface = {
               subnetwork = lib.tfRef "google_compute_subnetwork.pallet-town.id";
               access_config.network_tier = "STANDARD";
+              access_config = {
+                nat_ip = lib.tfRef "google_compute_address.${name}.address";
+              };
             };
 
             connection = {
@@ -97,6 +106,15 @@ in
         name = "${name}_ip_public";
         value.value = lib.tfRef "google_compute_instance.${name}.network_interface.0.access_config.0.nat_ip";
       }) instances;
+
+    resource.google_compute_address = lib.mapAttrs (
+      name: cfg:
+      lib.mkIf cfg.enable {
+        inherit name;
+        address_type = "EXTERNAL";
+        network_tier = "STANDARD";
+      }
+    ) config.instances;
 
     resource.google_compute_instance_group_membership = lib.mapAttrs (
       name: cfg:

@@ -1,13 +1,13 @@
 UserKnownHostsFile ${PRJ_ROOT}/data/ssh/known_hosts
 Host dev-eevee
   User root
-  HostName 35.217.35.128
+  HostName 35.217.19.242
 
 Host dev-jolteon
   User root
-  HostName 35.217.27.89
+  HostName 35.217.58.198
 
 Host dev-vaporeon
   User root
-  HostName 35.217.19.242
+  HostName 35.217.35.128
 

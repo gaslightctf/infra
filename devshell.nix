@@ -117,11 +117,12 @@
                     echo "  $instance = {"
 
                     public_ip=$(${pkgs.jq}/bin/jq -r ".''${instance}_ip_public.value" "$JSON_FILE")
+                    keyscan=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null)
 
-                    age_key=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null | ${pkgs.ssh-to-age}/bin/ssh-to-age)
+                    age_key=$(${pkgs.ssh-to-age}/bin/ssh-to-age <<< "$keyscan")
                     echo "    age = \"$age_key\";"
 
-                    ssh_key=$(${pkgs.openssh}/bin/ssh-keyscan -qt ed25519 "$public_ip" 2>/dev/null | cut -d' ' -f2-)
+                    ssh_key=$(cut -d' ' -f2- <<< "$keyscan")
                     echo "    ssh = \"$ssh_key\";"
 
                     echo "  };"

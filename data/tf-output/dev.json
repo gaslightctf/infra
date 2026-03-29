@@ -2,22 +2,22 @@
   "eevee_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.30"
+    "value": "10.6.7.41"
   },
   "eevee_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.35.128"
+    "value": "35.217.19.242"
   },
   "jolteon_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.29"
+    "value": "10.6.7.39"
   },
   "jolteon_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.27.89"
+    "value": "35.217.58.198"
   },
   "kanto_lb_ip": {
     "sensitive": false,
@@ -27,11 +27,11 @@
   "vaporeon_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.32"
+    "value": "10.6.7.40"
   },
   "vaporeon_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.19.242"
+    "value": "35.217.35.128"
   }
 }

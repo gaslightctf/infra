@@ -28,6 +28,11 @@ in
           deployment = {
             targetHost = devOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value;
             tags = [ "dev" ];
+
+            sshOptions = [
+              "-F"
+              "${self}/data/ssh/config"
+            ];
           };
 
           imports = [
@@ -42,6 +47,11 @@ in
           deployment = {
             targetHost = prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value;
             tags = [ "prod" ];
+
+            sshOptions = [
+              "-F"
+              "${self}/data/ssh/config"
+            ];
           };
 
           imports = [
