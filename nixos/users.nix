@@ -1,4 +1,3 @@
-{ lib, ... }:
 let
   keys = import ../data/keys.nix;
 

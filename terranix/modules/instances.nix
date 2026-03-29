@@ -62,7 +62,9 @@ in
               # nixos will have ssh started when it boots
               systemctl stop sshd || true
 
-              curl https://codeberg.org/whitequark/nixos-bite/raw/commit/3fe72bc8cc1a455fbca96b67feca1e2fef9a92a4/nixos-bite.sh | bash -s reboot 2>&1 | tee /tmp/bite.log
+              echo "rm -rf /old-root/" > /tmp/setup.sh
+
+              curl https://codeberg.org/whitequark/nixos-bite/raw/commit/3fe72bc8cc1a455fbca96b67feca1e2fef9a92a4/nixos-bite.sh | NIX_SETUP=/tmp/setup.sh bash -s reboot 2>&1 | tee /tmp/bite.log
             '';
 
             shielded_instance_config = {

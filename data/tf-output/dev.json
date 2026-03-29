@@ -2,7 +2,7 @@
   "eevee_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.41"
+    "value": "10.6.7.44"
   },
   "eevee_ip_public": {
     "sensitive": false,
@@ -12,7 +12,7 @@
   "jolteon_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.39"
+    "value": "10.6.7.45"
   },
   "jolteon_ip_public": {
     "sensitive": false,
@@ -27,7 +27,7 @@
   "vaporeon_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "10.6.7.40"
+    "value": "10.6.7.43"
   },
   "vaporeon_ip_public": {
     "sensitive": false,
