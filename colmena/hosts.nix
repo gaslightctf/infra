@@ -37,7 +37,15 @@ in
 
           imports = [
             self.nixosModules.common
+            self.nixosModules.dev
+
             (self.nixosModules.${n} or { })
+            (
+              { ... }:
+              {
+                networking.hostName = n;
+              }
+            )
           ];
         };
       }) devInstances)
@@ -56,7 +64,9 @@ in
 
           imports = [
             self.nixosModules.common
+
             (self.nixosModules.${n} or { })
+            { networking.hostName = n; }
           ];
         };
       }) prodInstances);
@@ -72,7 +82,10 @@ in
         value = nixosSystem {
           modules = [
             self.nixosModules.common
+            self.nixosModules.dev
+
             (self.nixosModules.${n} or { })
+            { networking.hostName = n; }
           ];
         };
       }) devInstances)
@@ -81,7 +94,9 @@ in
         value = nixosSystem {
           modules = [
             self.nixosModules.common
+
             (self.nixosModules.${n} or { })
+            { networking.hostName = n; }
           ];
         };
       }) prodInstances);

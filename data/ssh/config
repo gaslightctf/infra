@@ -1,4 +1,9 @@
 UserKnownHostsFile ${PRJ_ROOT}/data/ssh/known_hosts
+Host *
+  ControlMaster auto
+  ControlPersist 5m
+  ControlPath /tmp/%i-%r@%k:%p
+
 Host dev-eevee
   User root
   HostName 35.217.19.242

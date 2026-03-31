@@ -26,11 +26,18 @@
             n: "${prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value} ${keys.prod.${n}.ssh}"
           ) prodInstances);
 
-      sshConfig =
+      sshConfig = ''
+        UserKnownHostsFile ''${PRJ_ROOT}/data/ssh/known_hosts
+        Host *
+          ControlMaster auto
+          ControlPersist 5m
+          ControlPath /tmp/%i-%r@%k:%p
+
+      ''
+      + (
         lib.concatLines
         <|
-          [ "UserKnownHostsFile \${PRJ_ROOT}/data/ssh/known_hosts" ]
-          ++ (map (n: ''
+          (map (n: ''
             Host dev-${n}
               User root
               HostName ${devOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value}
@@ -39,7 +46,8 @@
             Host prod-${n}
               User root
               HostName ${prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value}
-          '') prodInstances);
+          '') prodInstances)
+      );
     in
     {
       files.files = [
