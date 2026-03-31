@@ -56,7 +56,10 @@ in
 
             machine_type = "t2d-standard-4";
 
-            boot_disk.initialize_params.image = "debian-cloud/debian-13";
+            boot_disk.initialize_params = {
+              size = 50;
+              image = "debian-cloud/debian-13";
+            };
             metadata.ssh-keys = lib.join "\n" (lib.map (x: "root:${x}") sshKeys);
             metadata_startup_script = ''
               # nixos will have ssh started when it boots

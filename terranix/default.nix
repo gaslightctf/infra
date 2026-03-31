@@ -1,9 +1,9 @@
 { lib, ... }:
 {
-  terraform.required_providers = {
-    google.source = "hashicorp/google";
-    cloudflare.source = "cloudflare/cloudflare";
-  };
+  # terraform.required_providers = {
+  #   google.source = "hashicorp/google";
+  #   cloudflare.source = "cloudflare/cloudflare";
+  # };
 
   vars.gcp_credentials = {
     ephemeral = true;

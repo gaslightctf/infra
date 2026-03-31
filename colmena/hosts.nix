@@ -5,11 +5,12 @@
   ...
 }:
 let
-  INSTANCE-OUTPUT-SUFFIX = "_ip_public";
+  IP_OUTPUT_SUFFIX = "_ip";
+  IP_PUBLIC_OUTPUT_SUFFIX = "_ip_public";
   getInstances =
     xs:
-    map (lib.removeSuffix INSTANCE-OUTPUT-SUFFIX)
-    <| builtins.filter (lib.hasSuffix INSTANCE-OUTPUT-SUFFIX)
+    map (lib.removeSuffix IP_PUBLIC_OUTPUT_SUFFIX)
+    <| builtins.filter (lib.hasSuffix IP_PUBLIC_OUTPUT_SUFFIX)
     <| builtins.attrNames xs;
 
   devOutputs = import ../data/tf-output/dev.nix;
@@ -17,6 +18,25 @@ let
 
   prodOutputs = import ../data/tf-output/prod.nix;
   prodInstances = getInstances prodOutputs;
+
+  mkNetworkingModule =
+    outputs: n:
+    (
+      { lib, ... }:
+      {
+        options = {
+          networking.ipv4 = lib.mkOption {
+            type = lib.types.str;
+            default = outputs."${n}${IP_OUTPUT_SUFFIX}".value;
+          };
+          networking.ipv4Public = lib.mkOption {
+            type = lib.types.str;
+            default = outputs."${n}${IP_PUBLIC_OUTPUT_SUFFIX}".value;
+          };
+        };
+        config.networking.hostName = n;
+      }
+    );
 in
 {
   flake.colmena =
@@ -26,7 +46,7 @@ in
         name = "dev-${n}";
         value = {
           deployment = {
-            targetHost = devOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value;
+            targetHost = devOutputs."${n}${IP_PUBLIC_OUTPUT_SUFFIX}".value;
             tags = [ "dev" ];
 
             sshOptions = [
@@ -40,12 +60,7 @@ in
             self.nixosModules.dev
 
             (self.nixosModules.${n} or { })
-            (
-              { ... }:
-              {
-                networking.hostName = n;
-              }
-            )
+            (mkNetworkingModule devOutputs n)
           ];
         };
       }) devInstances)
@@ -53,7 +68,7 @@ in
         name = "prod-${n}";
         value = {
           deployment = {
-            targetHost = prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value;
+            targetHost = prodOutputs."${n}${IP_PUBLIC_OUTPUT_SUFFIX}".value;
             tags = [ "prod" ];
 
             sshOptions = [
@@ -66,7 +81,7 @@ in
             self.nixosModules.common
 
             (self.nixosModules.${n} or { })
-            { networking.hostName = n; }
+            (mkNetworkingModule devOutputs n)
           ];
         };
       }) prodInstances);
@@ -85,7 +100,7 @@ in
             self.nixosModules.dev
 
             (self.nixosModules.${n} or { })
-            { networking.hostName = n; }
+            (mkNetworkingModule devOutputs n)
           ];
         };
       }) devInstances)
@@ -96,7 +111,7 @@ in
             self.nixosModules.common
 
             (self.nixosModules.${n} or { })
-            { networking.hostName = n; }
+            (mkNetworkingModule devOutputs n)
           ];
         };
       }) prodInstances);

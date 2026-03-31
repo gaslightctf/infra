@@ -7,6 +7,7 @@
 
       self.nixosModules.sops
       self.nixosModules.boot
+      self.nixosModules.k3s-common
     ];
 
     system.stateVersion = "26.05";

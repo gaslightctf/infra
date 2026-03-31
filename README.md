@@ -8,9 +8,16 @@ gaslightCTF infrastructure as code. Manages the following resources:
     - [x] GCE network LB
   - [x] GCE instances
   - [ ] Cloudflare DNS records
+    - [ ] `play[-dev].` -> network-lb
+    - [ ] `chall[-dev].` -> network-lb
 - `colmena/`
-  - [ ] NixOS config for k3s nodes
+  - [x] NixOS config for k3s nodes
+  - [ ] monitoring
+    - [ ] logs go somewhere
+    - [ ] metrics go somewhere
 - `kubernetes/`
+  - [ ] storage
+    - [ ] CSI GCE PD driver
   - [ ] Traefik config
     - [ ] cert-manager
   - [ ] [berg](https://github.com/NoRelect/berg) deployment
