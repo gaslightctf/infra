@@ -4,17 +4,19 @@
     {
       pkgs,
       config,
+      inputs',
+      lib,
       ...
     }:
     let
+      inherit (inputs'.tf-providers.legacyPackages) providers;
+
       cfg = config.terranix.terranixConfigurations;
 
-      tofu = pkgs.opentofu.withPlugins (
-        p: with p; [
-          hashicorp_google
-          cloudflare_cloudflare
-        ]
-      );
+      tofu = pkgs.opentofu.withPlugins (_: [
+        providers.hashicorp.google
+        providers.cloudflare.cloudflare
+      ]);
 
       sopsToEnv =
         secretFile:
@@ -46,6 +48,10 @@
           modules = [
             (inputs.import-tree ./terranix)
           ];
+          # TODO: use flake.parts
+          extraArgs = {
+            inherit providers;
+          };
         };
 
         terranixConfigurations.dev = {
@@ -64,11 +70,15 @@
             (inputs.import-tree ./terranix)
             ./terranix/_dev.nix
           ];
+          # TODO: use flake.parts
+          extraArgs = {
+            inherit providers;
+          };
         };
       };
 
       apps = builtins.listToAttrs (
-        builtins.map
+        map
           (
             env:
             let

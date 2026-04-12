@@ -1,9 +1,17 @@
-{ lib, ... }:
+{ lib, providers, ... }:
+let
+  mkRequiredProvider = p: {
+    source =
+      lib.replaceString "registry.terraform.io" "registry.opentofu.org"
+        p.provider-source-address;
+    version = p.version;
+  };
+in
 {
-  # terraform.required_providers = {
-  #   google.source = "hashicorp/google";
-  #   cloudflare.source = "cloudflare/cloudflare";
-  # };
+  terraform.required_providers = {
+    google = mkRequiredProvider providers.hashicorp.google;
+    cloudflare = mkRequiredProvider providers.cloudflare.cloudflare;
+  };
 
   vars.gcp_credentials = {
     ephemeral = true;
