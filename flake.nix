@@ -28,6 +28,9 @@
 
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
+
+    nixidy.url = "github:arnarg/nixidy";
+    nixidy.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   nixConfig = {
@@ -53,8 +56,11 @@
       ];
 
       imports = [
+        inputs.flake-parts.flakeModules.modules
+
         (import-tree ./colmena)
         (import-tree ./nixos)
+        (import-tree ./nixidy)
 
         inputs.devshell.flakeModule
         ./devshell.nix

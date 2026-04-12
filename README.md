@@ -36,3 +36,15 @@ tofu-dev apply -concise
 tofu-dev output -json > data/tf-output/dev.json
 fetch-host-keys data/tf-output/dev.json
 ```
+
+## nixidy
+```sh
+just build-nixidy dev
+just switch-nixidy dev
+```
+
+## kubectl access
+```sh
+just fetch-kubeconfig
+screen just forward-kubectl
+```

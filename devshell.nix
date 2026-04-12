@@ -15,6 +15,10 @@
           $(type -p menu &>/dev/null && menu)
         '';
 
+        packages = [
+          pkgs.eza
+        ];
+
         commands = [
           {
             package = pkgs.age;
@@ -37,6 +41,16 @@
           {
             package = inputs'.colmena.packages.colmena;
             category = "deploy";
+          }
+
+          {
+            package = inputs'.nixidy.packages.default;
+            category = "k8s";
+            help = "Kubernetes GitOps with nix and Argo CD";
+          }
+          {
+            package = pkgs.kubectl;
+            category = "k8s";
           }
 
           {
@@ -63,6 +77,10 @@
           {
             package = config.files.writer.drv;
             help = "Write generated files (see data/files)";
+            category = "util";
+          }
+          {
+            package = pkgs.yq;
             category = "util";
           }
 
