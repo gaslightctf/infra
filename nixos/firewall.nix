@@ -1,12 +1,8 @@
 {
   flake.nixosModules.common = {
-    networking.nftables.enable = true;
-
     networking.firewall.allowedTCPPorts = [
       ## k3s-agent-agent
-      # flannel vxlan
-      8472
-      # kubelet metrics
+      # kubelet metrics + API
       10250
 
       # https
@@ -15,6 +11,12 @@
       1337
       # chall-tls
       31337
+    ];
+
+    networking.firewall.allowedUDPPorts = [
+      ## k3s-agent-agent
+      # flannel wireguard
+      51820
     ];
   };
 }

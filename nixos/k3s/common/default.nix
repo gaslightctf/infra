@@ -15,11 +15,11 @@ in
         gracefulNodeShutdown.enable = true;
 
         nodeIP = config.networking.ipv4;
-        extraFlags = [
-          "--node-external-ip=${config.networking.ipv4Public}"
-        ];
+        nodeExternalIP = config.networking.ipv4Public;
 
         serverAddr = lib.mkDefault "https://${prodOutputs.eevee_ip.value}:6443";
       };
+
+      boot.kernelModules = [ "wireguard" ];
     };
 }

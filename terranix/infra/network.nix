@@ -71,12 +71,12 @@ in
 
     allow = [
       {
-        # flannel vxlan
+        # flannel wireguard
         protocol = "udp";
-        ports = [ "8472" ];
+        ports = [ "51820" ];
       }
       {
-        # kubelet metrics
+        # kubelet metrics + API
         protocol = "tcp";
         ports = [ "10250" ];
       }
