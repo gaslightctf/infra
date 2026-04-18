@@ -6,6 +6,7 @@
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
       self.nixosModules.sops
+      self.nixosModules.disko
       self.nixosModules.boot
       self.nixosModules.k3s-common
     ];

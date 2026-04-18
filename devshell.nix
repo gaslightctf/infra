@@ -42,6 +42,10 @@
             package = inputs'.colmena.packages.colmena;
             category = "deploy";
           }
+          {
+            package = pkgs.nixos-anywhere;
+            category = "deploy";
+          }
 
           {
             package = inputs'.nixidy.packages.default;

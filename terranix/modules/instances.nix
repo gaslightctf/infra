@@ -16,6 +16,11 @@ in
       default = { };
     };
 
+    custom.flakePrefix = mkOption {
+      type = types.str;
+      default = "$PRJ_ROOT#prod-";
+    };
+
     instances = mkOption {
       type = types.attrsOf (
         types.submodule (
@@ -60,15 +65,15 @@ in
               size = 50;
               image = "debian-cloud/debian-13";
             };
-            metadata.ssh-keys = lib.join "\n" (lib.map (x: "root:${x}") sshKeys);
-            metadata_startup_script = ''
-              # nixos will have ssh started when it boots
-              systemctl stop sshd || true
-
-              echo "rm -rf /old-root/" > /setup.sh
-
-              curl https://codeberg.org/whitequark/nixos-bite/raw/commit/80e06ba28906c15b275f1d7051af1f0073486f89/nixos-bite.sh | NIX_SETUP=/setup.sh bash -s reboot 2>&1 | tee /tmp/bite.log
-            '';
+            metadata.ssh-keys = lib.join "\n" (lib.map (x: "root:${x}\nnixos-anywhere:${x}") sshKeys);
+            # metadata_startup_script = ''
+            #   # nixos will have ssh started when it boots
+            #   systemctl stop sshd || true
+            #
+            #   echo "rm -rf /old-root/" > /setup.sh
+            #
+            #   curl https://codeberg.org/whitequark/nixos-bite/raw/commit/80e06ba28906c15b275f1d7051af1f0073486f89/nixos-bite.sh | NIX_SETUP=/setup.sh bash -s reboot 2>&1 | tee /tmp/bite.log
+            # '';
 
             shielded_instance_config = {
               enable_secure_boot = false;
@@ -84,14 +89,17 @@ in
               };
             };
 
-            connection = {
-              type = "ssh";
-              user = "root";
-              agent = true;
-
-              host = lib.tfRef "self.network_interface.0.access_config.0.nat_ip";
+            # connection = {
+            #   type = "ssh";
+            #   user = "root";
+            #   agent = true;
+            #
+            #   host = lib.tfRef "self.network_interface.0.access_config.0.nat_ip";
+            # };
+            # provisioner.remote-exec.inline = [ "echo $(hostname) ready at $(date -R)" ];
+            provisioner.local-exec = {
+              command = "nixos-anywhere --flake ${config.custom.flakePrefix}${name} --target-host nixos-anywhere@\${google_compute_address.${name}.address}";
             };
-            provisioner.remote-exec.inline = [ "echo $(hostname) ready at $(date -R)" ];
           }
           cfg.extraConfig
           config.custom.instanceExtra

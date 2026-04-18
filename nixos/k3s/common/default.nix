@@ -19,7 +19,5 @@ in
 
         serverAddr = lib.mkDefault "https://${prodOutputs.eevee_ip.value}:6443";
       };
-
-      boot.kernelModules = [ "wireguard" ];
     };
 }

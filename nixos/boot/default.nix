@@ -1,21 +1,15 @@
 {
   flake.nixosModules.boot =
-    { modulesPath, ... }:
+    { config, modulesPath, ... }:
     {
       imports = [ "${modulesPath}/profiles/qemu-guest.nix" ];
 
       boot.growPartition = true;
       boot.loader.systemd-boot = {
         enable = true;
-        configurationLimit = 3;
+        configurationLimit = 5;
       };
       boot.loader.efi.canTouchEfiVariables = true;
-
-      fileSystems."/" = {
-        device = "/dev/disk/by-label/root";
-        fsType = "ext4";
-        autoResize = true;
-      };
 
       srvos.boot.consoles = [ ];
       services.journald.console = "/dev/ttyS0";
