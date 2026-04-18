@@ -14,8 +14,8 @@ in
 
         gracefulNodeShutdown.enable = true;
 
-        nodeIP = config.networking.ipv4;
-        nodeExternalIP = config.networking.ipv4Public;
+        # nodeIP = config.networking.ipv4;
+        # nodeExternalIP = config.networking.ipv4Public;
 
         serverAddr = lib.mkDefault "https://${prodOutputs.eevee_ip.value}:6443";
       };
