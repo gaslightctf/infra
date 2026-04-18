@@ -1,14 +1,14 @@
 {
   eevee = {
-    age = "age12c6e9qkzds3lr0hk04vw6lenc26vldcu7gjhjmfvnnyf2zswq4xs4k5mdl";
-    ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA0BGERraIY50xC5PO54qqLtJG2fSRzSeqOtSnBbnHC3";
+    age = "age1c9kze3vg7l0a63e8qkvhmt7n4apzd7q77d8vk7evwkq5as4xduysjwj6zm";
+    ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPdCPBdtuQsC+XCHozKEdSyNjNXqzXQdlBYUPikrbPF0";
   };
   jolteon = {
-    age = "age1wkwffg6dk2aqr5hzk7gapkgxa3l03z3yvhhhp3k6qec5mea4vg9q37qrg7";
-    ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFzkMhGBLtIUJj6AI6eEL5KLdUaR15mAb61kJJ2YU273";
+    age = "age1207upyazjpj8de2wpq68ng4e89d0wckrztv3jk0c9h7ywdt5gs3qs632lx";
+    ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIITku1jssywyh2gbcdp3QuR2UwCajQGO1UO9EpETtCZR";
   };
   vaporeon = {
-    age = "age1fv0kvlhextg9qqfpr35rjtz9px7plpp9az6naaqasufapmx34u2qkhu30d";
-    ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHAUxvGh8ukl8l8dDAyVVS8bs6OyHTMQQ4SIg/QhNSqn";
+    age = "age1u0fac7nzrmq330ns4nxxsuek9quhc2ez0hzj4c9hjz3pf7kvhpxquy7nsf";
+    ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIdfOAZsUYu4R2OHa3s1ZN/RW1Z5fJ0Vtk/iW5gpYmFb";
   };
 }

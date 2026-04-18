@@ -15,6 +15,6 @@
         tokenFile = config.sops.secrets.k3s-token.path;
       };
 
-      systemd.services.k3s.requires = [ config.systemd.services.sops-install-secrets.name ];
+      systemd.services.k3s.wants = [ config.systemd.services.sops-install-secrets.name ];
     };
 }
