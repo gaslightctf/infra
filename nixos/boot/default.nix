@@ -5,13 +5,11 @@
       imports = [ "${modulesPath}/profiles/qemu-guest.nix" ];
 
       boot.growPartition = true;
-      boot.loader.grub.devices = [ "/dev/sda" ];
-      boot.loader.grub.configurationLimit = 3;
-      boot.loader.grub.extraConfig = ''
-        serial --unit=0 --speed=115200 --word=8 --parity=no --stop=1
-        terminal_input serial
-        terminal_output serial
-      '';
+      boot.loader.systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+      };
+      boot.loader.efi.canTouchEfiVariables = true;
 
       fileSystems."/" = {
         device = "/dev/disk/by-label/root";
