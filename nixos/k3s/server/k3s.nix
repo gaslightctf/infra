@@ -3,10 +3,14 @@
     services.k3s = {
       role = "server";
 
-      extraFlags = [
-        # flannel vxlan does weird things with iptables that don't work well with the firewall
-        "--flannel-backend=wireguard-native"
-      ];
+      # autoDeployCharts.cilium = {
+      #   name = "cilium";
+      #   repo = "oci://quay.io/cilium/charts/cilium";
+      #   version = "1.19.3";
+      #   hash = "sha256-yOBd+eq/kBnmL1ED4fNYFLTxtDkW+IUZ5a5ONsaapCs=";
+      #
+      #   targetNamespace = "kube-system";
+      # };
     };
   };
 }

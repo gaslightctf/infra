@@ -56,6 +56,14 @@
             package = pkgs.kubectl;
             category = "k8s";
           }
+          {
+            package = pkgs.kubernetes-helm;
+            category = "k8s";
+          }
+          {
+            package = pkgs.cilium-cli;
+            category = "k8s";
+          }
 
           {
             name = "tofu-dev";
