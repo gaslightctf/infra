@@ -1,6 +1,8 @@
 # infra
 
-gaslightCTF infrastructure as code. Manages the following resources:
+gaslightCTF infrastructure as code. Extremely overengineered (<3 Nix)
+
+Manages the following resources:
 
 - `terranix/`
   - [x] GCE network, subnet, firewall
@@ -33,8 +35,9 @@ gaslightCTF infrastructure as code. Manages the following resources:
 ```sh
 tofu-dev init
 tofu-dev apply -concise
-tofu-dev output -json > data/tf-output/dev.json
-fetch-host-keys data/tf-output/dev.json
+just sync
+# apply with new ssh keys
+colmena apply --on @dev
 ```
 
 ## nixidy
@@ -46,5 +49,5 @@ just switch-nixidy dev
 ## kubectl access
 ```sh
 just fetch-kubeconfig
-screen just forward-kubectl
+screen -dm just forward-kubectl
 ```

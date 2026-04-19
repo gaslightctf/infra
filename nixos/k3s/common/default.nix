@@ -14,6 +14,8 @@ in
 
         gracefulNodeShutdown.enable = true;
 
+        ## WARN: nodeIP and/or nodeExternalIP breaks networking for some reason!!
+
         # nodeIP = config.networking.ipv4;
         # nodeExternalIP = config.networking.ipv4Public;
 

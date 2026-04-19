@@ -88,6 +88,7 @@ in
                 nat_ip = lib.tfRef "google_compute_address.${name}.address";
               };
             };
+            can_ip_forward = true;
 
             # connection = {
             #   type = "ssh";

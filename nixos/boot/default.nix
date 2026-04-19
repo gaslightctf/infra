@@ -1,6 +1,6 @@
 {
   flake.nixosModules.boot =
-    { config, modulesPath, ... }:
+    { modulesPath, ... }:
     {
       imports = [ "${modulesPath}/profiles/qemu-guest.nix" ];
 

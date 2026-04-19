@@ -29,6 +29,8 @@ in
     https_health_check = {
       port = 443;
     };
+
+    log_config.enable = true;
   };
 
   resource.google_compute_region_backend_service = lib.mapAttrs' (name: port: {
@@ -40,6 +42,7 @@ in
       load_balancing_scheme = "EXTERNAL";
 
       health_checks = [ (lib.tfRef "google_compute_region_health_check.kanto-lb.id") ];
+      lifecycle.replace_triggered_by = [ "google_compute_region_health_check.kanto-lb" ];
 
       backend = [
         {
