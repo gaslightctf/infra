@@ -1,6 +1,8 @@
 { lib, ... }:
 let
-  pallet-town-cidr = "10.6.7.0/24";
+  ips = import ../../data/ips.nix;
+
+  inherit (ips) pallet-town-cidr pod-cidr;
 in
 {
   resource.google_compute_network.kanto = {
@@ -13,6 +15,13 @@ in
     network = lib.tfRef "google_compute_network.kanto.id";
 
     ip_cidr_range = pallet-town-cidr;
+
+    secondary_ip_range = [
+      {
+        range_name = "k3s-pod";
+        ip_cidr_range = pod-cidr;
+      }
+    ];
   };
 
   resource.google_compute_firewall.external-ssh = {

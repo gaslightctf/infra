@@ -5,7 +5,8 @@
   ...
 }:
 let
-  IP_OUTPUT_SUFFIX = "_ip";
+  ips = import ../data/ips.nix;
+
   IP_PUBLIC_OUTPUT_SUFFIX = "_ip_public";
   getInstances =
     xs:
@@ -27,7 +28,7 @@ let
         options = {
           networking.ipv4 = lib.mkOption {
             type = lib.types.str;
-            default = outputs."${n}${IP_OUTPUT_SUFFIX}".value;
+            default = ips.instances.${n}.local;
           };
           networking.ipv4Public = lib.mkOption {
             type = lib.types.str;
@@ -114,5 +115,25 @@ in
             (mkNetworkingModule devOutputs n)
           ];
         };
-      }) prodInstances);
+      }) prodInstances)
+      # used for nixos-anywhere
+      ++ [
+        {
+          name = "dev-base";
+          value = nixosSystem {
+            modules = [
+              self.nixosModules.common
+              self.nixosModules.dev
+            ];
+          };
+        }
+        {
+          name = "prod-base";
+          value = nixosSystem {
+            modules = [
+              self.nixosModules.common
+            ];
+          };
+        }
+      ];
 }

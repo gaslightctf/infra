@@ -4,23 +4,13 @@
     {
       environment.systemPackages = [ pkgs.cilium-cli ];
       services.k3s = {
+        nodeTaint = [
+          "node.cilium.io/agent-not-ready:NoExecute"
+        ];
       };
 
       # stolen from https://git.sr.ht/~goorzhel/nixos/tree/78aece90f3ed319dc73b02b9f83d646bd0e8f2db/item/profiles/k3s/common/net.nix
       boot.kernelModules = [
-        # cilium-1.15.2/pkg/datapath/iptables/iptables.go:320
-        "ip_tables"
-        "iptable_nat"
-        "iptable_mangle"
-        "iptable_raw"
-        "iptable_filter"
-
-        # cilium-1.15.2/pkg/datapath/iptables/iptables.go:327
-        "ip6_tables"
-        "ip6table_mangle"
-        "ip6table_raw"
-        "ip6table_filter"
-
         # cilium-1.15.2/pkg/datapath/iptables/iptables.go:354
         "xt_socket"
 

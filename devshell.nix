@@ -4,6 +4,7 @@
       pkgs,
       inputs',
       config,
+      lib,
       ...
     }:
     {
@@ -159,6 +160,22 @@
                 done
                 echo "}"
               '';
+          }
+          {
+            name = "patch-pod-cidrs";
+            command =
+              let
+                ips = import ./data/ips.nix;
+                patch-commands = lib.mapAttrsToList (
+                  name:
+                  { pod-cidr, ... }:
+                  # bash
+                  ''
+                    ${pkgs.kubectl}/bin/kubectl patch node ${name} -p '{"spec": {"podCIDR": "${pod-cidr}"}}' || true
+                  ''
+                ) ips.instances;
+              in
+              lib.concatLines patch-commands;
           }
         ];
       };

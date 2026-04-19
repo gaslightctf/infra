@@ -57,10 +57,26 @@ not declarative :(
 
 using `services.k3s.autoDeployCharts` creates a chicken-and-egg: k3s won't start the `helm-install-cilium` pod because there's no CNI
 
-also trying to install cilium with agent nodes already connected makes the 
-operator go on the agent nodes for some idiotic reason, which means it can't connect to 
+also trying to install cilium with agent nodes already connected makes the
+operator go on the agent nodes for some idiotic reason, which means it can't connect to
 the api server (since cilium isn't up yet), which means cilium doesn't come up... what (skill issue probably, something something taints would probably fix this)
 
 ```sh
-cilium install --version 1.19.3 --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16"
+just install-cilium
+```
+
+## bootstrapping cluster
+```sh
+tofu-dev apply
+just sync
+
+just provision dev eevee
+just provision dev vaporeon
+...
+
+just fetch-kubeconfig
+screen -dm just forward-kubectl
+
+patch-pod-cidrs
+just install-cilium
 ```

@@ -1,6 +1,6 @@
 { self, ... }:
 let
-  prodOutputs = import "${self}/data/tf-output/prod.nix";
+  ips = import "${self}/data/ips.nix";
 in
 {
   flake.nixosModules.k3s-common =
@@ -19,7 +19,7 @@ in
         # nodeIP = config.networking.ipv4;
         # nodeExternalIP = config.networking.ipv4Public;
 
-        serverAddr = lib.mkDefault "https://${prodOutputs.eevee_ip.value}:6443";
+        serverAddr = lib.mkDefault "https://${ips.instances.eevee.local}:6443";
       };
     };
 }

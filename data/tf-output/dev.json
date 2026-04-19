@@ -1,18 +1,8 @@
 {
-  "eevee_ip": {
-    "sensitive": false,
-    "type": "string",
-    "value": "10.6.7.193"
-  },
   "eevee_ip_public": {
     "sensitive": false,
     "type": "string",
     "value": "35.217.19.242"
-  },
-  "jolteon_ip": {
-    "sensitive": false,
-    "type": "string",
-    "value": "10.6.7.192"
   },
   "jolteon_ip_public": {
     "sensitive": false,
@@ -23,11 +13,6 @@
     "sensitive": false,
     "type": "string",
     "value": "35.217.44.100"
-  },
-  "vaporeon_ip": {
-    "sensitive": false,
-    "type": "string",
-    "value": "10.6.7.194"
   },
   "vaporeon_ip_public": {
     "sensitive": false,
