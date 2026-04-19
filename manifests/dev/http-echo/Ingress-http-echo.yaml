@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx
-  namespace: nginx
+  name: http-echo
+  namespace: http-echo
 spec:
   ingressClassName: traefik
   rules:
-    - host: localhost
+    - host: play-dev.gaslightctf.cooking
       http:
         paths:
           - backend:
               service:
-                name: nginx
+                name: http-echo
                 port:
                   name: http
             path: /

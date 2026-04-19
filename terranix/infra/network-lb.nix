@@ -34,9 +34,9 @@ in
   };
 
   resource.google_compute_region_backend_service = lib.mapAttrs' (name: port: {
-    name = "kanto-lb-${name}";
+    name = "kanto-backend-${name}";
     value = {
-      name = "kanto-lb-${name}";
+      name = "kanto-backend-${name}";
       protocol = "TCP";
       port_name = name;
       load_balancing_scheme = "EXTERNAL";
@@ -53,19 +53,19 @@ in
     };
   }) ports;
 
-  data.cloudflare_ip_ranges.ips = { };
   resource.google_compute_forwarding_rule = lib.mapAttrs' (name: port: {
-    name = "kanto-lb-${name}";
+    name = "kanto-fwd-${name}";
     value = {
-      name = "kanto-lb-${name}";
+      name = "kanto-fwd-${name}";
       ip_protocol = "TCP";
       ip_address = lib.tfRef "google_compute_address.kanto-lb.id";
       port_range = port;
-      backend_service = lib.tfRef "google_compute_region_backend_service.kanto-lb-${name}.id";
+      backend_service = lib.tfRef "google_compute_region_backend_service.kanto-backend-${name}.id";
       network_tier = lib.tfRef "google_compute_address.kanto-lb.network_tier";
     };
   }) ports;
 
+  data.cloudflare_ip_ranges.ips = { };
   resource.google_compute_firewall.kanto-lb-https = {
     name = "kanto-lb-https";
     network = lib.tfRef "google_compute_network.kanto.id";
@@ -97,6 +97,9 @@ in
     source_ranges = [ "0.0.0.0/0" ];
   };
 
+  data.google_netblock_ip_ranges.hcs = {
+    range_type = "health-checkers";
+  };
   resource.google_compute_firewall.kanto-lb-https-healthcheck = {
     name = "kanto-lb-https-healthcheck";
     network = lib.tfRef "google_compute_network.kanto.id";
@@ -109,10 +112,11 @@ in
     ];
 
     # https://docs.cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges
-    source_ranges = [
-      "35.191.0.0/16"
-      "209.85.152.0/22"
-      "209.85.204.0/22"
-    ];
+    # source_ranges = [
+    #   "35.191.0.0/16"
+    #   "209.85.152.0/22"
+    #   "209.85.204.0/22"
+    # ];
+    source_ranges = lib.tfRef "data.google_netblock_ip_ranges.hcs.cidr_blocks_ipv4";
   };
 }

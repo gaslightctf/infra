@@ -1,7 +1,7 @@
 { self, ... }:
 {
   flake.modules.nixidy.common = {
-    imports = [ self.modules.nixidy.nginx ];
+    imports = [ self.modules.nixidy.http-echo ];
 
     nixidy.target = {
       repository = "https://github.com/gaslightctf/infra.git";

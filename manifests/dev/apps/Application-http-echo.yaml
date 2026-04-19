@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx
+  name: http-echo
   namespace: argocd
 spec:
   destination:
-    namespace: nginx
+    namespace: http-echo
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./manifests/dev/nginx
+    path: ./manifests/dev/http-echo
     repoURL: https://github.com/gaslightctf/infra.git
     targetRevision: master
   syncPolicy: {}
