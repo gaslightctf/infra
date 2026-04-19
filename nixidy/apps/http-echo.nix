@@ -29,6 +29,32 @@
           ingressClassName = "traefik";
           rules = [
             {
+              host = "chall-dev.gaslightctf.cooking";
+              http.paths = [
+                {
+                  path = "/";
+                  pathType = "Prefix";
+                  backend.service = {
+                    name = "http-echo";
+                    port.name = "http";
+                  };
+                }
+              ];
+            }
+            {
+              host = "*.chall-dev.gaslightctf.cooking";
+              http.paths = [
+                {
+                  path = "/";
+                  pathType = "Prefix";
+                  backend.service = {
+                    name = "http-echo";
+                    port.name = "http";
+                  };
+                }
+              ];
+            }
+            {
               host = "play-dev.gaslightctf.cooking";
               http.paths = [
                 {

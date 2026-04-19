@@ -17,10 +17,10 @@ Manages the following resources:
   - [ ] monitoring
     - [ ] logs go somewhere
     - [ ] metrics go somewhere
-- `kubernetes/`
+- `nixidy`
   - [ ] storage
     - [ ] CSI GCE PD driver
-  - [ ] Traefik config
+  - [x] Traefik config
     - [ ] cert-manager
   - [ ] [berg](https://github.com/NoRelect/berg) deployment
 
