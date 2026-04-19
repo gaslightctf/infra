@@ -35,7 +35,15 @@ let
             default = outputs."${n}${IP_PUBLIC_OUTPUT_SUFFIX}".value;
           };
         };
-        config.networking.hostName = n;
+        config.networking = {
+          interfaces.lo.ipv4.addresses = [
+            {
+              address = outputs.kanto_lb_ip.value;
+              prefixLength = 32;
+            }
+          ];
+          hostName = n;
+        };
       }
     );
 in
@@ -115,25 +123,5 @@ in
             (mkNetworkingModule devOutputs n)
           ];
         };
-      }) prodInstances)
-      # used for nixos-anywhere
-      ++ [
-        {
-          name = "dev-base";
-          value = nixosSystem {
-            modules = [
-              self.nixosModules.common
-              self.nixosModules.dev
-            ];
-          };
-        }
-        {
-          name = "prod-base";
-          value = nixosSystem {
-            modules = [
-              self.nixosModules.common
-            ];
-          };
-        }
-      ];
+      }) prodInstances);
 }

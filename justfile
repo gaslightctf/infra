@@ -29,12 +29,13 @@ build-nixidy env="dev": && (inspect-tree "result")
 switch-nixidy env="dev": && (inspect-tree "manifests/dev")
     nixidy switch .#{{env}}
 
-install-cilium env="dev": (fetch-kubeconfig env)
+# TODO: use helm for this
+install-cilium env="dev" op="install": (fetch-kubeconfig env)
     @echo "Make sure that ssh forwarding is up!"
     @echo "  screen -dm just forward-kubectl {{env}}"
 
     # hardcoded eevee ip for k8sServiceHost
-    cilium install --version 1.19.3 \
+    cilium {{op}} --version 1.19.3 \
         --set kubeProxyReplacement=true \
         --set k8sServiceHost=10.6.7.10 \
         --set ipam.operator.clusterPoolIPv4PodCIDRList="10.67.0.0/16" \
@@ -42,9 +43,10 @@ install-cilium env="dev": (fetch-kubeconfig env)
         --set gke.enabled=true \
         --set ipam.mode=kubernetes \
         --set routingMode=native \
+        --set autoDirectNodeRoutes=false \
         --set endpointRoutes.enabled=true \
-        --set autoDirectNodeRoutes=true \
-        --set operator.replicas=1 \
+        --set operator.replicas=2 \
+        --set nodeIPAM.enabled=true \
 
     cilium status --wait
 

@@ -28,6 +28,7 @@ in
 
     https_health_check = {
       port = 443;
+      request_path = "/ping";
     };
 
     log_config.enable = true;
@@ -98,7 +99,7 @@ in
   };
 
   data.google_netblock_ip_ranges.hcs = {
-    range_type = "health-checkers";
+    range_type = "legacy-health-checkers";
   };
   resource.google_compute_firewall.kanto-lb-https-healthcheck = {
     name = "kanto-lb-https-healthcheck";
@@ -111,12 +112,6 @@ in
       }
     ];
 
-    # https://docs.cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges
-    # source_ranges = [
-    #   "35.191.0.0/16"
-    #   "209.85.152.0/22"
-    #   "209.85.204.0/22"
-    # ];
     source_ranges = lib.tfRef "data.google_netblock_ip_ranges.hcs.cidr_blocks_ipv4";
   };
 }
