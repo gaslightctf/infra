@@ -1,46 +1,43 @@
+{ self, ... }:
+let
+  ips = import "${self}/data/ips.nix";
+in
 {
-  flake.modules.nixidy.nginx = {
-    applications.nginx = {
-      namespace = "nginx";
-      createNamespace = true;
+  flake.modules.nixidy.cilium =
+    { lib, ... }:
+    {
+      applications.cilium = {
+        namespace = "kube-system";
 
-      resources = {
-        deployments.nginx.spec = {
-          replicas = 2;
-          selector.matchLabels.app = "nginx";
-          template = {
-            metadata.labels.app = "nginx";
-            spec.containers.nginx = {
-              image = "nginx:1.25.1";
-              ports.http.containerPort = 80;
-            };
+        helm.releases.cilium = {
+          chart = lib.helm.downloadHelmChart {
+            repo = "oci://quay.io/cilium/charts";
+            chart = "cilium";
+            version = "1.19.3";
+            chartHash = "sha256-rt3TlLpIMTLyN+DZFRpHItt7tadQ3k+BghkfwhI8Yaw=";
           };
-        };
 
-        services.nginx.spec = {
-          selector.app = "nginx";
-          ports.http.port = 80;
-        };
+          values = {
+            kubeProxyReplacement = true;
+            k8sServiceHost = ips.instances.eevee.local;
+            k8sServicePort = 6443;
 
-        ingresses.nginx.spec = {
-          ingressClassName = "traefik";
-          rules = [
-            {
-              host = "localhost";
-              http.paths = [
-                {
-                  path = "/";
-                  pathType = "Prefix";
-                  backend.service = {
-                    name = "nginx";
-                    port.name = "http";
-                  };
-                }
-              ];
-            }
-          ];
+            ipam = {
+              mode = "kubernetes";
+              operator.clusterPoolIPv4PodCIDRList = ips.pod-cidr;
+            };
+
+            ipv4NativeRoutingCIDR = "10.0.0.0/8";
+            routingMode = "native";
+            autoDirectNodeRoutes = false;
+            endpointRoutes.enabled = true;
+
+            gke.enabled = true;
+            nodeIPAM.enabled = true;
+
+            operator.replicas = 2;
+          };
         };
       };
     };
-  };
 }

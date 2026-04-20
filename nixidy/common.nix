@@ -2,6 +2,7 @@
 {
   flake.modules.nixidy.common = {
     imports = [
+      self.modules.nixidy.cilium
       self.modules.nixidy.traefik
       self.modules.nixidy.http-echo
     ];
