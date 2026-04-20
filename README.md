@@ -41,18 +41,21 @@ colmena apply --on @dev
 ```
 
 ## nixidy
+
 ```sh
 just build-nixidy dev
 just switch-nixidy dev
 ```
 
 ## kubectl access
+
 ```sh
 just fetch-kubeconfig
 screen -dm just forward-kubectl
 ```
 
 ## cilium
+
 not declarative :(
 
 using `services.k3s.autoDeployCharts` creates a chicken-and-egg: k3s won't start the `helm-install-cilium` pod because there's no CNI
@@ -66,6 +69,7 @@ just install-cilium
 ```
 
 ## bootstrapping cluster
+
 ```sh
 tofu-dev apply
 just sync
