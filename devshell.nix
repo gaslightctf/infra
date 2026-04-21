@@ -167,19 +167,20 @@
           }
           {
             name = "patch-pod-cidrs";
+            help = "Patch each node's spec.podCIDR to match data/ips.nix";
             command =
               let
                 ips = import ./data/ips.nix;
-                patch-commands = lib.mapAttrsToList (
+                patchCommands = lib.mapAttrsToList (
                   name:
-                  { pod-cidr, ... }:
+                  { podCIDR, ... }:
                   # bash
                   ''
-                    ${pkgs.kubectl}/bin/kubectl patch node ${name} -p '{"spec": {"podCIDR": "${pod-cidr}"}}' || true
+                    ${pkgs.kubectl}/bin/kubectl patch node ${name} -p '{"spec": {"podCIDR": "${podCIDR}"}}' || true
                   ''
                 ) ips.instances;
               in
-              lib.concatLines patch-commands;
+              lib.concatLines patchCommands;
           }
         ];
       };

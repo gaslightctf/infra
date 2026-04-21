@@ -78,7 +78,7 @@ in
               };
               network_ip = ips.instances.${name}.local;
               alias_ip_range = {
-                ip_cidr_range = ips.instances.${name}.pod-cidr;
+                ip_cidr_range = ips.instances.${name}.podCIDR;
                 subnetwork_range_name = "k3s-pod";
               };
             };

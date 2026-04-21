@@ -13,7 +13,7 @@ in
         "--disable=servicelb"
         "--disable=traefik"
 
-        "--cluster-cidr=${ips.pod-cidr}"
+        "--cluster-cidr=${ips.podCIDR}"
         # we will do it ourself
         "--kube-controller-manager-arg=allocate-node-cidrs=false"
       ];

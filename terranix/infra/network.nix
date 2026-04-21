@@ -2,7 +2,7 @@
 let
   ips = import ../../data/ips.nix;
 
-  inherit (ips) pallet-town-cidr pod-cidr;
+  inherit (ips) palletTownCIDR podCIDR;
 in
 {
   resource.google_compute_network.kanto = {
@@ -14,12 +14,12 @@ in
     name = "pallet-town";
     network = lib.tfRef "google_compute_network.kanto.id";
 
-    ip_cidr_range = pallet-town-cidr;
+    ip_cidr_range = palletTownCIDR;
 
     secondary_ip_range = [
       {
         range_name = "k3s-pod";
-        ip_cidr_range = pod-cidr;
+        ip_cidr_range = podCIDR;
       }
     ];
   };
@@ -50,8 +50,8 @@ in
     ];
 
     source_ranges = [
-      pallet-town-cidr
-      pod-cidr
+      palletTownCIDR
+      podCIDR
     ];
   };
 }

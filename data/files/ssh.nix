@@ -3,11 +3,11 @@
   perSystem =
     { pkgs, ... }:
     let
-      INSTANCE-OUTPUT-SUFFIX = "_ip_public";
+      INSTANCE_OUTPUT_SUFFIX = "_ip_public";
       getInstances =
         xs:
-        map (lib.removeSuffix INSTANCE-OUTPUT-SUFFIX)
-        <| builtins.filter (lib.hasSuffix INSTANCE-OUTPUT-SUFFIX)
+        map (lib.removeSuffix INSTANCE_OUTPUT_SUFFIX)
+        <| builtins.filter (lib.hasSuffix INSTANCE_OUTPUT_SUFFIX)
         <| builtins.attrNames xs;
 
       devOutputs = import "${self}/data/tf-output/dev.nix";
@@ -21,9 +21,9 @@
       knownHosts =
         lib.concatLines
         <|
-          (map (n: "${devOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value} ${keys.dev.${n}.ssh}") devInstances)
+          (map (n: "${devOutputs."${n}${INSTANCE_OUTPUT_SUFFIX}".value} ${keys.dev.${n}.ssh}") devInstances)
           ++ (map (
-            n: "${prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value} ${keys.prod.${n}.ssh}"
+            n: "${prodOutputs."${n}${INSTANCE_OUTPUT_SUFFIX}".value} ${keys.prod.${n}.ssh}"
           ) prodInstances);
 
       sshConfig = ''
@@ -40,12 +40,12 @@
           (map (n: ''
             Host dev-${n}
               User root
-              HostName ${devOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value}
+              HostName ${devOutputs."${n}${INSTANCE_OUTPUT_SUFFIX}".value}
           '') devInstances)
           ++ (map (n: ''
             Host prod-${n}
               User root
-              HostName ${prodOutputs."${n}${INSTANCE-OUTPUT-SUFFIX}".value}
+              HostName ${prodOutputs."${n}${INSTANCE_OUTPUT_SUFFIX}".value}
           '') prodInstances)
       );
     in

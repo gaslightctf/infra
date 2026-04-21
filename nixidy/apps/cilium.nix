@@ -24,7 +24,7 @@ in
 
             ipam = {
               mode = "kubernetes";
-              operator.clusterPoolIPv4PodCIDRList = ips.pod-cidr;
+              operator.clusterPoolIPv4PodCIDRList = ips.podCIDR;
             };
 
             ipv4NativeRoutingCIDR = "10.0.0.0/8";

@@ -24,9 +24,17 @@ let
           }
         ];
       }
+      {
+        path_regex = "secrets/${env}/k8s/.+\\.yaml$";
+        key_groups = [
+          {
+            age = admins ++ map ({ age, ... }: age) keys."${env}Servers";
+          }
+        ];
+      }
     ];
 
-  sops-yaml = {
+  sopsYAML = {
     creation_rules = builtins.concatLists [
       [
         {
@@ -53,7 +61,7 @@ in
       files.files = [
         {
           path_ = ".sops.yaml";
-          drv = pkgs.writers.writeYAML ".sops.yaml" sops-yaml;
+          drv = pkgs.writers.writeYAML ".sops.yaml" sopsYAML;
         }
       ];
     };
