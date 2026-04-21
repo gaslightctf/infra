@@ -29,6 +29,9 @@ build-nixidy env="dev": && (inspect-tree "result")
 switch-nixidy env="dev": && (inspect-tree "manifests/dev")
     nixidy switch .#{{env}}
 
+diff-nixidy env="dev": (build-nixidy env)
+    diff -Nur manifests/{{env}} result | delta
+
 # must pass env explicitly
 provision env host:
     #!/usr/bin/env bash

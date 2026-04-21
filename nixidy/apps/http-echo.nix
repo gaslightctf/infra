@@ -54,19 +54,6 @@
                 }
               ];
             }
-            {
-              host = "play-dev.gaslightctf.cooking";
-              http.paths = [
-                {
-                  path = "/";
-                  pathType = "Prefix";
-                  backend.service = {
-                    name = "http-echo";
-                    port.name = "http";
-                  };
-                }
-              ];
-            }
           ];
         };
       };

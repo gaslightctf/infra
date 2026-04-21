@@ -18,6 +18,7 @@
 
         packages = [
           pkgs.eza
+          pkgs.delta
         ];
 
         commands = [

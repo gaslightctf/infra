@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: berg
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: berg
+    app.kubernetes.io/version: 5.13.4
+    component: api
+    helm.sh/chart: berg-5.13.4
+  name: berg-api
+  namespace: berg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: berg
+      app.kubernetes.io/name: berg
+      component: api
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 3efb64aae784d43f8c7679546310cf5dca158bdafba765d17a6a4d93d78e4512
+      labels:
+        app.kubernetes.io/instance: berg
+        app.kubernetes.io/name: berg
+        component: api
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_URLS
+              value: http://0.0.0.0:8080
+            - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+              value: "true"
+          image: ghcr.io/norelect/berg/api:5.13.4
+          imagePullPolicy: IfNotPresent
+          name: berg-api
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: "0.2"
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: /app/appsettings.json
+              name: appsettings
+              subPath: appsettings.json
+      serviceAccountName: berg
+      volumes:
+        - configMap:
+            name: berg-appsettings
+          name: appsettings

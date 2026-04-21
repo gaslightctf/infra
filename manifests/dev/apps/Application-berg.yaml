@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: berg
+  namespace: argocd
+spec:
+  destination:
+    namespace: berg
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: ./manifests/dev/berg
+    repoURL: https://github.com/gaslightctf/infra.git
+    targetRevision: master
+  syncPolicy: {}

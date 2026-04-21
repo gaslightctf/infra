@@ -6,6 +6,7 @@
       self.modules.nixidy.traefik
       self.modules.nixidy.http-echo
       self.modules.nixidy.cert-manager
+      self.modules.nixidy.berg
     ];
 
     nixidy.target = {

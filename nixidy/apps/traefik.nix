@@ -1,28 +1,37 @@
 let
-  chartAttrs = {
+  gatewayCRDs =
+    pkgs:
+    pkgs.fetchurl {
+      url = "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/experimental-install.yaml";
+      hash = "sha256-98x9MJp62dMWk4NBBG7YHEDnh9gILwsoHfOSYomnpEU=";
+    };
+
+  mkChartAttrs = pkgs: {
     repo = "https://traefik.github.io/charts/";
     chart = "traefik";
     version = "39.0.8";
-    chartHash = "sha256-pXQOVC70PKdNyqbRPaw31mjSsYhlPT7GsCDI64I1oys=";
+    chartHash = "sha256-oL9hQHwsjwnNW0zQ71b5gYWEEL3IWfgLgT3R0Jfl7nU=";
+
+    extraFlags =
+      # bash
+      ''
+        # THIS LINE allows command injection in extraFlags, hella hacky
+        cp ${gatewayCRDs pkgs} $OUT_DIR/traefik/crds/gateway-standard-install.yaml
+      '';
   };
 in
 {
   flake.modules.nixidy.traefik =
-    { lib, ... }:
+    { pkgs, lib, ... }:
     {
       applications.traefik = {
         namespace = "traefik";
         createNamespace = true;
 
         helm.releases.traefik = {
-          chart = lib.helm.downloadHelmChart chartAttrs;
+          chart = lib.helm.downloadHelmChart (mkChartAttrs pkgs);
 
           values = {
-            ingressClass = {
-              enabled = true;
-              isDefaultClass = true;
-            };
-
             # networking to :80 and :443 handled by Cilium Portmap
             # https://docs.cilium.io/en/latest/installation/cni-chaining-portmap/
             service.enabled = false;
@@ -36,6 +45,82 @@ in
             updateStrategy.rollingUpdate.maxUnavailable = 1;
             updateStrategy.rollingUpdate.maxSurge = 0;
 
+            additionalArguments = [
+              "--ping.entrypoint=websecure"
+            ];
+
+            logs = {
+              # general.level = "DEBUG";
+              access.enabled = true;
+            };
+
+            tlsOptions.default = {
+              sniStrict = false;
+              alpnProtocols = [ "http/1.1" ];
+            };
+
+            ingressClass = {
+              enabled = true;
+              isDefaultClass = true;
+            };
+
+            providers.kubernetesGateway = {
+              enabled = true;
+              experimentalChannel = true;
+            };
+            gateway = {
+              enabled = true;
+              name = "traefik-gateway";
+
+              listeners =
+                let
+                  namespacePolicy = {
+                    from = "All";
+                  };
+
+                  certificateRefs = [
+                    {
+                      kind = "Secret";
+                      name = "play-gaslightctf-cooking-tls";
+                    }
+                  ];
+                  mode = "Terminate";
+                in
+                {
+                  web = {
+                    inherit namespacePolicy;
+
+                    port = 80;
+                    protocol = "HTTP";
+                  };
+                  http-chall = {
+                    inherit namespacePolicy;
+
+                    port = 1337;
+                    protocol = "HTTP";
+                  };
+
+                  websecure = {
+                    inherit namespacePolicy certificateRefs mode;
+
+                    port = 443;
+                    protocol = "HTTPS";
+                  };
+                  https-chall = {
+                    inherit namespacePolicy certificateRefs mode;
+
+                    port = 1337;
+                    protocol = "HTTPS";
+                  };
+                  tls-chall = {
+                    inherit namespacePolicy certificateRefs mode;
+
+                    port = 31337;
+                    protocol = "TLS";
+                  };
+                };
+            };
+
             ports = {
               web = {
                 port = 80;
@@ -46,20 +131,15 @@ in
                 hostPort = 443;
               };
 
-              chall-https = {
+              http-chall = {
                 port = 1337;
                 hostPort = 1337;
-                http.tls.enabled = true;
               };
-            };
 
-            additionalArguments = [
-              "--ping.entrypoint=websecure"
-            ];
-
-            logs = {
-              # general.level = "DEBUG";
-              access.enabled = true;
+              tls-chall = {
+                port = 31337;
+                hostPort = 31337;
+              };
             };
           };
         };
@@ -85,18 +165,27 @@ in
             ];
           };
         };
+
+        resources.certificates.play-gaslightctf-cooking.spec = {
+          secretName = "play-gaslightctf-cooking-tls";
+          issuerRef.name = "letsencrypt-staging";
+          dnsNames = [
+            "play.gaslightctf.cooking"
+            "*.play.gaslightctf.cooking"
+          ];
+        };
       };
     };
 
   perSystem =
-    { inputs', ... }:
+    { inputs', pkgs, ... }:
     {
       files.files = [
         {
           path_ = "nixidy/_gen/traefik.nix";
           drv = inputs'.nixidy.packages.generators.fromChartCRD {
             name = "traefik";
-            inherit chartAttrs;
+            chartAttrs = mkChartAttrs pkgs;
           };
         }
       ];

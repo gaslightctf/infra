@@ -1,0 +1,19 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/instance: berg
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: berg
+    app.kubernetes.io/version: 5.13.4
+    component: frontend
+    helm.sh/chart: berg-5.13.4
+  name: berg-frontend-pdb
+  namespace: berg
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: berg
+      app.kubernetes.io/name: berg
+      component: frontend

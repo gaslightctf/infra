@@ -34,6 +34,11 @@ in
             name = "cert-manager";
             inherit chartAttrs;
 
+            crds = [
+              "Issuer"
+              "Certificate"
+            ];
+
             extraOpts = [
               "--set"
               "crds.enabled=true"

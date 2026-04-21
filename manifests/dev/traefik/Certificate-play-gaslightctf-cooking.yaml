@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: play-gaslightctf-cooking
+  namespace: traefik
+spec:
+  dnsNames:
+    - play-dev.gaslightctf.cooking
+    - '*.play-dev.gaslightctf.cooking'
+  issuerRef:
+    name: letsencrypt-staging
+  secretName: play-gaslightctf-cooking-tls
