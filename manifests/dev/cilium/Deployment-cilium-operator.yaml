@@ -64,7 +64,7 @@ spec:
             - name: KUBERNETES_SERVICE_HOST
               value: 10.6.7.10
             - name: KUBERNETES_SERVICE_PORT
-              value: ""
+              value: "6443"
           image: quay.io/cilium/operator-generic:v1.19.3@sha256:205b09b0ed6accbf9fe688d312a9f0fcfc6a316fc081c23fbffb472af5dd62cd
           imagePullPolicy: IfNotPresent
           livenessProbe:

@@ -1,3 +1,11 @@
+let
+  chartAttrs = {
+    repo = "https://traefik.github.io/charts/";
+    chart = "traefik";
+    version = "39.0.8";
+    chartHash = "sha256-pXQOVC70PKdNyqbRPaw31mjSsYhlPT7GsCDI64I1oys=";
+  };
+in
 {
   flake.modules.nixidy.traefik =
     { lib, ... }:
@@ -7,12 +15,7 @@
         createNamespace = true;
 
         helm.releases.traefik = {
-          chart = lib.helm.downloadHelmChart {
-            repo = "https://traefik.github.io/charts/";
-            chart = "traefik";
-            version = "39.0.8";
-            chartHash = "sha256-pXQOVC70PKdNyqbRPaw31mjSsYhlPT7GsCDI64I1oys=";
-          };
+          chart = lib.helm.downloadHelmChart chartAttrs;
 
           values = {
             ingressClass = {
@@ -60,6 +63,42 @@
             };
           };
         };
+
+        resources.issuers.letsencrypt-staging.spec = {
+          acme = {
+            email = "acme@gaslightctf.cooking";
+            profile = "tlsserver";
+            server = "https://acme-staging-v02.api.letsencrypt.org/directory";
+            privateKeySecretRef.name = "acme-account-letsencrypt-staging";
+
+            solvers = [
+              {
+                dns01.cloudflare.apiTokenSecretRef = {
+                  name = "cf-api-token";
+                  key = "cf-api-token";
+                };
+
+                selector.dnsZones = [
+                  "gaslightctf.cooking"
+                ];
+              }
+            ];
+          };
+        };
       };
+    };
+
+  perSystem =
+    { inputs', ... }:
+    {
+      files.files = [
+        {
+          path_ = "nixidy/_gen/traefik.nix";
+          drv = inputs'.nixidy.packages.generators.fromChartCRD {
+            name = "traefik";
+            inherit chartAttrs;
+          };
+        }
+      ];
     };
 }

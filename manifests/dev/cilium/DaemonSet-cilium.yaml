@@ -54,7 +54,7 @@ spec:
             - name: KUBERNETES_SERVICE_HOST
               value: 10.6.7.10
             - name: KUBERNETES_SERVICE_PORT
-              value: ""
+              value: "6443"
             - name: KUBE_CLIENT_BACKOFF_BASE
               value: "1"
             - name: KUBE_CLIENT_BACKOFF_DURATION
@@ -214,7 +214,7 @@ spec:
             - name: KUBERNETES_SERVICE_HOST
               value: 10.6.7.10
             - name: KUBERNETES_SERVICE_PORT
-              value: ""
+              value: "6443"
           image: quay.io/cilium/cilium:v1.19.3@sha256:2e61680593cddca8b6c055f6d4c849d87a26a1c91c7e3b8b56c7fb76ab7b7b10
           imagePullPolicy: IfNotPresent
           name: config
@@ -330,7 +330,7 @@ spec:
             - name: KUBERNETES_SERVICE_HOST
               value: 10.6.7.10
             - name: KUBERNETES_SERVICE_PORT
-              value: ""
+              value: "6443"
           image: quay.io/cilium/cilium:v1.19.3@sha256:2e61680593cddca8b6c055f6d4c849d87a26a1c91c7e3b8b56c7fb76ab7b7b10
           imagePullPolicy: IfNotPresent
           name: clean-cilium-state

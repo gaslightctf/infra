@@ -7,7 +7,7 @@ sync env="dev": && sync-sops
 
 sync-sops:
     nix develop -c "write-files"
-    sops updatekeys secrets/**/*
+    find secrets -type f | xargs sops updatekeys
 
 ssh host *FLAGS:
     ssh -F $PRJ_ROOT/data/ssh/config {{host}} {{FLAGS}}

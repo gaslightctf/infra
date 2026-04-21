@@ -31,6 +31,8 @@ let
             age = admins ++ map ({ age, ... }: age) keys."${env}Servers";
           }
         ];
+
+        unencrypted_regex = "^(apiVersion|kind|metadata|type|immutable)$";
       }
     ];
 
