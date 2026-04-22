@@ -1,5 +1,21 @@
 { self, ... }:
 {
+  # load option for all nodes
+  flake.nixosModules.k3s-common =
+    { lib, config, ... }:
+    {
+      options.serverKeysAssertion = lib.mkOption {
+        default =
+          let
+            keys = import "${self}/data/keys.nix";
+            pred = k: k == keys.prod.${config.networking.hostName};
+          in
+          lib.any pred keys.prodServers;
+
+        type = lib.types.bool;
+      };
+    };
+
   flake.nixosModules.k3s-server =
     { lib, config, ... }:
     let
@@ -20,16 +36,6 @@
         );
     in
     {
-      options.serverKeysAssertion = lib.mkOption {
-        default =
-          let
-            keys = import "${self}/data/keys.nix";
-            pred = k: k == keys.prod.${config.networking.hostName};
-          in
-          lib.any pred keys.prodServers;
-
-        type = lib.types.bool;
-      };
       config = {
         assertions = [
           {

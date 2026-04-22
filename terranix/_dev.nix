@@ -1,7 +1,7 @@
 { lib, ... }:
 {
   custom.instanceExtra = {
-    boot_disk.initialize_params.size = lib.mkForce 10;
+    boot_disk.initialize_params.size = lib.mkForce 25;
     machine_type = lib.mkForce "e2-medium";
   };
 
