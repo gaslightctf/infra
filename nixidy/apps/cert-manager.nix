@@ -16,6 +16,12 @@ in
 
         helm.releases.cert-manager = {
           chart = lib.helm.downloadHelmChart chartAttrs;
+          transformer = map (
+            lib.kube.removeLabels [
+              "app.kubernetes.io/version"
+              "helm.sh/chart"
+            ]
+          );
 
           values = {
             crds.enabled = true;
