@@ -30,6 +30,8 @@ in
             berg = {
               domain = "play.gaslightctf.cooking";
 
+              postgresql.existingSecret.name = "berg-db-app";
+
               ctf = {
                 eventName = "gaslightCTF 2026";
                 eventOrganiser = "gaslighting";
@@ -71,6 +73,11 @@ in
               };
             };
           };
+        };
+
+        resources.clusters.berg-db.spec = {
+          instances = 3;
+          storage.size = "15Gi";
         };
       };
     };

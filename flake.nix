@@ -27,7 +27,7 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixidy.url = "github:arnarg/nixidy";
+    nixidy.url = "github:sportshead/nixidy";
     nixidy.inputs.nixpkgs.follows = "nixpkgs";
     nixidy.inputs.nix-kube-generators.url = "github:farcaller/nix-kube-generators/810dcf792081790648ba9ae705b9a2286115ace8";
   };
