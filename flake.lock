@@ -1,5 +1,22 @@
 {
   "nodes": {
+    "berg": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776896510,
+        "narHash": "sha256-iq9Pir9dI7/8QPRH9T5ErEqa9Sckw1anLATyRPqtmCc=",
+        "owner": "NoRelect",
+        "repo": "berg",
+        "rev": "2d52ef3d5b61475a8b335e06ca8f3d6e5d57bb99",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NoRelect",
+        "ref": "pull/342/head",
+        "repo": "berg",
+        "type": "github"
+      }
+    },
     "colmena": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -274,6 +291,7 @@
     },
     "root": {
       "inputs": {
+        "berg": "berg",
         "colmena": "colmena",
         "devshell": "devshell",
         "disko": "disko",

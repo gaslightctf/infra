@@ -16,6 +16,12 @@ in
 
         helm.releases.berg = {
           chart = lib.helm.downloadHelmChart chartAttrs;
+          transformer = map (
+            lib.kube.removeLabels [
+              "app.kubernetes.io/version"
+              "helm.sh/chart"
+            ]
+          );
 
           values = {
             gateway = {
@@ -32,10 +38,28 @@ in
 
               postgresql.existingSecret.name = "berg-db-app";
 
+              discord =
+                let
+                  guildId = "1463881187159441619";
+                in
+                {
+                  existingSecret.name = "berg-discord";
+
+                  notificationGuildId = guildId;
+                  playerGuildId = guildId;
+                  authorGuildId = guildId;
+                  adminGuildId = guildId;
+
+                  notificationChannelId = "1485397056419004568";
+                  playerRoleId = "1496622099723194438";
+                  authorRoleId = "1496622317147525321";
+                  adminRoleId = "1469436808604680194";
+                };
+
               ctf = {
                 eventName = "gaslightCTF 2026";
-                eventOrganiser = "gaslighting";
-                eventLogoUrl = "https://gaslightctf.cooking/assets/gaslightCTFlogo.gif";
+                eventOrganiser = "gaslightCTF";
+                eventLogoUrl = "https://gaslightctf.cooking/assets/gaslighticoncolor.png";
 
                 allowAnonymousAccess = false;
 

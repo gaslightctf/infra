@@ -18,9 +18,9 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 4b0cec034f0979cd1cb7eef625719ce0f51c0f31695513265c50704c88ada89d
+        checksum/config: e09a50bd346ae63d380efa3468fbed5c796bfa69c2cc80247013af4f11474198
         checksum/monitoring-config: 4260cf2aa0b1bb0b1df50c5a408a0b748e58e5618639c6dd686abd24762b857a
-        checksum/rbac: 5fafb8e56f359aad6d13d59696b99a34117775a203ee2183fa7937519f391b79
+        checksum/rbac: 2afb00c94ffae764dbaf4769c9d68aa6aaba07fd030a515ba82a2307c59b5867
       labels:
         app.kubernetes.io/instance: cnpg
         app.kubernetes.io/name: cloudnative-pg
@@ -43,8 +43,6 @@ spec:
                   fieldPath: metadata.namespace
             - name: MONITORING_QUERIES_CONFIGMAP
               value: cnpg-default-monitoring
-            - name: WATCH_NAMESPACE
-              value: cnpg
           image: ghcr.io/cloudnative-pg/cloudnative-pg:1.29.0
           imagePullPolicy: IfNotPresent
           livenessProbe:

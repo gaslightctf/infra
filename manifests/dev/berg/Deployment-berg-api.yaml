@@ -5,9 +5,7 @@ metadata:
     app.kubernetes.io/instance: berg
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: berg
-    app.kubernetes.io/version: 5.13.4
     component: api
-    helm.sh/chart: berg-5.13.4
   name: berg-api
   namespace: berg
 spec:
@@ -22,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 3efb64aae784d43f8c7679546310cf5dca158bdafba765d17a6a4d93d78e4512
+        checksum/config: 645167b9d15ed5b4a6360d4553c6e4e7dab6534e952b8075f5333c228901234d
       labels:
         app.kubernetes.io/instance: berg
         app.kubernetes.io/name: berg
@@ -34,6 +32,46 @@ spec:
               value: http://0.0.0.0:8080
             - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
               value: "true"
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: berg-db-app
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: berg-db-app
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: dbname
+                  name: berg-db-app
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: berg-db-app
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: berg-db-app
+            - name: discord__ClientId
+              valueFrom:
+                secretKeyRef:
+                  key: clientId
+                  name: berg-discord
+            - name: discord__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  key: clientSecret
+                  name: berg-discord
+            - name: discord__BotToken
+              valueFrom:
+                secretKeyRef:
+                  key: botToken
+                  name: berg-discord
           image: ghcr.io/norelect/berg/api:5.13.4
           imagePullPolicy: IfNotPresent
           name: berg-api
