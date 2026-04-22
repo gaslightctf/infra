@@ -46,12 +46,10 @@ in
                   existingSecret.name = "berg-discord";
 
                   notificationGuildId = guildId;
-                  playerGuildId = guildId;
                   authorGuildId = guildId;
                   adminGuildId = guildId;
 
                   notificationChannelId = "1485397056419004568";
-                  playerRoleId = "1496622099723194438";
                   authorRoleId = "1496622317147525321";
                   adminRoleId = "1469436808604680194";
                 };

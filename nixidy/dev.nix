@@ -16,9 +16,6 @@
         berg = {
           domain = lib.mkForce "play-dev.gaslightctf.cooking";
 
-          # TODO: testing
-          ctf.allowAnonymousAccess = lib.mkForce true;
-
           discord =
             let
               guildId = lib.mkForce "1217071243237265458";
