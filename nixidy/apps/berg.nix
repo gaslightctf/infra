@@ -8,7 +8,7 @@ let
 in
 {
   flake.modules.nixidy.berg =
-    { lib, ... }:
+    { lib, config, ... }:
     {
       applications.berg = {
         namespace = "berg";
@@ -33,7 +33,32 @@ in
               httpsListenerName = "websecure";
             };
 
+            frontend = {
+              enabled = false;
+              resources = {
+                limits = {
+                  cpu = "200m";
+                  memory = "64Mi";
+                };
+                requests = {
+                  cpu = "50m";
+                  memory = "32Mi";
+                };
+              };
+            };
+
             berg = {
+              resources = {
+                limits = {
+                  cpu = "1000m";
+                  memory = "1Gi";
+                };
+                requests = {
+                  cpu = "250m";
+                  memory = "300Mi";
+                };
+              };
+
               domain = "play.gaslightctf.cooking";
 
               postgresql.existingSecret.name = "berg-db-app";
@@ -59,7 +84,7 @@ in
                 eventOrganiser = "gaslightCTF";
                 eventLogoUrl = "https://gaslightctf.cooking/assets/gaslighticoncolor.png";
 
-                allowAnonymousAccess = false;
+                allowAnonymousAccess = true;
 
                 start = "2026-08-14T12:00:00Z";
                 end = "2026-08-17T12:00:00Z";
@@ -101,6 +126,39 @@ in
           instances = 3;
           storage.size = "15Gi";
         };
+
+        resources.horizontalPodAutoscalers =
+          let
+            mkSpec = name: {
+              minReplicas = 2;
+              maxReplicas = 10;
+
+              scaleTargetRef = {
+                apiVersion = "apps/v1";
+                kind = "Deployment";
+                inherit name;
+              };
+
+              metrics = [
+                {
+                  type = "Resource";
+                  resource = {
+                    name = "cpu";
+                    target = {
+                      type = "Utilization";
+                      averageUtilization = 70;
+                    };
+                  };
+                }
+              ];
+            };
+          in
+          {
+            berg-api.spec = mkSpec "berg-api";
+            berg-frontend = lib.mkIf config.applications.berg.helm.releases.berg.values.frontend.enabled {
+              spec = mkSpec "berg-frontend";
+            };
+          };
       };
     };
 

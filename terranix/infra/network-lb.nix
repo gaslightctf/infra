@@ -30,8 +30,6 @@ in
       port = 443;
       request_path = "/ping";
     };
-
-    log_config.enable = true;
   };
 
   resource.google_compute_region_backend_service = lib.mapAttrs' (name: port: {
