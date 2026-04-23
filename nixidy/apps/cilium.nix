@@ -37,8 +37,8 @@ in
             routingMode = "native";
             autoDirectNodeRoutes = false;
             endpointRoutes.enabled = true;
+            bpf.masquerade = true;
 
-            gke.enabled = true;
             nodeIPAM.enabled = true;
 
             operator.replicas = 2;
