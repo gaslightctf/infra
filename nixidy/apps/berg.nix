@@ -116,6 +116,68 @@ in
           };
         };
 
+        resources.httpRoutes.berg-api.spec.rules = lib.mkForce [
+          {
+            matches = [
+              {
+                path = {
+                  type = "PathPrefix";
+                  value = "/api";
+                };
+              }
+              {
+                path = {
+                  type = "PathPrefix";
+                  value = "/swagger";
+                };
+              }
+              {
+                path = {
+                  type = "Exact";
+                  value = "/.well-known/openid-configuration";
+                };
+              }
+              {
+                path = {
+                  type = "Exact";
+                  value = "/.well-known/jwks";
+                };
+              }
+            ];
+
+            backendRefs = [
+              {
+                kind = "Service";
+                name = "berg-api";
+                port = 80;
+              }
+            ];
+            filters = [
+              {
+                type = "ResponseHeaderModifier";
+                responseHeaderModifier.add = [
+                  {
+                    name = "Access-Control-Allow-Origin";
+                    value = "http://localhost:5000, https://frontend-dev-21w.pages.dev";
+                  }
+                  {
+                    name = "Access-Control-Allow-Headers";
+                    value = "Content-Type, Authorization";
+                  }
+                  {
+                    name = "Access-Control-Allow-Methods";
+                    value = "PUT, PATCH, DELETE";
+                  }
+                  {
+                    name = "Cache-Control";
+                    value = "no-store";
+                  }
+                ];
+              }
+            ];
+          }
+        ];
+
         resources.clusters.berg-db.spec = {
           instances = 3;
           storage.size = "15Gi";

@@ -7,11 +7,10 @@
       applications.berg.helm.releases.berg.values = {
         gateway.domain = lib.mkForce "play-dev.gaslightctf.cooking";
 
-
         berg = {
           domain = lib.mkForce "play-dev.gaslightctf.cooking";
 
-          ctf.allowAnonymousAccess = lib.mkForce false;
+          ctf.start = lib.mkForce "2026-04-25T22:22:30Z";
 
           discord =
             let
