@@ -2,21 +2,21 @@
   "eevee_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.19.242"
+    "value": "35.217.12.194"
   },
   "jolteon_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.58.198"
+    "value": "35.217.15.213"
   },
   "kanto_lb_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.44.100"
+    "value": "35.217.62.237"
   },
   "vaporeon_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.35.128"
+    "value": "35.217.26.12"
   }
 }

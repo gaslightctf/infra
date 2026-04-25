@@ -6,13 +6,13 @@ Host *
 
 Host dev-eevee
   User root
-  HostName 35.217.19.242
+  HostName 35.217.12.194
 
 Host dev-jolteon
   User root
-  HostName 35.217.58.198
+  HostName 35.217.15.213
 
 Host dev-vaporeon
   User root
-  HostName 35.217.35.128
+  HostName 35.217.26.12
 

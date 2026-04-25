@@ -3,7 +3,6 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: cnpg
-    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: cloudnative-pg
   name: cnpg-webhook-service
   namespace: cnpg

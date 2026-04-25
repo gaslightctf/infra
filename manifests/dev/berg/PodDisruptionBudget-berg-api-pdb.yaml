@@ -3,7 +3,6 @@ kind: PodDisruptionBudget
 metadata:
   labels:
     app.kubernetes.io/instance: berg
-    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: berg
     component: api
   name: berg-api-pdb

@@ -5,7 +5,6 @@ metadata:
     app: webhook
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: cert-manager
-    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: webhook
   name: cert-manager-webhook
   namespace: cert-manager
@@ -26,7 +25,6 @@ spec:
         app: webhook
         app.kubernetes.io/component: webhook
         app.kubernetes.io/instance: cert-manager
-        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: webhook
     spec:
       containers:

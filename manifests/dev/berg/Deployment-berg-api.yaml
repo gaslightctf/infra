@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: berg
-    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: berg
     component: api
   name: berg-api
@@ -20,7 +19,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 3f99bc8f57ff613c9ca24a93df7a8052096b86d5ba0305314a48cd0522d6d0a3
+        checksum/config: b5eb2367b9e393816dedc711c866c98c7335e258147384a557e3a734a3eb385a
       labels:
         app.kubernetes.io/instance: berg
         app.kubernetes.io/name: berg
@@ -72,18 +71,18 @@ spec:
                 secretKeyRef:
                   key: botToken
                   name: berg-discord
-          image: ghcr.io/norelect/berg/api:5.13.4
+          image: ghcr.io/norelect/berg/api:5.15.0
           imagePullPolicy: IfNotPresent
           name: berg-api
           ports:
             - containerPort: 8080
           resources:
             limits:
-              cpu: "2"
-              memory: 2Gi
+              cpu: 1000m
+              memory: 1Gi
             requests:
-              cpu: "0.2"
-              memory: 100Mi
+              cpu: 250m
+              memory: 300Mi
           volumeMounts:
             - mountPath: /app/appsettings.json
               name: appsettings
