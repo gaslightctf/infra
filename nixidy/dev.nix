@@ -1,17 +1,12 @@
-{ inputs, ... }:
 {
   flake.modules.nixidy.dev =
     { lib, ... }:
     {
       nixidy.target.rootPath = lib.mkForce "./manifests/dev";
 
-      applications.berg.helm.releases.berg.chart = lib.mkForce "${inputs.berg}/charts/berg";
       applications.berg.helm.releases.berg.values = {
         gateway.domain = lib.mkForce "play-dev.gaslightctf.cooking";
 
-        berg.image.tag = "5.13.4";
-        frontend.image.tag = "5.13.4";
-        handout.image.tag = "5.13.4";
 
         berg = {
           domain = lib.mkForce "play-dev.gaslightctf.cooking";
