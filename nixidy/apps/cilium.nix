@@ -16,12 +16,6 @@ in
             version = "1.19.3";
             chartHash = "sha256-rt3TlLpIMTLyN+DZFRpHItt7tadQ3k+BghkfwhI8Yaw=";
           };
-          transformer = map (
-            lib.kube.removeLabels [
-              "app.kubernetes.io/version"
-              "helm.sh/chart"
-            ]
-          );
 
           values = {
             kubeProxyReplacement = true;

@@ -30,12 +30,6 @@ in
 
         helm.releases.traefik = {
           chart = lib.helm.downloadHelmChart (mkChartAttrs pkgs);
-          transformer = map (
-            lib.kube.removeLabels [
-              "app.kubernetes.io/version"
-              "helm.sh/chart"
-            ]
-          );
 
           values = {
             # networking to :80 and :443 handled by Cilium Portmap
