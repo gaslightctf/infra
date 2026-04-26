@@ -21,6 +21,8 @@ in
             crds.enabled = true;
           };
         };
+
+        resources.clusterIssuers.cluster-selfsigned.spec.selfSigned = { };
       };
     };
 
@@ -35,6 +37,7 @@ in
             inherit chartAttrs;
 
             crds = [
+              "ClusterIssuer"
               "Issuer"
               "Certificate"
             ];

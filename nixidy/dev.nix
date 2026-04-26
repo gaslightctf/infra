@@ -30,9 +30,18 @@
         };
       };
 
-      applications.traefik.resources.certificates.play-gaslightctf-cooking.spec.dnsNames = lib.mkForce [
+      applications.traefik.resources.certificates.traefik-main.spec.dnsNames = lib.mkForce [
+        "argocd-dev.gaslightctf.cooking"
+
         "play-dev.gaslightctf.cooking"
         "*.play-dev.gaslightctf.cooking"
       ];
+
+      applications.argocd.helm.releases.argocd.values = {
+        global.domain = lib.mkForce "argocd-dev.gaslightctf.cooking";
+        server.httproute.hostnames = lib.mkForce [ "argocd-dev.gaslightctf.cooking" ];
+
+        global.logging.level = "debug";
+      };
     };
 }

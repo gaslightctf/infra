@@ -23,6 +23,19 @@ in
     ttl = 1;
   };
 
+  resource.cloudflare_dns_record.argocd = {
+    inherit
+      zone_id
+      content
+      type
+      ;
+
+    name = "argocd\${var.dns_record_suffix}";
+    proxied = true;
+    # managed by cf
+    ttl = 1;
+  };
+
   resource.cloudflare_dns_record.chall-root = {
     inherit
       zone_id

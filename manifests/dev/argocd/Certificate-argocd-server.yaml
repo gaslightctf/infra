@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  dnsNames:
+    - argocd-server.gaslightctf.local
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: cluster-selfsigned
+  secretName: argocd-server-tls

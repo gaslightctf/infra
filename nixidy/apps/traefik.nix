@@ -9,8 +9,8 @@ let
   mkChartAttrs = pkgs: {
     repo = "https://traefik.github.io/charts/";
     chart = "traefik";
-    version = "39.0.8";
-    chartHash = "sha256-oL9hQHwsjwnNW0zQ71b5gYWEEL3IWfgLgT3R0Jfl7nU=";
+    version = "40.0.0-rc.2";
+    chartHash = "sha256-F6YpdM0SXZy6ovQQH3AZKSFVNL7zoEPkULcAw+SfXFo=";
 
     extraFlags =
       # bash
@@ -81,7 +81,7 @@ in
                   certificateRefs = [
                     {
                       kind = "Secret";
-                      name = "play-gaslightctf-cooking-tls";
+                      name = "traefik-main-tls";
                     }
                   ];
                   mode = "Terminate";
@@ -166,10 +166,12 @@ in
           };
         };
 
-        resources.certificates.play-gaslightctf-cooking.spec = {
-          secretName = "play-gaslightctf-cooking-tls";
+        resources.certificates.traefik-main.spec = {
+          secretName = "traefik-main-tls";
           issuerRef.name = "letsencrypt-staging";
           dnsNames = [
+            "argocd.gaslightctf.cooking"
+
             "play.gaslightctf.cooking"
             "*.play.gaslightctf.cooking"
           ];

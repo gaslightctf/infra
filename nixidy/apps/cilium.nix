@@ -36,6 +36,11 @@ in
             nodeIPAM.enabled = true;
 
             operator.replicas = 2;
+
+            hubble = {
+              relay.enabled = true;
+              ui.enabled = true;
+            };
           };
         };
       };

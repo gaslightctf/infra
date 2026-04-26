@@ -4,6 +4,8 @@
     { lib, ... }:
     {
       imports = [
+        self.modules.nixidy.argocd
+
         self.modules.nixidy.cilium
         self.modules.nixidy.traefik
         self.modules.nixidy.cert-manager
