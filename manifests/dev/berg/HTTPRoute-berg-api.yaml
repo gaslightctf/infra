@@ -21,17 +21,11 @@ spec:
           name: berg-api
           port: 80
       filters:
-        - responseHeaderModifier:
-            add:
-              - name: Access-Control-Allow-Origin
-                value: http://localhost:5000, https://frontend-dev-21w.pages.dev
-              - name: Access-Control-Allow-Headers
-                value: Content-Type, Authorization
-              - name: Access-Control-Allow-Methods
-                value: PUT, PATCH, DELETE
-              - name: Cache-Control
-                value: no-store
-          type: ResponseHeaderModifier
+        - extensionRef:
+            group: traefik.io
+            kind: Middleware
+            name: berg-api
+          type: ExtensionRef
       matches:
         - path:
             type: PathPrefix

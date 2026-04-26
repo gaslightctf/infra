@@ -24,7 +24,7 @@ data:
         "challengeHttpListenerName": "https-chall",
         "challengeTlsListenerName": "tls-chall",
         "playerIdNamespace": "00000000-0000-0000-0000-000000000000",
-        "redirectUris": [],
+        "redirectUris": ["http://localhost:5000/frontend/oidc-callback","https://frontend-dev-21w.pages.dev/frontend/oidc-callback"],
         "postLogoutRedirectUris": [],
         "corsOrigins": [],
         "pullSecretName": "",

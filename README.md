@@ -1,5 +1,7 @@
 # infra
 
+![hackatime badge](https://hackatime.hackclub.com/api/v1/badge/U07EFCL1GDN/gaslightctf/infra)
+
 gaslightCTF infrastructure as code. Extremely overengineered (<3 Nix)
 
 Manages the following resources:
@@ -17,13 +19,14 @@ Manages the following resources:
   - [ ] monitoring
     - [ ] logs go somewhere
     - [ ] metrics go somewhere
-- `nixidy`
+- `nixidy/`
   - [ ] storage
     - [ ] CSI GCE PD driver
   - [x] cilium config
   - [x] Traefik config
-    - [ ] cert-manager
-  - [ ] [berg](https://github.com/NoRelect/berg) deployment
+    - [x] cert-manager
+  - [x] [berg](https://github.com/NoRelect/berg) deployment
+  - [ ] argocd config
 
 ## adding a new host
 

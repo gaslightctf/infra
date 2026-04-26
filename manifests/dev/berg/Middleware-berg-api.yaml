@@ -1,0 +1,20 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: berg-api
+  namespace: berg
+spec:
+  headers:
+    accessControlAllowHeaders:
+      - Content-Type
+      - Authorization
+    accessControlAllowMethods:
+      - PUT
+      - PATCH
+      - DELETE
+    accessControlAllowOriginListRegex:
+      - http://localhost:5000
+      - https://([\w-]+\.)?frontend-dev-21w\.pages\.dev
+    addVaryHeader: true
+    customResponseHeaders:
+      Cache-Control: no-store

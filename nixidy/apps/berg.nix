@@ -54,6 +54,10 @@ in
               };
 
               domain = "play.gaslightctf.cooking";
+              redirectUris = [
+                "http://localhost:5000/frontend/oidc-callback"
+                "https://frontend-dev-21w.pages.dev/frontend/oidc-callback"
+              ];
 
               postgresql.existingSecret.name = "berg-db-app";
 
@@ -154,29 +158,39 @@ in
             ];
             filters = [
               {
-                type = "ResponseHeaderModifier";
-                responseHeaderModifier.add = [
-                  {
-                    name = "Access-Control-Allow-Origin";
-                    value = "http://localhost:5000, https://frontend-dev-21w.pages.dev";
-                  }
-                  {
-                    name = "Access-Control-Allow-Headers";
-                    value = "Content-Type, Authorization";
-                  }
-                  {
-                    name = "Access-Control-Allow-Methods";
-                    value = "PUT, PATCH, DELETE";
-                  }
-                  {
-                    name = "Cache-Control";
-                    value = "no-store";
-                  }
-                ];
+                type = "ExtensionRef";
+                extensionRef = {
+                  group = "traefik.io";
+                  kind = "Middleware";
+                  name = "berg-api";
+                };
               }
             ];
           }
         ];
+
+        resources.middlewares.berg-api.spec = {
+          headers = {
+            accessControlAllowMethods = [
+              "PUT"
+              "PATCH"
+              "DELETE"
+            ];
+            accessControlAllowHeaders = [
+              "Content-Type"
+              "Authorization"
+            ];
+            accessControlAllowOriginListRegex = [
+              "http://localhost:5000"
+              "https://([\\w-]+\\.)?frontend-dev-21w\\.pages\\.dev"
+            ];
+            addVaryHeader = true;
+
+            customResponseHeaders = {
+              "Cache-Control" = "no-store";
+            };
+          };
+        };
 
         resources.clusters.berg-db.spec = {
           instances = 3;
