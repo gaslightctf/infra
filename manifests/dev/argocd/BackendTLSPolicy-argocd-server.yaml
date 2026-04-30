@@ -6,8 +6,9 @@ metadata:
 spec:
   targetRefs:
     - group: ""
-      kind: HTTPRoute
+      kind: Service
       name: argocd-server
+      sectionName: https
   validation:
     caCertificateRefs:
       - group: ""

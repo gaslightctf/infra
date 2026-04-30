@@ -1,6 +1,12 @@
 { self, ... }:
 let
   ips = import "${self}/data/ips.nix";
+
+  certManagerIssuerRef = {
+    kind = "ClusterIssuer";
+    group = "cert-manager.io";
+    name = "cluster-selfsigned";
+  };
 in
 {
   flake.modules.nixidy.cilium =
@@ -37,9 +43,19 @@ in
 
             operator.replicas = 2;
 
+            clustermesh.apiserver.tls.auto = {
+              method = "certmanager";
+              inherit certManagerIssuerRef;
+            };
+
             hubble = {
               relay.enabled = true;
               ui.enabled = true;
+
+              tls.auto = {
+                method = "certmanager";
+                inherit certManagerIssuerRef;
+              };
             };
           };
         };

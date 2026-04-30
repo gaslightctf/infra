@@ -82,10 +82,7 @@ rules:
       - ""
     resources:
       - namespaces
-      - secrets
-      - configmaps
     verbs:
-      - get
       - list
       - watch
   - apiGroups:
