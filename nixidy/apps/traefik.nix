@@ -144,6 +144,28 @@ in
           };
         };
 
+        resources.gateways.traefik-gateway.spec = {
+          tls.frontend.perPort = [
+            {
+              port = 443;
+              tls.validation.caCertificateRefs = [
+                {
+                  group = "";
+                  kind = "ConfigMap";
+                  name = "cf-global-aop-ca-cert";
+                }
+              ];
+            }
+          ];
+        };
+
+        resources.configMaps.cf-global-aop-ca-cert.data."ca.crt" =
+          builtins.readFile
+          <| pkgs.fetchurl {
+            url = "https://developers.cloudflare.com/ssl/static/authenticated_origin_pull_ca.pem";
+            hash = "sha256-wU/tDOUhDbBxn+oR0fELM3UNwX1gmur0fHXp7/DXuEM";
+          };
+
         resources.issuers.letsencrypt-staging.spec = {
           acme = {
             email = "acme@gaslightctf.cooking";

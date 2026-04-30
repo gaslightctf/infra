@@ -54,3 +54,14 @@ spec:
           - kind: Secret
             name: traefik-main-tls
         mode: Terminate
+  tls:
+    frontend:
+      default: {}
+      perPort:
+        - port: 443
+          tls:
+            validation:
+              caCertificateRefs:
+                - group: ""
+                  kind: ConfigMap
+                  name: cf-global-aop-ca-cert
