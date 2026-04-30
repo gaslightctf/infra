@@ -11,6 +11,7 @@
           domain = lib.mkForce "play-dev.gaslightctf.cooking";
 
           ctf.start = lib.mkForce "2026-04-25T22:22:30Z";
+          ctf.allowAnonymousAccess = lib.mkForce false;
 
           discord =
             let

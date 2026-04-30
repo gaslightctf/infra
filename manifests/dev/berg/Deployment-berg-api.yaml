@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 88ec38ab8a3d975dfa794c938e816343525f888622c137972680a9b1544a39c6
+        checksum/config: 9fd7f3f277a36e1edf31d9b4bf79f59140b0bf6635422dded323a700fcad35e8
       labels:
         app.kubernetes.io/instance: berg
         app.kubernetes.io/name: berg
