@@ -27,19 +27,7 @@ in
               httpsListenerName = "websecure";
             };
 
-            frontend = {
-              enabled = false;
-              resources = {
-                limits = {
-                  cpu = "200m";
-                  memory = "64Mi";
-                };
-                requests = {
-                  cpu = "50m";
-                  memory = "32Mi";
-                };
-              };
-            };
+            frontend.enabled = false;
 
             berg = {
               resources = {
@@ -197,38 +185,31 @@ in
           storage.size = "15Gi";
         };
 
-        resources.horizontalPodAutoscalers =
-          let
-            mkSpec = name: {
-              minReplicas = 2;
-              maxReplicas = 10;
+        resources.deployments.berg-api.spec.replicas = lib.mkForce null;
 
-              scaleTargetRef = {
-                apiVersion = "apps/v1";
-                kind = "Deployment";
-                inherit name;
-              };
+        resources.horizontalPodAutoscalers.berg-api.spec = {
+          minReplicas = 2;
+          maxReplicas = 10;
 
-              metrics = [
-                {
-                  type = "Resource";
-                  resource = {
-                    name = "cpu";
-                    target = {
-                      type = "Utilization";
-                      averageUtilization = 70;
-                    };
-                  };
-                }
-              ];
-            };
-          in
-          {
-            berg-api.spec = mkSpec "berg-api";
-            berg-frontend = lib.mkIf config.applications.berg.helm.releases.berg.values.frontend.enabled {
-              spec = mkSpec "berg-frontend";
-            };
+          scaleTargetRef = {
+            apiVersion = "apps/v1";
+            kind = "Deployment";
+            name = "berg-api";
           };
+
+          metrics = [
+            {
+              type = "Resource";
+              resource = {
+                name = "cpu";
+                target = {
+                  type = "Utilization";
+                  averageUtilization = 70;
+                };
+              };
+            }
+          ];
+        };
       };
     };
 

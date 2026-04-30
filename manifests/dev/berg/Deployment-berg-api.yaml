@@ -8,7 +8,6 @@ metadata:
   name: berg-api
   namespace: berg
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/instance: berg
