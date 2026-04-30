@@ -35,10 +35,19 @@
           };
 
           helm.transformer = map (
-            lib.kube.removeLabels [
-              "app.kubernetes.io/managed-by"
-              "app.kubernetes.io/version"
-              "helm.sh/chart"
+            (lib.flip lib.pipe) [
+              (lib.kube.removeLabels [
+                "app.kubernetes.io/managed-by"
+                "app.kubernetes.io/version"
+                "helm.sh/chart"
+              ])
+              (
+                m:
+                lib.recursiveUpdate m
+                <| lib.optionalAttrs (m.kind == "CustomResourceDefinition") {
+                  metadata.annotations."argocd.argoproj.io/sync-options" = "ServerSideApply=true";
+                }
+              )
             ]
           );
         };
