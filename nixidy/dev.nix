@@ -40,8 +40,9 @@
       applications.argocd.helm.releases.argocd.values = {
         global.domain = lib.mkForce "argocd-dev.gaslightctf.cooking";
         server.httproute.hostnames = lib.mkForce [ "argocd-dev.gaslightctf.cooking" ];
-
-        global.logging.level = "debug";
       };
+
+      applications.apps.resources.applications.challs-2026.spec.source.targetRevision =
+        lib.mkForce "master";
     };
 }

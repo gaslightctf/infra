@@ -72,5 +72,5 @@ just fetch-kubeconfig
 screen -dm just forward-kubectl
 
 patch-pod-cidrs
-nixidy apply .#dev
+nixidy bootstrap .#dev | kubectl apply -f-
 ```

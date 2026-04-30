@@ -1,16 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: challs-2026
   namespace: argocd
 spec:
   destination:
-    namespace: cert-manager
+    namespace: berg
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./manifests/dev/cert-manager
-    repoURL: https://github.com/gaslightctf/infra.git
+    directory:
+      exclude: template/**/*
+      recurse: true
+    path: .
+    repoURL: https://github.com/gaslightctf/challs-2026.git
     targetRevision: master
   syncPolicy:
     automated:

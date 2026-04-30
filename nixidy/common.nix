@@ -12,22 +12,36 @@
 
         self.modules.nixidy.cnpg
         self.modules.nixidy.berg
+
+        self.modules.nixidy.challs-2026
       ];
 
-      nixidy.target = {
-        repository = "https://github.com/gaslightctf/infra.git";
-        branch = "master";
+      nixidy = {
+        target = {
+          repository = "https://github.com/gaslightctf/infra.git";
+          branch = "master";
 
-        # overriden in dev.nix
-        rootPath = "./manifests/prod";
+          # overriden in dev.nix
+          rootPath = "./manifests/prod";
+        };
+
+        defaults = {
+          syncPolicy = {
+            autoSync = {
+              enable = true;
+              prune = true;
+              selfHeal = true;
+            };
+          };
+
+          helm.transformer = map (
+            lib.kube.removeLabels [
+              "app.kubernetes.io/managed-by"
+              "app.kubernetes.io/version"
+              "helm.sh/chart"
+            ]
+          );
+        };
       };
-
-      nixidy.defaults.helm.transformer = map (
-        lib.kube.removeLabels [
-          "app.kubernetes.io/managed-by"
-          "app.kubernetes.io/version"
-          "helm.sh/chart"
-        ]
-      );
     };
 }
