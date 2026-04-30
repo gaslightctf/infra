@@ -46,6 +46,10 @@ in
                 "http://localhost:5000/frontend/oidc-callback"
                 "https://frontend-dev-21w.pages.dev/frontend/oidc-callback"
               ];
+              postLogoutRedirectUris = [
+                "http://localhost:5000"
+                "https://frontend-dev-21w.pages.dev"
+              ];
 
               postgresql.existingSecret.name = "berg-db-app";
 

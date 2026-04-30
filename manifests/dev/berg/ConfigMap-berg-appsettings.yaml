@@ -25,7 +25,7 @@ data:
         "challengeTlsListenerName": "tls-chall",
         "playerIdNamespace": "00000000-0000-0000-0000-000000000000",
         "redirectUris": ["http://localhost:5000/frontend/oidc-callback","https://frontend-dev-21w.pages.dev/frontend/oidc-callback"],
-        "postLogoutRedirectUris": [],
+        "postLogoutRedirectUris": ["http://localhost:5000","https://frontend-dev-21w.pages.dev"],
         "corsOrigins": [],
         "pullSecretName": "",
         "challengeImagePullPolicy": "Always",
