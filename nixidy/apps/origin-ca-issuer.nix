@@ -21,7 +21,6 @@ in
     {
       applications.origin-ca-issuer = {
         namespace = "cert-manager";
-        createNamespace = true;
 
         helm.releases.origin-ca-issuer = {
           chart = lib.helm.downloadHelmChart chartAttrs;
