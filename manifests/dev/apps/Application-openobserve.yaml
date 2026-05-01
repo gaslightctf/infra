@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openobserve
+  namespace: argocd
+spec:
+  destination:
+    namespace: openobserve
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: ./manifests/dev/openobserve
+    repoURL: https://github.com/gaslightctf/infra.git
+    targetRevision: master
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

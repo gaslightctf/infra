@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/instance: openobserve
+    app.kubernetes.io/name: openobserve-standalone
+  name: openobserve-openobserve-standalone
+  namespace: openobserve
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: openobserve
+      app.kubernetes.io/name: openobserve-standalone
+  serviceName: openobserve-openobserve-standalone-headless
+  template:
+    metadata:
+      annotations:
+        checksum/config: 608eeb826b26ce3014ecf88ee84a8616765487662c33f424ca5cded99988db21
+      labels:
+        app.kubernetes.io/component: openobserve
+        app.kubernetes.io/instance: openobserve
+        app.kubernetes.io/name: openobserve-standalone
+    spec:
+      containers:
+        - env:
+            - name: ZO_ROOT_USER_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: ZO_ROOT_USER_EMAIL
+                  name: openobserve-root-user
+            - name: ZO_ROOT_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: ZO_ROOT_USER_PASSWORD
+                  name: openobserve-root-user
+            - name: ZO_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: ZO_S3_ACCESS_KEY
+                  name: openobserve-s3
+            - name: ZO_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: ZO_S3_SECRET_KEY
+                  name: openobserve-s3
+            - name: ZO_S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: ZO_S3_BUCKET_NAME
+                  name: openobserve-s3
+          envFrom:
+            - configMapRef:
+                name: openobserve-openobserve-standalone
+            - secretRef:
+                name: openobserve-openobserve-standalone
+          image: o2cr.ai/openobserve/openobserve:v0.80.2
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 5080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          name: openobserve-standalone
+          ports:
+            - containerPort: 5080
+              name: http
+            - containerPort: 5081
+              name: grpc
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 5080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources: {}
+          securityContext: {}
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      securityContext:
+        fsGroup: 2000
+        runAsGroup: 3000
+        runAsNonRoot: true
+        runAsUser: 10000
+      serviceAccountName: openobserve-openobserve-standalone
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi

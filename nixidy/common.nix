@@ -10,6 +10,8 @@
         self.modules.nixidy.traefik
         self.modules.nixidy.cert-manager
 
+        self.modules.nixidy.openobserve
+
         self.modules.nixidy.cnpg
         self.modules.nixidy.berg
 
