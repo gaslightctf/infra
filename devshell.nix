@@ -76,7 +76,7 @@
             help = "Run tofu with the dev config";
             category = "tofu";
             command = ''
-              nix run .#dev -- $@
+              NIX_CONFIG="substitute = false" nix run .#dev -- $@
             '';
           }
           {
@@ -84,7 +84,7 @@
             help = "Run tofu with the prod config";
             category = "tofu";
             command = ''
-              nix run .#prod -- $@
+              NIX_CONFIG="substitute = false" nix run .#prod -- $@
             '';
           }
 

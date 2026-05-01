@@ -7,7 +7,7 @@ let
   };
 in
 {
-  flake.modules.nixidy.openobserve =
+  flake.modules.nixidy.observability =
     { lib, config, ... }:
     {
       applications.openobserve = {
@@ -27,11 +27,13 @@ in
                 (name: {
                   inherit name;
                   valueFrom.secretKeyRef = {
-                    name = "openobserve-s3";
+                    name = "openobserve-env";
                     key = name;
                   };
                 })
                 [
+                  "ZO_ROOT_USER_TOKEN"
+
                   "ZO_S3_ACCESS_KEY"
                   "ZO_S3_SECRET_KEY"
                   "ZO_S3_BUCKET_NAME"

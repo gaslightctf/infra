@@ -39,9 +39,9 @@ Manages the following resources:
 ```sh
 tofu-dev init
 tofu-dev apply -concise
-just sync
-# apply with new ssh keys
-colmena apply --on @dev
+
+# update ./secrets/dev/k8s/observability.yaml
+tofu-dev state show -show-sensitive google_storage_hmac_key.openobserve
 ```
 
 ## nixidy

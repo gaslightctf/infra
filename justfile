@@ -6,7 +6,7 @@ sync env="dev": && sync-sops
     fetch-host-keys $PRJ_ROOT/data/tf-output/{{env}}.json | tee $PRJ_ROOT/data/keys.{{env}}.nix
 
 sync-sops:
-    nix develop -c "write-files"
+    NIX_CONFIG="substitute = false" nix develop -c "write-files"
     find secrets -type f | xargs sops updatekeys -yes
 
 ssh host *FLAGS:
@@ -24,10 +24,10 @@ inspect-tree dir:
     eza -Tla --git --follow-symlinks {{dir}}
 
 build-nixidy env="dev": && (inspect-tree "result")
-    nixidy build .#{{env}}
+    NIX_CONFIG="substitute = false" nixidy build .#{{env}}
 
 switch-nixidy env="dev": && (inspect-tree "manifests/dev")
-    nixidy switch .#{{env}}
+    NIX_CONFIG="substitute = false" nixidy switch .#{{env}}
 
 diff-nixidy env="dev": (build-nixidy env)
     diff -Nur manifests/{{env}} result | delta

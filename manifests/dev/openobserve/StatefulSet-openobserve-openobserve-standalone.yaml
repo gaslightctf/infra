@@ -34,21 +34,26 @@ spec:
                 secretKeyRef:
                   key: ZO_ROOT_USER_PASSWORD
                   name: openobserve-root-user
+            - name: ZO_ROOT_USER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: ZO_ROOT_USER_TOKEN
+                  name: openobserve-env
             - name: ZO_S3_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   key: ZO_S3_ACCESS_KEY
-                  name: openobserve-s3
+                  name: openobserve-env
             - name: ZO_S3_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   key: ZO_S3_SECRET_KEY
-                  name: openobserve-s3
+                  name: openobserve-env
             - name: ZO_S3_BUCKET_NAME
               valueFrom:
                 secretKeyRef:
                   key: ZO_S3_BUCKET_NAME
-                  name: openobserve-s3
+                  name: openobserve-env
           envFrom:
             - configMapRef:
                 name: openobserve-openobserve-standalone
