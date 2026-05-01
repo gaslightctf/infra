@@ -12,9 +12,9 @@ spec:
       - PUT
       - PATCH
       - DELETE
-    accessControlAllowOriginListRegex:
+    accessControlAllowOriginList:
       - http://localhost:5000
-      - https://([\w-]+\.)?frontend-dev-21w\.pages\.dev
+      - https://play-dev.gaslightctf.cooking
     addVaryHeader: true
     customResponseHeaders:
       Cache-Control: no-store

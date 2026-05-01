@@ -8,7 +8,7 @@ let
 in
 {
   flake.modules.nixidy.argocd =
-    { lib, ... }:
+    { lib, config, ... }:
     {
       applications.argocd = {
         namespace = "argocd";
@@ -68,6 +68,12 @@ in
             hostname = "argocd-server.gaslightctf.local";
           };
         };
+      };
+
+      traefik.certs.argocd = {
+        secretName = "argocd-tls";
+        issuerRef = config.traefik.issuerRefs.cf;
+        dnsNames = [ "argocd.gaslightctf.cooking" ];
       };
     };
 }

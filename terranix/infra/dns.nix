@@ -1,8 +1,5 @@
 { lib, ... }:
 let
-  zone_id = lib.tfRef "var.cf_zone_id";
-  content = lib.tfRef "google_compute_address.kanto-lb.address";
-  type = "A";
 in
 {
   vars.cf_zone_id = { };
@@ -10,55 +7,43 @@ in
     sensitive = false;
   };
 
-  resource.cloudflare_dns_record.play = {
-    inherit
-      zone_id
-      content
-      type
-      ;
+  resource.cloudflare_dns_record =
+    builtins.mapAttrs
+      (
+        n:
+        {
+          name,
+          proxied ? false,
+        }:
+        {
+          inherit proxied;
+          name = "${name}\${var.dns_record_suffix}";
 
-    name = "play\${var.dns_record_suffix}";
-    proxied = true;
-    # managed by cf
-    ttl = 1;
-  };
+          zone_id = lib.tfRef "var.cf_zone_id";
+          content = lib.tfRef "google_compute_address.kanto-lb.address";
+          type = "A";
 
-  resource.cloudflare_dns_record.argocd = {
-    inherit
-      zone_id
-      content
-      type
-      ;
+          ttl = if proxied then 1 else 10 * 60;
+        }
+      )
+      {
+        api = {
+          name = "api";
+          proxied = true;
+        };
 
-    name = "argocd\${var.dns_record_suffix}";
-    proxied = true;
-    # managed by cf
-    ttl = 1;
-  };
+        argocd = {
+          name = "argocd";
+          proxied = true;
+        };
 
-  resource.cloudflare_dns_record.chall-root = {
-    inherit
-      zone_id
-      content
-      type
-      ;
+        openobserve = {
+          name = "openobserve";
+          proxied = true;
+        };
 
-    name = "chall\${var.dns_record_suffix}";
-    proxied = false;
-    # 10 mins
-    ttl = 10 * 60;
-  };
-
-  resource.cloudflare_dns_record.chall-wildcard = {
-    inherit
-      zone_id
-      content
-      type
-      ;
-
-    name = "*.chall\${var.dns_record_suffix}";
-    proxied = false;
-    # 10 mins
-    ttl = 10 * 60;
-  };
+        play-wildcard = {
+          name = "*.play";
+        };
+      };
 }

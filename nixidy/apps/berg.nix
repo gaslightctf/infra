@@ -41,14 +41,12 @@ in
                 };
               };
 
-              domain = "play.gaslightctf.cooking";
+              domain = "api.gaslightctf.cooking";
               redirectUris = [
-                "http://localhost:5000/frontend/oidc-callback"
-                "https://frontend-dev-21w.pages.dev/frontend/oidc-callback"
+                "https://play.gaslightctf.cooking/frontend/oidc-callback"
               ];
               postLogoutRedirectUris = [
-                "http://localhost:5000"
-                "https://frontend-dev-21w.pages.dev"
+                "https://play.gaslightctf.cooking"
               ];
 
               postgresql.existingSecret.name = "berg-db-app";
@@ -172,9 +170,8 @@ in
               "Content-Type"
               "Authorization"
             ];
-            accessControlAllowOriginListRegex = [
-              "http://localhost:5000"
-              "https://([\\w-]+\\.)?frontend-dev-21w\\.pages\\.dev"
+            accessControlAllowOriginList = [
+              "https://play.gaslightctf.cooking"
             ];
             addVaryHeader = true;
 
@@ -214,6 +211,18 @@ in
             }
           ];
         };
+      };
+
+      traefik.certs.berg-api = {
+        secretName = "berg-api-tls";
+        issuerRef = config.traefik.issuerRefs.cf;
+        dnsNames = [ "api.gaslightctf.cooking" ];
+      };
+
+      traefik.certs.berg-play = {
+        secretName = "berg-play-tls";
+        issuerRef = config.traefik.issuerRefs.letsencrypt;
+        dnsNames = [ "*.play.gaslightctf.cooking" ];
       };
     };
 

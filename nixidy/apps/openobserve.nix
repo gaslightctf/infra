@@ -8,7 +8,7 @@ let
 in
 {
   flake.modules.nixidy.openobserve =
-    { lib, ... }:
+    { lib, config, ... }:
     {
       applications.openobserve = {
         namespace = "openobserve";
@@ -48,6 +48,12 @@ in
             };
           };
         };
+      };
+
+      traefik.certs.openobserve = {
+        secretName = "openobserve-tls";
+        issuerRef = config.traefik.issuerRefs.cf;
+        dnsNames = [ "openobserve.gaslightctf.cooking" ];
       };
     };
 }

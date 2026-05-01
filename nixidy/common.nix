@@ -7,8 +7,10 @@
         self.modules.nixidy.argocd
 
         self.modules.nixidy.cilium
-        self.modules.nixidy.traefik
+
         self.modules.nixidy.cert-manager
+        self.modules.nixidy.origin-ca-issuer
+        self.modules.nixidy.traefik
 
         self.modules.nixidy.openobserve
 

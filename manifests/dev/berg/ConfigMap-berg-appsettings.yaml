@@ -5,7 +5,7 @@ data:
       "Logging": {
         "LogLevel": {"Default":"Information","Microsoft.AspNetCore":"Warning","Microsoft.EntityFrameworkCore.Database":"Warning","OpenIddict":"Warning","Quartz":"Warning","System.Net.Http.HttpClient.OpenIddict":"Warning"}
       },
-      "AllowedHosts": "play-dev.gaslightctf.cooking",
+      "AllowedHosts": "api-dev.gaslightctf.cooking",
       "RateLimiting": {
         "ReplenishmentPeriod": "0.00:00:15",
         "TokensPerPeriod": 1,
@@ -16,7 +16,7 @@ data:
       },
       "infra": {
         "challengeDomain": "play-dev.gaslightctf.cooking",
-        "platformDomain": "play-dev.gaslightctf.cooking",
+        "platformDomain": "api-dev.gaslightctf.cooking",
         "gatewayName": "traefik-gateway",
         "gatewayNamespace": "traefik",
         "challengeHttpPort": 1337,
@@ -24,8 +24,8 @@ data:
         "challengeHttpListenerName": "https-chall",
         "challengeTlsListenerName": "tls-chall",
         "playerIdNamespace": "00000000-0000-0000-0000-000000000000",
-        "redirectUris": ["http://localhost:5000/frontend/oidc-callback","https://frontend-dev-21w.pages.dev/frontend/oidc-callback"],
-        "postLogoutRedirectUris": ["http://localhost:5000","https://frontend-dev-21w.pages.dev"],
+        "redirectUris": ["http://localhost:5000/frontend/oidc-callback","https://play-dev.gaslightctf.cooking/frontend/oidc-callback"],
+        "postLogoutRedirectUris": ["http://localhost:5000","https://play-dev.gaslightctf.cooking"],
         "corsOrigins": [],
         "pullSecretName": "",
         "challengeImagePullPolicy": "Always",

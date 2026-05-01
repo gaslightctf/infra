@@ -1,0 +1,86 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: origin-ca-issuer
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: origin-ca-issuer
+    app.kubernetes.io/name: origin-ca-issuer
+  name: origin-ca-issuer-controller
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cert-manager.io
+    resources:
+      - certificaterequests
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cert-manager.io
+    resources:
+      - certificaterequests/status
+    verbs:
+      - patch
+  - apiGroups:
+      - cert-manager.k8s.cloudflare.com
+    resources:
+      - originissuers
+      - clusteroriginissuers
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - cert-manager.k8s.cloudflare.com
+    resources:
+      - originissuers/status
+      - clusteroriginissuers/status
+    verbs:
+      - patch
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests/status
+    verbs:
+      - patch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - update
+  - apiGroups:
+      - certificates.k8s.io
+    resourceNames:
+      - clusteroriginissuers.cert-manager.k8s.cloudflare.com/*
+      - originissuers.cert-manager.k8s.cloudflare.com/*
+    resources:
+      - signers
+    verbs:
+      - sign

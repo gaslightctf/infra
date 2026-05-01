@@ -8,7 +8,7 @@ metadata:
   namespace: berg
 spec:
   hostnames:
-    - play-dev.gaslightctf.cooking
+    - api-dev.gaslightctf.cooking
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway

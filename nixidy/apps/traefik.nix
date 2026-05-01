@@ -22,9 +22,37 @@ let
 in
 {
   flake.modules.nixidy.traefik =
-    { pkgs, lib, ... }:
     {
-      applications.traefik = {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    {
+      options.traefik = {
+        issuerRefs = {
+          letsencrypt = lib.mkOption {
+            type = lib.types.attrsOf lib.types.str;
+            default = {
+              name = "letsencrypt";
+            };
+          };
+          cf = lib.mkOption {
+            type = lib.types.attrsOf lib.types.str;
+            default = {
+              group = "cert-manager.k8s.cloudflare.com";
+              kind = "OriginIssuer";
+              name = "cf-issuer";
+            };
+          };
+        };
+
+        certs = lib.mkOption {
+          type = lib.types.attrsOf lib.types.anything;
+        };
+      };
+
+      config.applications.traefik = {
         namespace = "traefik";
         createNamespace = true;
 
@@ -78,12 +106,12 @@ in
                     from = "All";
                   };
 
-                  certificateRefs = [
-                    {
+                  certificateRefs =
+                    map (c: {
                       kind = "Secret";
-                      name = "traefik-main-tls";
-                    }
-                  ];
+                      name = c.secretName;
+                    })
+                    <| builtins.attrValues config.traefik.certs;
                   mode = "Terminate";
                 in
                 {
@@ -159,6 +187,8 @@ in
           ];
         };
 
+        resources.certificates = builtins.mapAttrs (n: v: { spec = v; }) config.traefik.certs;
+
         resources.configMaps.cf-global-aop-ca-cert.data."ca.crt" =
           builtins.readFile
           <| pkgs.fetchurl {
@@ -166,7 +196,7 @@ in
             hash = "sha256-wU/tDOUhDbBxn+oR0fELM3UNwX1gmur0fHXp7/DXuEM";
           };
 
-        resources.issuers.letsencrypt-staging.spec = {
+        resources.issuers.letsencrypt.spec = {
           acme = {
             email = "acme@gaslightctf.cooking";
             profile = "tlsserver";
@@ -188,15 +218,12 @@ in
           };
         };
 
-        resources.certificates.traefik-main.spec = {
-          secretName = "traefik-main-tls";
-          issuerRef.name = "letsencrypt-staging";
-          dnsNames = [
-            "argocd.gaslightctf.cooking"
-
-            "play.gaslightctf.cooking"
-            "*.play.gaslightctf.cooking"
-          ];
+        resources.originIssuers.cf-issuer.spec = {
+          requestType = "OriginECC";
+          auth.tokenRef = {
+            name = "cf-api-token";
+            key = "cf-api-token";
+          };
         };
       };
     };
