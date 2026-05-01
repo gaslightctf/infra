@@ -60,6 +60,10 @@
         server.httproute.hostnames = lib.mkForce [ "argocd-dev.gaslightctf.cooking" ];
       };
 
+      applications.openobserve.resources.httpRoutes.openobserve.spec.hostnames = lib.mkForce [
+        "openobserve-dev.gaslightctf.cooking"
+      ];
+
       applications.apps.resources.applications.challs-2026.spec.source.targetRevision =
         lib.mkForce "master";
     };

@@ -48,6 +48,30 @@ in
             };
           };
         };
+
+        resources.httpRoutes.openobserve.spec = {
+          hostnames = [ "openobserve.gaslightctf.cooking" ];
+          parentRefs = [
+            {
+              name = "traefik-gateway";
+              namespace = "traefik";
+              sectionName = "websecure";
+            }
+          ];
+
+          rules = [
+            {
+              backendRefs = [
+                {
+                  group = "";
+                  kind = "Service";
+                  name = "openobserve-openobserve-standalone";
+                  port = 5080;
+                }
+              ];
+            }
+          ];
+        };
       };
 
       traefik.certs.openobserve = {
