@@ -1,12 +1,6 @@
 { self, ... }:
 let
   ips = import "${self}/data/ips.nix";
-
-  certManagerIssuerRef = {
-    kind = "ClusterIssuer";
-    group = "cert-manager.io";
-    name = "cluster-selfsigned";
-  };
 in
 {
   flake.modules.nixidy.cilium =
@@ -43,21 +37,39 @@ in
 
             operator.replicas = 2;
 
-            clustermesh.apiserver.tls.auto = {
-              method = "certmanager";
-              inherit certManagerIssuerRef;
-            };
-
             hubble = {
               relay.enabled = true;
               ui.enabled = true;
 
               tls.auto = {
                 method = "certmanager";
-                inherit certManagerIssuerRef;
+
+                certManagerIssuerRef = {
+                  kind = "Issuer";
+                  group = "cert-manager.io";
+                  name = "cilium-issuer";
+                };
               };
             };
           };
+        };
+
+        resources.certificates.cilium-ca.spec = {
+          isCA = true;
+          commonName = "cilium-ca";
+          secretName = "cilium-ca";
+          privateKey = {
+            algorithm = "ECDSA";
+            size = 256;
+          };
+          issuerRef = {
+            kind = "ClusterIssuer";
+            group = "cert-manager.io";
+            name = "cluster-selfsigned";
+          };
+        };
+        resources.issuers.cilium-issuer.spec = {
+          ca.secretName = "cilium-ca";
         };
       };
     };
