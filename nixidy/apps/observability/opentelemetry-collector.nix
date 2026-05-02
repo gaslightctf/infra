@@ -29,14 +29,20 @@ in
 
             config = {
               exporters.otlp_http = {
-                endpoint = "http://openobserve-openobserve-standalone.openobserve.svc.cluster.local:5080/api/gaslightctf";
+                endpoint = "http://openobserve-openobserve-standalone.openobserve.svc.cluster.local:5080/api/default";
 
                 headers.Authorization = "Basic \${env:OPENOBSERVE_TOKEN}";
               };
+
               service.pipelines = {
                 logs.exporters = [ "otlp_http" ];
                 metrics.exporters = [ "otlp_http" ];
+                traces.exporters = [ "otlp_http" ];
               };
+
+              receivers.file_log.exclude = [
+                "/var/log/pods/*/openobserve-standalone/*.log"
+              ];
             };
 
             extraEnvs = [

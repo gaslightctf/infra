@@ -4,7 +4,7 @@ data:
     exporters:
       debug: {}
       otlp_http:
-        endpoint: http://openobserve-openobserve-standalone.openobserve.svc.cluster.local:5080/api/gaslightctf
+        endpoint: http://openobserve-openobserve-standalone.openobserve.svc.cluster.local:5080/api/default
         headers:
           Authorization: Basic ${env:OPENOBSERVE_TOKEN}
     extensions:
@@ -60,6 +60,9 @@ data:
         limit_percentage: 80
         spike_limit_percentage: 25
     receivers:
+      file_log:
+        exclude:
+        - /var/log/pods/*/openobserve-standalone/*.log
       filelog:
         exclude:
         - /var/log/pods/opentelemetry_opentelemetry-collector*_*/opentelemetry-collector/*.log
@@ -181,7 +184,7 @@ data:
           - k8s_cluster
         traces:
           exporters:
-          - debug
+          - otlp_http
           processors:
           - k8sattributes
           - memory_limiter
