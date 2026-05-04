@@ -71,6 +71,9 @@ in
                 filelog.exclude = [
                   "/var/log/pods/opentelemetry_opentelemetry-collector*_*/opentelemetry-collector/*.log"
                   "/var/log/pods/openobserve_openobserve-openobserve-standalone*/openobserve-standalone/*.log"
+
+                  # berg submits its own logs through OTLP
+                  "/var/log/pods/berg_berg-api*/berg-api/*.log"
                 ];
 
                 kubeletstats = {

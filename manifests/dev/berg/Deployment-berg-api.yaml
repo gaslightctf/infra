@@ -70,6 +70,16 @@ spec:
                 secretKeyRef:
                   key: botToken
                   name: berg-discord
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: infra__openTelemetryGrpcTracingEndpoint
+              value: http://$(NODE_IP):4317
+            - name: infra__openTelemetryGrpcMetricsEndpoint
+              value: http://$(NODE_IP):4317
+            - name: infra__openTelemetryGrpcLoggingEndpoint
+              value: http://$(NODE_IP):4317
           image: ghcr.io/bergctf/platform/api:5.15.2
           imagePullPolicy: IfNotPresent
           name: berg-api

@@ -40,6 +40,25 @@ in
                   memory = "300Mi";
                 };
               };
+              extraEnv = [
+                {
+                  name = "NODE_IP";
+                  valueFrom.fieldRef.fieldPath = "status.hostIP";
+                }
+
+                {
+                  name = "infra__openTelemetryGrpcTracingEndpoint";
+                  value = "http://$(NODE_IP):4317";
+                }
+                {
+                  name = "infra__openTelemetryGrpcMetricsEndpoint";
+                  value = "http://$(NODE_IP):4317";
+                }
+                {
+                  name = "infra__openTelemetryGrpcLoggingEndpoint";
+                  value = "http://$(NODE_IP):4317";
+                }
+              ];
 
               domain = "api.gaslightctf.cooking";
               redirectUris = [
