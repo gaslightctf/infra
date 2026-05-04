@@ -87,7 +87,12 @@ in
                     "k8s.pod.cpu_request_utilization".enabled = true;
                     "k8s.pod.memory_limit_utilization".enabled = true;
                     "k8s.pod.memory_request_utilization".enabled = true;
+                    "k8s.pod.cpu.node.utilization".enabled = true;
+                    "k8s.pod.memory.node.utilization".enabled = true;
                   };
+
+                  node = "\${env:OTEL_K8S_NODE_NAME}";
+                  k8s_api_config.auth_type = "serviceAccount";
                 };
 
                 hostmetrics = {
@@ -102,9 +107,31 @@ in
                     system = { };
                   };
                 };
+
+                journald = {
+                  root_path = "/host";
+                  journalctl_path = "/run/current-system/sw/bin/journalctl";
+                };
               };
 
             };
+
+            clusterRole.rules = [
+              {
+                apiGroups = [ "" ];
+                resources = [
+                  "nodes/stats"
+                  "nodes/poxy"
+                  "nodes/pods"
+                  "nodes/metrics"
+                ];
+                verbs = [
+                  "get"
+                  "list"
+                  "watch"
+                ];
+              }
+            ];
 
             extraEnvs = [
               {

@@ -23,6 +23,17 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - nodes/stats
+      - nodes/poxy
+      - nodes/pods
+      - nodes/metrics
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
       - pods
       - namespaces
     verbs:
