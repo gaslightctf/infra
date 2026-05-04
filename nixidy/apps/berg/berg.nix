@@ -200,11 +200,6 @@ in
           };
         };
 
-        resources.clusters.berg-db.spec = {
-          instances = 3;
-          storage.size = "15Gi";
-        };
-
         resources.deployments.berg-api.spec.replicas = lib.mkForce null;
 
         resources.horizontalPodAutoscalers.berg-api.spec = {

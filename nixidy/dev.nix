@@ -66,5 +66,8 @@
 
       applications.apps.resources.applications.challs-2026.spec.source.targetRevision =
         lib.mkForce "master";
+
+      applications.berg.resources.objectStores.r2.spec.configuration.destinationPath =
+        lib.mkForce "s3://barman-dev";
     };
 }
