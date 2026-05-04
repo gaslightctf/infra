@@ -52,23 +52,55 @@ in
                   traces = pipeline;
                 };
 
-              receivers.filelog.exclude = [
-                "/var/log/pods/opentelemetry_opentelemetry-collector*_*/opentelemetry-collector/*.log"
-                "/var/log/pods/openobserve_openobserve-openobserve-standalone*/openobserve-standalone/*.log"
-              ];
+              processors = {
+                "attributes/hostname".actions = [
+                  {
+                    key = "host.name";
+                    action = "insert";
+                    from_attribute = "k8s.node.name";
+                  }
+                  {
+                    key = "host.name";
+                    action = "insert";
+                    value = "\${OTEL_K8S_NODE_NAME}";
+                  }
+                ];
+              };
 
-              processors."attributes/hostname".actions = [
-                {
-                  key = "host.name";
-                  action = "insert";
-                  from_attribute = "k8s.node.name";
-                }
-                {
-                  key = "host.name";
-                  action = "insert";
-                  value = "\${OTEL_K8S_NODE_NAME}";
-                }
-              ];
+              receivers = {
+                filelog.exclude = [
+                  "/var/log/pods/opentelemetry_opentelemetry-collector*_*/opentelemetry-collector/*.log"
+                  "/var/log/pods/openobserve_openobserve-openobserve-standalone*/openobserve-standalone/*.log"
+                ];
+
+                kubeletstats = {
+                  metric_groups = [
+                    "pod"
+                    "container"
+                    "volume"
+                  ];
+                  metrics = {
+                    "k8s.pod.cpu_limit_utilization".enabled = true;
+                    "k8s.pod.cpu_request_utilization".enabled = true;
+                    "k8s.pod.memory_limit_utilization".enabled = true;
+                    "k8s.pod.memory_request_utilization".enabled = true;
+                  };
+                };
+
+                hostmetrics = {
+                  scrapers = {
+                    cpu.metrics = {
+                      "system.cpu.utilization".enabled = true;
+                    };
+
+                    load = { };
+                    memory = { };
+                    network = { };
+                    system = { };
+                  };
+                };
+              };
+
             };
 
             extraEnvs = [

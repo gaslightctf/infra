@@ -87,7 +87,10 @@ data:
         collection_interval: 10s
         root_path: /hostfs
         scrapers:
-          cpu: null
+          cpu:
+            metrics:
+              system.cpu.utilization:
+                enabled: true
           disk: null
           filesystem:
             exclude_fs_types:
@@ -126,9 +129,10 @@ data:
               - /var/lib/docker/*
               - /var/lib/kubelet/*
               - /snap/*
-          load: null
-          memory: null
-          network: null
+          load: {}
+          memory: {}
+          network: {}
+          system: {}
       jaeger:
         protocols:
           grpc:
@@ -144,6 +148,19 @@ data:
         auth_type: serviceAccount
         collection_interval: 20s
         endpoint: ${env:K8S_NODE_IP}:10250
+        metric_groups:
+        - pod
+        - container
+        - volume
+        metrics:
+          k8s.pod.cpu_limit_utilization:
+            enabled: true
+          k8s.pod.cpu_request_utilization:
+            enabled: true
+          k8s.pod.memory_limit_utilization:
+            enabled: true
+          k8s.pod.memory_request_utilization:
+            enabled: true
       otlp:
         protocols:
           grpc:
