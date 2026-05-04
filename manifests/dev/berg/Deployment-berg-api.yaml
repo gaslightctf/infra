@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: c3c0d0ad3b73c108e880bceb6512aaaeaaa5875b9c50ccff79899d475b24467c
+        checksum/config: 7fb77f4aa3a6aaa85c15a4f1920dbd0ebdfdbb74a9f1ca6447f86650ebdc93b3
       labels:
         app.kubernetes.io/instance: berg
         app.kubernetes.io/name: berg
@@ -70,7 +70,7 @@ spec:
                 secretKeyRef:
                   key: botToken
                   name: berg-discord
-          image: ghcr.io/norelect/berg/api:5.15.0
+          image: ghcr.io/bergctf/platform/api:5.15.2
           imagePullPolicy: IfNotPresent
           name: berg-api
           ports:

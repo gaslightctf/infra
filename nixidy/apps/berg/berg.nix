@@ -1,9 +1,9 @@
 let
   chartAttrs = {
-    repo = "oci://ghcr.io/norelect/charts";
+    repo = "oci://ghcr.io/bergctf/charts";
     chart = "berg";
-    version = "5.15.0";
-    chartHash = "sha256-gMn/HxB60OwEaLkdJSGbaoGyP3mK8UbVnbGW1TD/X0Q=";
+    version = "5.15.2";
+    chartHash = "sha256-aG1E/z7ozYZxsbhgB8cZ5ypXXHUviSoUxqtaIEwYLHg=";
   };
 in
 {
