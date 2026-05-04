@@ -28,20 +28,46 @@ in
             };
 
             config = {
-              exporters.otlp_http = {
+              exporters."otlp_http/openobserve" = {
                 endpoint = "http://openobserve-openobserve-standalone.openobserve.svc.cluster.local:5080/api/default";
 
                 headers.Authorization = "Basic \${env:OPENOBSERVE_TOKEN}";
               };
 
-              service.pipelines = {
-                logs.exporters = [ "otlp_http" ];
-                metrics.exporters = [ "otlp_http" ];
-                traces.exporters = [ "otlp_http" ];
-              };
+              service.pipelines =
+                let
+                  pipeline = {
+                    processors = [
+                      "k8sattributes"
+                      "attributes/hostname"
+                      "memory_limiter"
+                      "batch"
+                    ];
+                    exporters = [ "otlp_http/openobserve" ];
+                  };
+                in
+                {
+                  logs = pipeline;
+                  metrics = pipeline;
+                  traces = pipeline;
+                };
 
-              receivers.file_log.exclude = [
-                "/var/log/pods/*/openobserve-standalone/*.log"
+              receivers.filelog.exclude = [
+                "/var/log/pods/opentelemetry_opentelemetry-collector*_*/opentelemetry-collector/*.log"
+                "/var/log/pods/openobserve_openobserve-openobserve-standalone*/openobserve-standalone/*.log"
+              ];
+
+              processors."attributes/hostname".actions = [
+                {
+                  key = "host.name";
+                  action = "insert";
+                  from_attribute = "k8s.node.name";
+                }
+                {
+                  key = "host.name";
+                  action = "insert";
+                  value = "\${OTEL_K8S_NODE_NAME}";
+                }
               ];
             };
 

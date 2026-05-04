@@ -3,7 +3,7 @@ data:
   relay: |
     exporters:
       debug: {}
-      otlp_http:
+      otlp_http/openobserve:
         endpoint: http://openobserve-openobserve-standalone.openobserve.svc.cluster.local:5080/api/default
         headers:
           Authorization: Basic ${env:OPENOBSERVE_TOKEN}
@@ -15,6 +15,14 @@ data:
         lease_name: k8s.cluster.receiver.opentelemetry.io
         lease_namespace: opentelemetry
     processors:
+      attributes/hostname:
+        actions:
+        - action: insert
+          from_attribute: k8s.node.name
+          key: host.name
+        - action: insert
+          key: host.name
+          value: ${OTEL_K8S_NODE_NAME}
       batch: {}
       k8sattributes:
         extract:
@@ -60,12 +68,10 @@ data:
         limit_percentage: 80
         spike_limit_percentage: 25
     receivers:
-      file_log:
-        exclude:
-        - /var/log/pods/*/openobserve-standalone/*.log
       filelog:
         exclude:
         - /var/log/pods/opentelemetry_opentelemetry-collector*_*/opentelemetry-collector/*.log
+        - /var/log/pods/openobserve_openobserve-openobserve-standalone*/openobserve-standalone/*.log
         include:
         - /var/log/pods/*/*/*.log
         include_file_name: false
@@ -161,9 +167,10 @@ data:
       pipelines:
         logs:
           exporters:
-          - otlp_http
+          - otlp_http/openobserve
           processors:
           - k8sattributes
+          - attributes/hostname
           - memory_limiter
           - batch
           receivers:
@@ -171,9 +178,10 @@ data:
           - filelog
         metrics:
           exporters:
-          - otlp_http
+          - otlp_http/openobserve
           processors:
           - k8sattributes
+          - attributes/hostname
           - memory_limiter
           - batch
           receivers:
@@ -184,9 +192,10 @@ data:
           - k8s_cluster
         traces:
           exporters:
-          - otlp_http
+          - otlp_http/openobserve
           processors:
           - k8sattributes
+          - attributes/hostname
           - memory_limiter
           - batch
           receivers:
