@@ -87,9 +87,11 @@ spec:
             - mountPath: /data
               name: data-tmp
             - mountPath: /data/db
-              name: data-db
+              name: data
+              subPath: db
             - mountPath: /data/wal
-              name: data-wal
+              name: data
+              subPath: wal
       securityContext:
         fsGroup: 2000
         runAsGroup: 3000
@@ -101,15 +103,7 @@ spec:
           name: data-tmp
   volumeClaimTemplates:
     - metadata:
-        name: data-db
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 5Gi
-    - metadata:
-        name: data-wal
+        name: data
       spec:
         accessModes:
           - ReadWriteOnce

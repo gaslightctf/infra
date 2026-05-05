@@ -54,14 +54,7 @@ in
         resources.statefulSets."openobserve-openobserve-standalone".spec = {
           volumeClaimTemplates = lib.mkForce [
             {
-              metadata.name = "data-db";
-              spec = {
-                accessModes = [ "ReadWriteOnce" ];
-                resources.requests.storage = "1Gi";
-              };
-            }
-            {
-              metadata.name = "data-wal";
+              metadata.name = "data";
               spec = {
                 accessModes = [ "ReadWriteOnce" ];
                 resources.requests.storage = "5Gi";
@@ -85,11 +78,13 @@ in
                   }
                   {
                     mountPath = "/data/db";
-                    name = "data-db";
+                    subPath = "db";
+                    name = "data";
                   }
                   {
                     mountPath = "/data/wal";
-                    name = "data-wal";
+                    subPath = "wal";
+                    name = "data";
                   }
                 ];
               }
