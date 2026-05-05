@@ -51,6 +51,52 @@ in
           };
         };
 
+        resources.statefulSets."openobserve-openobserve-standalone".spec = {
+          volumeClaimTemplates = lib.mkForce [
+            {
+              metadata.name = "data-db";
+              spec = {
+                accessModes = [ "ReadWriteOnce" ];
+                resources.requests.storage = "1Gi";
+              };
+            }
+            {
+              metadata.name = "data-wal";
+              spec = {
+                accessModes = [ "ReadWriteOnce" ];
+                resources.requests.storage = "5Gi";
+              };
+            }
+          ];
+          template.spec = {
+            volumes = lib.mkForce [
+              {
+                name = "data-tmp";
+                emptyDir = { };
+              }
+            ];
+            containers = [
+              {
+                name = "openobserve-standalone";
+                volumeMounts = lib.mkForce [
+                  {
+                    mountPath = "/data";
+                    name = "data-tmp";
+                  }
+                  {
+                    mountPath = "/data/db";
+                    name = "data-db";
+                  }
+                  {
+                    mountPath = "/data/wal";
+                    name = "data-wal";
+                  }
+                ];
+              }
+            ];
+          };
+        };
+
         resources.httpRoutes.openobserve.spec = {
           hostnames = [ "openobserve.gaslightctf.cooking" ];
           parentRefs = [

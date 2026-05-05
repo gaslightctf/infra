@@ -85,19 +85,34 @@ spec:
           securityContext: {}
           volumeMounts:
             - mountPath: /data
-              name: data
+              name: data-tmp
+            - mountPath: /data/db
+              name: data-db
+            - mountPath: /data/wal
+              name: data-wal
       securityContext:
         fsGroup: 2000
         runAsGroup: 3000
         runAsNonRoot: true
         runAsUser: 10000
       serviceAccountName: openobserve-openobserve-standalone
+      volumes:
+        - emptyDir: {}
+          name: data-tmp
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: data-db
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 10Gi
+            storage: 5Gi
+    - metadata:
+        name: data-wal
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
