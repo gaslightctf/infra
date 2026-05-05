@@ -1,9 +1,9 @@
 {
   flake.nixosModules.common = {
-    systemd.coredump.extraConfig = ''
-      Storage=None
-      ProcessSizeMax=0
-    '';
+    systemd.coredump.settings.Coredump = {
+      Storage = "none";
+      ProcessSizeMax = 0;
+    };
     services.journald.extraConfig = "SystemMaxUse=250M";
 
     nix.gc = {

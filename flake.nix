@@ -1,5 +1,5 @@
 {
-  description = "Description for the project";
+  description = "gaslightCTF infrastructure";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
