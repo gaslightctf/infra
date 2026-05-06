@@ -19,8 +19,7 @@ in
 
           values = {
             kubeProxyReplacement = true;
-            k8sServiceHost = ips.instances.eevee.local;
-            k8sServicePort = 6443;
+            k8s.apiServerURLs = "https://${ips.instances.eevee.local}:6443";
 
             ipam = {
               mode = "kubernetes";

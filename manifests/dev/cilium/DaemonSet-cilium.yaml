@@ -51,10 +51,6 @@ spec:
                 resourceFieldRef:
                   divisor: "1"
                   resource: limits.memory
-            - name: KUBERNETES_SERVICE_HOST
-              value: 10.6.7.10
-            - name: KUBERNETES_SERVICE_PORT
-              value: "6443"
             - name: KUBE_CLIENT_BACKOFF_BASE
               value: "1"
             - name: KUBE_CLIENT_BACKOFF_DURATION
@@ -200,6 +196,7 @@ spec:
         - command:
             - cilium-dbg
             - build-config
+            - --k8s-api-server-urls=https://10.6.7.10:6443
           env:
             - name: K8S_NODE_NAME
               valueFrom:
@@ -211,10 +208,6 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
-            - name: KUBERNETES_SERVICE_HOST
-              value: 10.6.7.10
-            - name: KUBERNETES_SERVICE_PORT
-              value: "6443"
           image: quay.io/cilium/cilium:v1.19.3@sha256:2e61680593cddca8b6c055f6d4c849d87a26a1c91c7e3b8b56c7fb76ab7b7b10
           imagePullPolicy: IfNotPresent
           name: config
@@ -327,10 +320,6 @@ spec:
                   key: write-cni-conf-when-ready
                   name: cilium-config
                   optional: true
-            - name: KUBERNETES_SERVICE_HOST
-              value: 10.6.7.10
-            - name: KUBERNETES_SERVICE_PORT
-              value: "6443"
           image: quay.io/cilium/cilium:v1.19.3@sha256:2e61680593cddca8b6c055f6d4c849d87a26a1c91c7e3b8b56c7fb76ab7b7b10
           imagePullPolicy: IfNotPresent
           name: clean-cilium-state
