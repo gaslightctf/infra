@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: post-install,post-upgrade,post-delete
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    helm.sh/hook-weight: "4"
+  labels:
+    app.kubernetes.io/instance: k8up
+    app.kubernetes.io/name: k8up
+  name: k8up-cleanup
+  namespace: k8up
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: k8up
+        app.kubernetes.io/name: k8up
+      name: k8up
+    spec:
+      containers:
+        - args:
+            - |
+              set -eo pipefail
+
+              NAMESPACES=$(kubectl get namespace -ojson | jq -r '.items[].metadata.name')
+
+              for ns in $NAMESPACES
+              do
+                kubectl -n "$ns" delete rolebinding pod-executor-namespaced --ignore-not-found=true
+                kubectl -n "$ns" delete role pod-executor --ignore-not-found=true
+              done
+          command:
+            - sh
+            - -c
+          image: ghcr.io/k8up-io/k8up:v2.15.0
+          imagePullPolicy: IfNotPresent
+          name: k8up-cleanup
+          securityContext: {}
+      restartPolicy: Never
+      securityContext: {}
+      serviceAccountName: cleanup-service-account

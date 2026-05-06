@@ -12,6 +12,7 @@
         self.modules.nixidy.origin-ca-issuer
         self.modules.nixidy.traefik
 
+        self.modules.nixidy.k8up
         self.modules.nixidy.observability
 
         self.modules.nixidy.cnpg

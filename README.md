@@ -42,6 +42,8 @@ tofu-dev apply -concise
 
 # update ./secrets/dev/k8s/observability.yaml
 tofu-dev state show -show-sensitive google_storage_hmac_key.openobserve
+# update ./secrets/dev/k8s/k8up.yaml
+tofu-dev state show -show-sensitive google_storage_hmac_key.k8up
 ```
 
 ## nixidy

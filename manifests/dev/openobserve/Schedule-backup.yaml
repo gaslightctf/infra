@@ -1,0 +1,30 @@
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: backup
+  namespace: openobserve
+spec:
+  backend:
+    repoPasswordSecretRef:
+      key: password
+      name: restic-password
+    s3:
+      accessKeyIDSecretRef:
+        key: accessKeyID
+        name: k8up-gcs
+      bucket: k8up-dev-gaslightctf-cooking
+      endpoint: https://storage.googleapis.com
+      secretAccessKeySecretRef:
+        key: secretAccessKey
+        name: k8up-gcs
+  backup:
+    failedJobsHistoryLimit: 2
+    schedule: '*/30 * * * *'
+    successfulJobsHistoryLimit: 2
+  prune:
+    failedJobsHistoryLimit: 2
+    retention:
+      keepDaily: 7
+      keepLast: 5
+    schedule: 55 * * * *
+    successfulJobsHistoryLimit: 2

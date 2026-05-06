@@ -69,5 +69,8 @@
 
       applications.berg.resources.objectStores.r2.spec.configuration.destinationPath =
         lib.mkForce "s3://barman-dev";
+
+      applications.openobserve.resources.k8upSchedules.backup.spec.backend.s3.bucket =
+        lib.mkForce "k8up-dev-gaslightctf-cooking";
     };
 }
