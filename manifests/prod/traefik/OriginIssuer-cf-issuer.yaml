@@ -1,0 +1,11 @@
+apiVersion: cert-manager.k8s.cloudflare.com/v1
+kind: OriginIssuer
+metadata:
+  name: cf-issuer
+  namespace: traefik
+spec:
+  auth:
+    tokenRef:
+      key: cf-api-token
+      name: cf-api-token
+  requestType: OriginECC

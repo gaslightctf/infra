@@ -20,5 +20,7 @@ rec {
     dev.kyogre
     dev.groudon
   ];
-  prodServers = [ ];
+  prodServers = [
+    prod.rayquaza
+  ];
 }

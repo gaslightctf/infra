@@ -80,7 +80,7 @@ in
 
             providers.kubernetesGateway = {
               enabled = true;
-              experimentalChannel = true;
+              experimentalChannel = false;
             };
             gateway = {
               enabled = true;

@@ -1,1 +1,12 @@
-{}
+{
+  "kanto_lb_ip": {
+    "sensitive": false,
+    "type": "string",
+    "value": "35.217.48.207"
+  },
+  "rayquaza_ip_public": {
+    "sensitive": false,
+    "type": "string",
+    "value": "35.217.50.14"
+  }
+}

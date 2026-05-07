@@ -12,14 +12,8 @@
         self.modules.nixidy.origin-ca-issuer
         self.modules.nixidy.traefik
 
-        self.modules.nixidy.k8up
-        self.modules.nixidy.restore
-        self.modules.nixidy.observability
-
         self.modules.nixidy.cnpg
         self.modules.nixidy.berg
-
-        self.modules.nixidy.challs-2026
       ];
 
       nixidy = {

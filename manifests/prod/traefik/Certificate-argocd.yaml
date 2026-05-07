@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd
+  namespace: traefik
+spec:
+  dnsNames:
+    - argocd.gaslightctf.cooking
+  issuerRef:
+    group: cert-manager.k8s.cloudflare.com
+    kind: OriginIssuer
+    name: cf-issuer
+  secretName: argocd-tls

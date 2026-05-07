@@ -2,7 +2,7 @@
 {
   custom.instanceExtra = {
     boot_disk.initialize_params.size = lib.mkForce 25;
-    machine_type = lib.mkForce "e2-medium";
+    machine_type = lib.mkForce "e2-standard-2";
   };
 
   resource.google_compute_region_backend_service.kanto-backend-https.connection_draining_timeout_sec =

@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: berg
+    app.kubernetes.io/name: berg
+    component: api
+  name: berg-api
+  namespace: berg
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: berg
+      app.kubernetes.io/name: berg
+      component: api
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 25c8f41b166ed6b8c658da2d135a02cec3ec2bfa56dd0c341da8728a466ab60a
+      labels:
+        app.kubernetes.io/instance: berg
+        app.kubernetes.io/name: berg
+        component: api
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_URLS
+              value: http://0.0.0.0:8080
+            - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+              value: "true"
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: berg-db-app
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  key: port
+                  name: berg-db-app
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: dbname
+                  name: berg-db-app
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: berg-db-app
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: berg-db-app
+            - name: discord__ClientId
+              valueFrom:
+                secretKeyRef:
+                  key: clientId
+                  name: berg-discord
+            - name: discord__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  key: clientSecret
+                  name: berg-discord
+            - name: discord__BotToken
+              valueFrom:
+                secretKeyRef:
+                  key: botToken
+                  name: berg-discord
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: infra__openTelemetryGrpcTracingEndpoint
+              value: http://$(NODE_IP):4317
+            - name: infra__openTelemetryGrpcMetricsEndpoint
+              value: http://$(NODE_IP):4317
+            - name: infra__openTelemetryGrpcLoggingEndpoint
+              value: http://$(NODE_IP):4317
+          image: ghcr.io/bergctf/platform/api:5.15.2
+          imagePullPolicy: IfNotPresent
+          name: berg-api
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 300Mi
+          volumeMounts:
+            - mountPath: /app/appsettings.json
+              name: appsettings
+              subPath: appsettings.json
+      serviceAccountName: berg
+      volumes:
+        - configMap:
+            name: berg-appsettings
+          name: appsettings

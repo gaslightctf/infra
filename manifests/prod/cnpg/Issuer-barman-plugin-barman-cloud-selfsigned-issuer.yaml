@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: barman-plugin-barman-cloud-selfsigned-issuer
+  namespace: cnpg
+spec:
+  selfSigned: {}

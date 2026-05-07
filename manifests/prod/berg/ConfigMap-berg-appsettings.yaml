@@ -1,0 +1,55 @@
+apiVersion: v1
+data:
+  appsettings.json: |
+    {
+      "Logging": {
+        "LogLevel": {"Default":"Information","Microsoft.AspNetCore":"Warning","Microsoft.EntityFrameworkCore.Database":"Warning","OpenIddict":"Warning","Quartz":"Warning","System.Net.Http.HttpClient.OpenIddict":"Warning"}
+      },
+      "AllowedHosts": "api.gaslightctf.cooking",
+      "RateLimiting": {
+        "ReplenishmentPeriod": "0.00:00:15",
+        "TokensPerPeriod": 1,
+        "TokenLimit": 10,
+      },
+      "ConnectionStrings": {
+        "BergDbConnection": ""
+      },
+      "infra": {
+        "challengeDomain": "play.gaslightctf.cooking",
+        "platformDomain": "api.gaslightctf.cooking",
+        "gatewayName": "traefik-gateway",
+        "gatewayNamespace": "traefik",
+        "challengeHttpPort": 1337,
+        "challengeTlsPort": 31337,
+        "challengeHttpListenerName": "https-chall",
+        "challengeTlsListenerName": "tls-chall",
+        "playerIdNamespace": "00000000-0000-0000-0000-000000000000",
+        "redirectUris": ["https://play.gaslightctf.cooking/frontend/oidc-callback"],
+        "postLogoutRedirectUris": ["https://play.gaslightctf.cooking"],
+        "corsOrigins": [],
+        "pullSecretName": "",
+        "challengeImagePullPolicy": "Always",
+        "challengeInstanceTimeout": "0.02:00:00",
+        "challengeAdditionalHeadlessService": false,
+        "challengeCpuRequest": "0",
+        "challengeMemoryRequest": "1Mi",
+        "challengeCpuLimit": "1",
+        "challengeMemoryLimit": "0.5Gi",
+        "challengeIngressBandwidth": "1M",
+        "challengeEgressBandwidth": "1M",
+        "openTelemetryGrpcTracingEndpoint": null,
+        "openTelemetryGrpcMetricsEndpoint": null,
+        "openTelemetryGrpcLoggingEndpoint": null,
+        "useKubernetesSecretKeyProvider": true,
+      },
+      "discord": {"adminGuildId":"1463881187159441619","adminRoleId":"1469436808604680194","authorGuildId":"1463881187159441619","authorRoleId":"1496622317147525321","notificationChannelId":"1485397056419004568","notificationGuildId":"1463881187159441619","playerGuildId":"0","playerRoleId":"0"},
+      "genericOpenId": {"claims":{"email":"email","id":"sub","name":"name","role":"role"},"clientId":"","clientSecret":"","internalIssuer":"","issuer":"","scopes":[]},
+      "ctf": {"allowAnonymousAccess":true,"end":"2026-08-17T12:00:00Z","eventLogoUrl":"https://gaslightctf.cooking/assets/gaslighticoncolor.png","eventName":"gaslightCTF 2026","eventOrganiser":"gaslightCTF","playerAttributes":[{"description":"Select your prize division. Please reach out with any questions regarding eligibility!","name":"division","public":true,"required":true,"title":"Division","values":[{"description":"Pre-university students, e.g. secondary school, high school","title":"Secondary School","value":"secondary"},{"description":"Higher education students, e.g. university, college","title":"University","value":"uni"},{"description":"Anybody!","title":"Open","value":"open"}]}],"scoring":{"freezeEnd":"2099-01-01T00:00:00Z","freezeStart":"2099-01-01T00:00:00Z","numSolvesBeforeMinimum":50},"start":"2026-08-14T12:00:00Z","teams":true}
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: berg
+    app.kubernetes.io/name: berg
+  name: berg-appsettings
+  namespace: berg

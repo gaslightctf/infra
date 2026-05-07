@@ -43,11 +43,19 @@ creation_rules:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
+    - age10lfklpwc9tcqd4c9erkc86vxhel5nzaxtepurl8g0msgx7xdaugqduytk8
+  path_regex: secrets/prod/rayquaza\.(yaml|json|env)$
+- key_groups:
+  - age:
+    - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
+    - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
+    - age10lfklpwc9tcqd4c9erkc86vxhel5nzaxtepurl8g0msgx7xdaugqduytk8
   path_regex: secrets/prod/shared+\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
+    - age10lfklpwc9tcqd4c9erkc86vxhel5nzaxtepurl8g0msgx7xdaugqduytk8
   path_regex: secrets/prod/k8s/.+\.yaml$
   unencrypted_regex: ^(apiVersion|kind|metadata|type|immutable)$
 - key_groups:

@@ -46,6 +46,7 @@
           workdir = "\"$PRJ_ROOT\"/.tf/prod";
           modules = [
             (inputs.import-tree ./terranix)
+            ./terranix/_prod.nix
           ];
           # TODO: use flake.parts
           extraArgs = {

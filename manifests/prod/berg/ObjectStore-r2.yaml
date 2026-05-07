@@ -1,0 +1,18 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: r2
+  namespace: berg
+spec:
+  configuration:
+    destinationPath: s3://barman
+    endpointURL: https://7a7328f4f35d8ae675edeeb50d34c40e.r2.cloudflarestorage.com
+    s3Credentials:
+      accessKeyId:
+        key: accessKeyId
+        name: barman-r2
+      secretAccessKey:
+        key: secretAccessKey
+        name: barman-r2
+    wal:
+      compression: zstd

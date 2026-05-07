@@ -26,7 +26,7 @@ inspect-tree dir:
 build-nixidy env="dev": && (inspect-tree "result")
     NIX_CONFIG="substitute = false" nixidy build .#{{env}}
 
-switch-nixidy env="dev": && (inspect-tree "manifests/dev")
+switch-nixidy env="dev": && (inspect-tree ("manifests/" + env))
     NIX_CONFIG="substitute = false" nixidy switch .#{{env}}
 
 diff-nixidy env="dev": (build-nixidy env)

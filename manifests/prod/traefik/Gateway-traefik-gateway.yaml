@@ -1,0 +1,79 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  labels:
+    app.kubernetes.io/instance: traefik-traefik
+    app.kubernetes.io/name: traefik
+  name: traefik-gateway
+  namespace: traefik
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: http-chall
+      port: 1337
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: https-chall
+      port: 1337
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: argocd-tls
+          - kind: Secret
+            name: berg-api-tls
+          - kind: Secret
+            name: berg-play-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: tls-chall
+      port: 31337
+      protocol: TLS
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: argocd-tls
+          - kind: Secret
+            name: berg-api-tls
+          - kind: Secret
+            name: berg-play-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: web
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: websecure
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: argocd-tls
+          - kind: Secret
+            name: berg-api-tls
+          - kind: Secret
+            name: berg-play-tls
+        mode: Terminate
+  tls:
+    frontend:
+      default: {}
+      perPort:
+        - port: 443
+          tls:
+            validation:
+              caCertificateRefs:
+                - group: ""
+                  kind: ConfigMap
+                  name: cf-global-aop-ca-cert

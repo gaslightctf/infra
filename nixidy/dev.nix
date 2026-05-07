@@ -1,7 +1,16 @@
+{ self, ... }:
 {
   flake.modules.nixidy.dev =
     { lib, ... }:
     {
+      imports = [
+        self.modules.nixidy.k8up
+        self.modules.nixidy.restore
+        self.modules.nixidy.observability
+
+        self.modules.nixidy.challs-2026
+      ];
+
       nixidy.target.rootPath = lib.mkForce "./manifests/dev";
 
       applications.berg = {
