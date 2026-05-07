@@ -2,10 +2,7 @@
   flake.modules.nixidy.restore =
     { config, ... }:
     {
-      applications."00-restore-openobserve" = {
-        namespace = "openobserve";
-        createNamespace = true;
-
+      applications.openobserve = {
         resources.persistentVolumeClaims.data-openobserve-openobserve-standalone-0.spec = {
           accessModes = [ "ReadWriteOnce" ];
           resources.requests.storage = "5Gi";
