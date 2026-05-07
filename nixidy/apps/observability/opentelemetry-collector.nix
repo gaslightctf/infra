@@ -47,7 +47,13 @@ in
                   };
                 in
                 {
-                  logs = pipeline;
+                  logs = pipeline // {
+                    receivers = [
+                      "otlp"
+                      "filelog"
+                      "journald"
+                    ];
+                  };
                   metrics = pipeline;
                   traces = pipeline;
                 };

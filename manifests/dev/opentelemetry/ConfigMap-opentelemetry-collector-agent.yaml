@@ -204,6 +204,7 @@ data:
           receivers:
           - otlp
           - filelog
+          - journald
         metrics:
           exporters:
           - otlp_http/openobserve
