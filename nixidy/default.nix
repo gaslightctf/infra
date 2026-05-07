@@ -33,6 +33,7 @@ in
           ];
           prod.modules = [
             self.modules.nixidy.common
+            self.modules.nixidy.prod
           ];
         };
       };
