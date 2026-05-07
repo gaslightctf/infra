@@ -1,22 +1,22 @@
 {
-  "eevee_ip_public": {
+  "groudon_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.12.194"
-  },
-  "jolteon_ip_public": {
-    "sensitive": false,
-    "type": "string",
-    "value": "35.217.15.213"
+    "value": "35.217.26.12"
   },
   "kanto_lb_ip": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.62.237"
+    "value": "35.217.15.213"
   },
-  "vaporeon_ip_public": {
+  "kyogre_ip_public": {
     "sensitive": false,
     "type": "string",
-    "value": "35.217.26.12"
+    "value": "35.217.12.194"
+  },
+  "rayquaza_ip_public": {
+    "sensitive": false,
+    "type": "string",
+    "value": "35.217.39.223"
   }
 }

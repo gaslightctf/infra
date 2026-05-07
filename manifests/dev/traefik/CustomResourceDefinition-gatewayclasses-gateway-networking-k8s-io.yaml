@@ -4,8 +4,8 @@ metadata:
   annotations:
     api-approved.kubernetes.io: https://github.com/kubernetes-sigs/gateway-api/pull/4530
     argocd.argoproj.io/sync-options: ServerSideApply=true
-    gateway.networking.k8s.io/bundle-version: v1.5.0
-    gateway.networking.k8s.io/channel: experimental
+    gateway.networking.k8s.io/bundle-version: v1.5.1
+    gateway.networking.k8s.io/channel: standard
   name: gatewayclasses.gateway.networking.k8s.io
 spec:
   group: gateway.networking.k8s.io

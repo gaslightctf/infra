@@ -58,7 +58,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: USER
               value: traefik
-          image: docker.io/traefik:v3.7.0-rc.2
+          image: docker.io/traefik:v3.7.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3

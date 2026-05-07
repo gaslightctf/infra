@@ -5,7 +5,6 @@
       pkgs,
       config,
       inputs',
-      lib,
       ...
     }:
     let

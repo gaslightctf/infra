@@ -401,11 +401,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -498,7 +498,7 @@ let
           type = (types.nullOr (types.listOf types.str));
         };
         "parentRefs" = mkOption {
-          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.";
+          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.";
           type = (
             types.nullOr (
               coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1.GRPCRouteSpecParentRefs" "name" [ ]
@@ -515,17 +515,12 @@ let
           );
           apply = attrsToList;
         };
-        "useDefaultGateways" = mkOption {
-          description = "UseDefaultGateways indicates the default Gateway scope to use for this\nRoute. If unset (the default) or set to None, the Route will not be\nattached to any default Gateway; if set, it will be attached to any\ndefault Gateway supporting the named scope, subject to the usual rules\nabout which Routes a Gateway is allowed to claim.\n\nThink carefully before using this functionality! The set of default\nGateways supporting the requested scope can change over time without\nany notice to the Route author, and in many situations it will not be\nappropriate to request a default Gateway for a given Route -- for\nexample, a Route with specific security requirements should almost\ncertainly not use a default Gateway.";
-          type = (types.nullOr types.str);
-        };
       };
 
       config = {
         "hostnames" = mkOverride 1002 null;
         "parentRefs" = mkOverride 1002 null;
         "rules" = mkOverride 1002 null;
-        "useDefaultGateways" = mkOverride 1002 null;
       };
 
     };
@@ -545,11 +540,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -597,12 +592,6 @@ let
           description = "Name is the name of the route rule. This name MUST be unique within a Route if it is set.\n\nSupport: Extended";
           type = (types.nullOr types.str);
         };
-        "sessionPersistence" = mkOption {
-          description = "SessionPersistence defines and configures session persistence\nfor the route rule.\n\nSupport: Extended";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.GRPCRouteSpecRulesSessionPersistence")
-          );
-        };
       };
 
       config = {
@@ -610,7 +599,6 @@ let
         "filters" = mkOverride 1002 null;
         "matches" = mkOverride 1002 null;
         "name" = mkOverride 1002 null;
-        "sessionPersistence" = mkOverride 1002 null;
       };
 
     };
@@ -778,7 +766,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -794,7 +782,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -930,7 +918,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -946,7 +934,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -1067,7 +1055,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -1083,7 +1071,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -1219,7 +1207,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -1235,7 +1223,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -1312,58 +1300,6 @@ let
         "method" = mkOverride 1002 null;
         "service" = mkOverride 1002 null;
         "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.GRPCRouteSpecRulesSessionPersistence" = {
-
-      options = {
-        "absoluteTimeout" = mkOption {
-          description = "AbsoluteTimeout defines the absolute timeout of the persistent\nsession. Once the AbsoluteTimeout duration has elapsed, the\nsession becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "cookieConfig" = mkOption {
-          description = "CookieConfig provides configuration settings that are specific\nto cookie-based session persistence.\n\nSupport: Core";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.GRPCRouteSpecRulesSessionPersistenceCookieConfig"
-            )
-          );
-        };
-        "idleTimeout" = mkOption {
-          description = "IdleTimeout defines the idle timeout of the persistent session.\nOnce the session has been idle for more than the specified\nIdleTimeout duration, the session becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "sessionName" = mkOption {
-          description = "SessionName defines the name of the persistent session token\nwhich may be reflected in the cookie or the header. Users\nshould avoid reusing session names to prevent unintended\nconsequences, such as rejection or unpredictable behavior.\n\nSupport: Implementation-specific";
-          type = (types.nullOr types.str);
-        };
-        "type" = mkOption {
-          description = "Type defines the type of session persistence such as through\nthe use of a header or cookie. Defaults to cookie based session\npersistence.\n\nSupport: Core for \"Cookie\" type\n\nSupport: Extended for \"Header\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "absoluteTimeout" = mkOverride 1002 null;
-        "cookieConfig" = mkOverride 1002 null;
-        "idleTimeout" = mkOverride 1002 null;
-        "sessionName" = mkOverride 1002 null;
-        "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.GRPCRouteSpecRulesSessionPersistenceCookieConfig" = {
-
-      options = {
-        "lifetimeType" = mkOption {
-          description = "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\nDefaults to \"Session\".\n\nSupport: Core for \"Session\" type\n\nSupport: Extended for \"Permanent\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "lifetimeType" = mkOverride 1002 null;
       };
 
     };
@@ -1449,11 +1385,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -1676,10 +1612,6 @@ let
           description = "AllowedListeners defines which ListenerSets can be attached to this Gateway.\nThe default value is to allow no ListenerSets.";
           type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.GatewaySpecAllowedListeners"));
         };
-        "defaultScope" = mkOption {
-          description = "DefaultScope, when set, configures the Gateway as a default Gateway,\nmeaning it will dynamically and implicitly have Routes (e.g. HTTPRoute)\nattached to it, according to the scope configured here.\n\nIf unset (the default) or set to None, the Gateway will not act as a\ndefault Gateway; if set, the Gateway will claim any Route with a\nmatching scope set in its UseDefaultGateway field, subject to the usual\nrules about which routes the Gateway can attach to.\n\nThink carefully before using this functionality! While the normal rules\nabout which Route can apply are still enforced, it is simply easier for\nthe wrong Route to be accidentally attached to this Gateway in this\nconfiguration. If the Gateway operator is not also the operator in\ncontrol of the scope (e.g. namespace) with tight controls and checks on\nwhat kind of workloads and Routes get added in that scope, we strongly\nrecommend not using this just because it seems convenient, and instead\nstick to direct Route attachment.";
-          type = (types.nullOr types.str);
-        };
         "gatewayClassName" = mkOption {
           description = "GatewayClassName used for this Gateway. This is the name of a\nGatewayClass resource.";
           type = types.str;
@@ -1706,7 +1638,6 @@ let
       config = {
         "addresses" = mkOverride 1002 null;
         "allowedListeners" = mkOverride 1002 null;
-        "defaultScope" = mkOverride 1002 null;
         "infrastructure" = mkOverride 1002 null;
         "tls" = mkOverride 1002 null;
       };
@@ -2525,7 +2456,7 @@ let
           type = (types.nullOr (types.listOf types.str));
         };
         "parentRefs" = mkOption {
-          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.";
+          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.";
           type = (
             types.nullOr (
               coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1.HTTPRouteSpecParentRefs" "name" [ ]
@@ -2542,17 +2473,12 @@ let
           );
           apply = attrsToList;
         };
-        "useDefaultGateways" = mkOption {
-          description = "UseDefaultGateways indicates the default Gateway scope to use for this\nRoute. If unset (the default) or set to None, the Route will not be\nattached to any default Gateway; if set, it will be attached to any\ndefault Gateway supporting the named scope, subject to the usual rules\nabout which Routes a Gateway is allowed to claim.\n\nThink carefully before using this functionality! The set of default\nGateways supporting the requested scope can change over time without\nany notice to the Route author, and in many situations it will not be\nappropriate to request a default Gateway for a given Route -- for\nexample, a Route with specific security requirements should almost\ncertainly not use a default Gateway.";
-          type = (types.nullOr types.str);
-        };
       };
 
       config = {
         "hostnames" = mkOverride 1002 null;
         "parentRefs" = mkOverride 1002 null;
         "rules" = mkOverride 1002 null;
-        "useDefaultGateways" = mkOverride 1002 null;
       };
 
     };
@@ -2572,11 +2498,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -2624,16 +2550,6 @@ let
           description = "Name is the name of the route rule. This name MUST be unique within a Route if it is set.\n\nSupport: Extended";
           type = (types.nullOr types.str);
         };
-        "retry" = mkOption {
-          description = "Retry defines the configuration for when to retry an HTTP request.\n\nSupport: Extended";
-          type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesRetry"));
-        };
-        "sessionPersistence" = mkOption {
-          description = "SessionPersistence defines and configures session persistence\nfor the route rule.\n\nSupport: Extended";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesSessionPersistence")
-          );
-        };
         "timeouts" = mkOption {
           description = "Timeouts defines the timeouts that can be configured for an HTTP request.\n\nSupport: Extended";
           type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesTimeouts"));
@@ -2645,8 +2561,6 @@ let
         "filters" = mkOverride 1002 null;
         "matches" = mkOverride 1002 null;
         "name" = mkOverride 1002 null;
-        "retry" = mkOverride 1002 null;
-        "sessionPersistence" = mkOverride 1002 null;
         "timeouts" = mkOverride 1002 null;
       };
 
@@ -2715,14 +2629,6 @@ let
             )
           );
         };
-        "externalAuth" = mkOption {
-          description = "ExternalAuth configures settings related to sending request details\nto an external auth service. The external service MUST authenticate\nthe request, and MAY authorize the request as well.\n\nIf there is any problem communicating with the external service,\nthis filter MUST fail closed.\n\nSupport: Extended";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuth"
-            )
-          );
-        };
         "requestHeaderModifier" = mkOption {
           description = "RequestHeaderModifier defines a schema for a filter that modifies request\nheaders.\n\nSupport: Core";
           type = (
@@ -2772,7 +2678,6 @@ let
       config = {
         "cors" = mkOverride 1002 null;
         "extensionRef" = mkOverride 1002 null;
-        "externalAuth" = mkOverride 1002 null;
         "requestHeaderModifier" = mkOverride 1002 null;
         "requestMirror" = mkOverride 1002 null;
         "requestRedirect" = mkOverride 1002 null;
@@ -2840,137 +2745,6 @@ let
       config = { };
 
     };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuth" = {
-
-      options = {
-        "backendRef" = mkOption {
-          description = "BackendRef is a reference to a backend to send authorization\nrequests to.\n\nThe backend must speak the selected protocol (GRPC or HTTP) on the\nreferenced port.\n\nIf the backend service requires TLS, use BackendTLSPolicy to tell the\nimplementation to supply the TLS details to be used to connect to that\nbackend.";
-          type = (
-            submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthBackendRef"
-          );
-        };
-        "forwardBody" = mkOption {
-          description = "ForwardBody controls if requests to the authorization server should include\nthe body of the client request; and if so, how big that body is allowed\nto be.\n\nIt is expected that implementations will buffer the request body up to\n`forwardBody.maxSize` bytes. Bodies over that size must be rejected with a\n4xx series error (413 or 403 are common examples), and fail processing\nof the filter.\n\nIf unset, or `forwardBody.maxSize` is set to `0`, then the body will not\nbe forwarded.\n\nFeature Name: HTTPRouteExternalAuthForwardBody";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthForwardBody"
-            )
-          );
-        };
-        "grpc" = mkOption {
-          description = "GRPCAuthConfig contains configuration for communication with ext_authz\nprotocol-speaking backends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthGrpc"
-            )
-          );
-        };
-        "http" = mkOption {
-          description = "HTTPAuthConfig contains configuration for communication with HTTP-speaking\nbackends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthHttp"
-            )
-          );
-        };
-        "protocol" = mkOption {
-          description = "ExternalAuthProtocol describes which protocol to use when communicating with an\next_authz authorization server.\n\nWhen this is set to GRPC, each backend must use the Envoy ext_authz protocol\non the port specified in `backendRefs`. Requests and responses are defined\nin the protobufs explained at:\nhttps://www.envoyproxy.io/docs/envoy/latest/api-v3/service/auth/v3/external_auth.proto\n\nWhen this is set to HTTP, each backend must respond with a `200` status\ncode in on a successful authorization. Any other code is considered\nan authorization failure.\n\nFeature Names:\nGRPC Support - HTTPRouteExternalAuthGRPC\nHTTP Support - HTTPRouteExternalAuthHTTP";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "forwardBody" = mkOverride 1002 null;
-        "grpc" = mkOverride 1002 null;
-        "http" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthBackendRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred.";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is the Kubernetes resource kind of the referent. For example\n\"Service\".\n\nDefaults to \"Service\" when not specified.\n\nExternalName services can refer to CNAME DNS records that may live\noutside of the cluster and as such are difficult to reason about in\nterms of conformance. They also may not be safe to forward to (see\nCVE-2021-25740 for more information). Implementations SHOULD NOT\nsupport ExternalName Services.\n\nSupport: Core (Services with a type other than ExternalName)\n\nSupport: Implementation-specific (Services with type ExternalName)";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the backend. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port specifies the destination port number to use for this resource.\nPort is required when the referent is a Kubernetes Service. In this\ncase, the port number is the service port number, not the target port.\nFor other resources, destination port might be derived from the referent\nresource or this field.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthForwardBody" = {
-
-      options = {
-        "maxSize" = mkOption {
-          description = "MaxSize specifies how large in bytes the largest body that will be buffered\nand sent to the authorization server. If the body size is larger than\n`maxSize`, then the body sent to the authorization server must be\ntruncated to `maxSize` bytes.\n\nExperimental note: This behavior needs to be checked against\nvarious dataplanes; it may need to be changed.\nSee https://github.com/kubernetes-sigs/gateway-api/pull/4001#discussion_r2291405746\nfor more.\n\nIf 0, the body will not be sent to the authorization server.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "maxSize" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthGrpc" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what headers from the client request\nwill be sent to the authorization server.\n\nIf this list is empty, then all headers must be sent.\n\nIf the list has entries, only those entries must be sent.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthHttp" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what additional headers from the client request\nwill be sent to the authorization server.\n\nThe following headers must always be sent to the authorization server,\nregardless of this setting:\n\n* `Host`\n* `Method`\n* `Path`\n* `Content-Length`\n* `Authorization`\n\nIf this list is empty, then only those headers must be sent.\n\nNote that `Content-Length` has a special behavior, in that the length\nsent must be correct for the actual request to the external authorization\nserver - that is, it must reflect the actual number of bytes sent in the\nbody of the request to the authorization server.\n\nSo if the `forwardBody` stanza is unset, or `forwardBody.maxSize` is set\nto `0`, then `Content-Length` must be `0`. If `forwardBody.maxSize` is set\nto anything other than `0`, then the `Content-Length` of the authorization\nrequest must be set to the actual number of bytes forwarded.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "allowedResponseHeaders" = mkOption {
-          description = "AllowedResponseHeaders specifies what headers from the authorization response\nwill be copied into the request to the backend.\n\nIf this list is empty, then all headers from the authorization server\nexcept Authority or Host must be copied.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "path" = mkOption {
-          description = "Path sets the prefix that paths from the client request will have added\nwhen forwarded to the authorization server.\n\nWhen empty or unspecified, no prefix is added.\n\nValid values are the same as the \"value\" regex for path values in the `match`\nstanza, and the validation regex will screen out invalid paths in the same way.\nEven with the validation, implementations MUST sanitize this input before using it\ndirectly.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-        "allowedResponseHeaders" = mkOverride 1002 null;
-        "path" = mkOverride 1002 null;
-      };
-
-    };
     "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifier" = {
 
       options = {
@@ -3019,7 +2793,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3035,7 +2809,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3232,7 +3006,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3248,7 +3022,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3315,12 +3089,6 @@ let
             types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExtensionRef")
           );
         };
-        "externalAuth" = mkOption {
-          description = "ExternalAuth configures settings related to sending request details\nto an external auth service. The external service MUST authenticate\nthe request, and MAY authorize the request as well.\n\nIf there is any problem communicating with the external service,\nthis filter MUST fail closed.\n\nSupport: Extended";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuth")
-          );
-        };
         "requestHeaderModifier" = mkOption {
           description = "RequestHeaderModifier defines a schema for a filter that modifies request\nheaders.\n\nSupport: Core";
           type = (
@@ -3364,7 +3132,6 @@ let
       config = {
         "cors" = mkOverride 1002 null;
         "extensionRef" = mkOverride 1002 null;
-        "externalAuth" = mkOverride 1002 null;
         "requestHeaderModifier" = mkOverride 1002 null;
         "requestMirror" = mkOverride 1002 null;
         "requestRedirect" = mkOverride 1002 null;
@@ -3432,131 +3199,6 @@ let
       config = { };
 
     };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuth" = {
-
-      options = {
-        "backendRef" = mkOption {
-          description = "BackendRef is a reference to a backend to send authorization\nrequests to.\n\nThe backend must speak the selected protocol (GRPC or HTTP) on the\nreferenced port.\n\nIf the backend service requires TLS, use BackendTLSPolicy to tell the\nimplementation to supply the TLS details to be used to connect to that\nbackend.";
-          type = (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthBackendRef");
-        };
-        "forwardBody" = mkOption {
-          description = "ForwardBody controls if requests to the authorization server should include\nthe body of the client request; and if so, how big that body is allowed\nto be.\n\nIt is expected that implementations will buffer the request body up to\n`forwardBody.maxSize` bytes. Bodies over that size must be rejected with a\n4xx series error (413 or 403 are common examples), and fail processing\nof the filter.\n\nIf unset, or `forwardBody.maxSize` is set to `0`, then the body will not\nbe forwarded.\n\nFeature Name: HTTPRouteExternalAuthForwardBody";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthForwardBody"
-            )
-          );
-        };
-        "grpc" = mkOption {
-          description = "GRPCAuthConfig contains configuration for communication with ext_authz\nprotocol-speaking backends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthGrpc")
-          );
-        };
-        "http" = mkOption {
-          description = "HTTPAuthConfig contains configuration for communication with HTTP-speaking\nbackends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthHttp")
-          );
-        };
-        "protocol" = mkOption {
-          description = "ExternalAuthProtocol describes which protocol to use when communicating with an\next_authz authorization server.\n\nWhen this is set to GRPC, each backend must use the Envoy ext_authz protocol\non the port specified in `backendRefs`. Requests and responses are defined\nin the protobufs explained at:\nhttps://www.envoyproxy.io/docs/envoy/latest/api-v3/service/auth/v3/external_auth.proto\n\nWhen this is set to HTTP, each backend must respond with a `200` status\ncode in on a successful authorization. Any other code is considered\nan authorization failure.\n\nFeature Names:\nGRPC Support - HTTPRouteExternalAuthGRPC\nHTTP Support - HTTPRouteExternalAuthHTTP";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "forwardBody" = mkOverride 1002 null;
-        "grpc" = mkOverride 1002 null;
-        "http" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthBackendRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred.";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is the Kubernetes resource kind of the referent. For example\n\"Service\".\n\nDefaults to \"Service\" when not specified.\n\nExternalName services can refer to CNAME DNS records that may live\noutside of the cluster and as such are difficult to reason about in\nterms of conformance. They also may not be safe to forward to (see\nCVE-2021-25740 for more information). Implementations SHOULD NOT\nsupport ExternalName Services.\n\nSupport: Core (Services with a type other than ExternalName)\n\nSupport: Implementation-specific (Services with type ExternalName)";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the backend. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port specifies the destination port number to use for this resource.\nPort is required when the referent is a Kubernetes Service. In this\ncase, the port number is the service port number, not the target port.\nFor other resources, destination port might be derived from the referent\nresource or this field.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthForwardBody" = {
-
-      options = {
-        "maxSize" = mkOption {
-          description = "MaxSize specifies how large in bytes the largest body that will be buffered\nand sent to the authorization server. If the body size is larger than\n`maxSize`, then the body sent to the authorization server must be\ntruncated to `maxSize` bytes.\n\nExperimental note: This behavior needs to be checked against\nvarious dataplanes; it may need to be changed.\nSee https://github.com/kubernetes-sigs/gateway-api/pull/4001#discussion_r2291405746\nfor more.\n\nIf 0, the body will not be sent to the authorization server.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "maxSize" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthGrpc" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what headers from the client request\nwill be sent to the authorization server.\n\nIf this list is empty, then all headers must be sent.\n\nIf the list has entries, only those entries must be sent.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersExternalAuthHttp" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what additional headers from the client request\nwill be sent to the authorization server.\n\nThe following headers must always be sent to the authorization server,\nregardless of this setting:\n\n* `Host`\n* `Method`\n* `Path`\n* `Content-Length`\n* `Authorization`\n\nIf this list is empty, then only those headers must be sent.\n\nNote that `Content-Length` has a special behavior, in that the length\nsent must be correct for the actual request to the external authorization\nserver - that is, it must reflect the actual number of bytes sent in the\nbody of the request to the authorization server.\n\nSo if the `forwardBody` stanza is unset, or `forwardBody.maxSize` is set\nto `0`, then `Content-Length` must be `0`. If `forwardBody.maxSize` is set\nto anything other than `0`, then the `Content-Length` of the authorization\nrequest must be set to the actual number of bytes forwarded.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "allowedResponseHeaders" = mkOption {
-          description = "AllowedResponseHeaders specifies what headers from the authorization response\nwill be copied into the request to the backend.\n\nIf this list is empty, then all headers from the authorization server\nexcept Authority or Host must be copied.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "path" = mkOption {
-          description = "Path sets the prefix that paths from the client request will have added\nwhen forwarded to the authorization server.\n\nWhen empty or unspecified, no prefix is added.\n\nValid values are the same as the \"value\" regex for path values in the `match`\nstanza, and the validation regex will screen out invalid paths in the same way.\nEven with the validation, implementations MUST sanitize this input before using it\ndirectly.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-        "allowedResponseHeaders" = mkOverride 1002 null;
-        "path" = mkOverride 1002 null;
-      };
-
-    };
     "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesFiltersRequestHeaderModifier" = {
 
       options = {
@@ -3605,7 +3247,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3621,7 +3263,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3818,7 +3460,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3834,7 +3476,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3942,7 +3584,7 @@ let
           type = (types.nullOr types.str);
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -3990,82 +3632,6 @@ let
 
       config = {
         "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesRetry" = {
-
-      options = {
-        "attempts" = mkOption {
-          description = "Attempts specifies the maximum number of times an individual request\nfrom the gateway to a backend should be retried.\n\nIf the maximum number of retries has been attempted without a successful\nresponse from the backend, the Gateway MUST return an error.\n\nWhen this field is unspecified, the number of times to attempt to retry\na backend request is implementation-specific.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "backoff" = mkOption {
-          description = "Backoff specifies the minimum duration a Gateway should wait between\nretry attempts and is represented in Gateway API Duration formatting.\n\nFor example, setting the `rules[].retry.backoff` field to the value\n`100ms` will cause a backend request to first be retried approximately\n100 milliseconds after timing out or receiving a response code configured\nto be retriable.\n\nAn implementation MAY use an exponential or alternative backoff strategy\nfor subsequent retry attempts, MAY cap the maximum backoff duration to\nsome amount greater than the specified minimum, and MAY add arbitrary\njitter to stagger requests, as long as unsuccessful backend requests are\nnot retried before the configured minimum duration.\n\nIf a Request timeout (`rules[].timeouts.request`) is configured on the\nroute, the entire duration of the initial request and any retry attempts\nMUST not exceed the Request timeout duration. If any retry attempts are\nstill in progress when the Request timeout duration has been reached,\nthese SHOULD be canceled if possible and the Gateway MUST immediately\nreturn a timeout error.\n\nIf a BackendRequest timeout (`rules[].timeouts.backendRequest`) is\nconfigured on the route, any retry attempts which reach the configured\nBackendRequest timeout duration without a response SHOULD be canceled if\npossible and the Gateway should wait for at least the specified backoff\nduration before attempting to retry the backend request again.\n\nIf a BackendRequest timeout is _not_ configured on the route, retry\nattempts MAY time out after an implementation default duration, or MAY\nremain pending until a configured Request timeout or implementation\ndefault duration for total request time is reached.\n\nWhen this field is unspecified, the time to wait between retry attempts\nis implementation-specific.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "codes" = mkOption {
-          description = "Codes defines the HTTP response status codes for which a backend request\nshould be retried.\n\nSupport: Extended";
-          type = (types.nullOr (types.listOf types.int));
-        };
-      };
-
-      config = {
-        "attempts" = mkOverride 1002 null;
-        "backoff" = mkOverride 1002 null;
-        "codes" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesSessionPersistence" = {
-
-      options = {
-        "absoluteTimeout" = mkOption {
-          description = "AbsoluteTimeout defines the absolute timeout of the persistent\nsession. Once the AbsoluteTimeout duration has elapsed, the\nsession becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "cookieConfig" = mkOption {
-          description = "CookieConfig provides configuration settings that are specific\nto cookie-based session persistence.\n\nSupport: Core";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesSessionPersistenceCookieConfig"
-            )
-          );
-        };
-        "idleTimeout" = mkOption {
-          description = "IdleTimeout defines the idle timeout of the persistent session.\nOnce the session has been idle for more than the specified\nIdleTimeout duration, the session becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "sessionName" = mkOption {
-          description = "SessionName defines the name of the persistent session token\nwhich may be reflected in the cookie or the header. Users\nshould avoid reusing session names to prevent unintended\nconsequences, such as rejection or unpredictable behavior.\n\nSupport: Implementation-specific";
-          type = (types.nullOr types.str);
-        };
-        "type" = mkOption {
-          description = "Type defines the type of session persistence such as through\nthe use of a header or cookie. Defaults to cookie based session\npersistence.\n\nSupport: Core for \"Cookie\" type\n\nSupport: Extended for \"Header\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "absoluteTimeout" = mkOverride 1002 null;
-        "cookieConfig" = mkOverride 1002 null;
-        "idleTimeout" = mkOverride 1002 null;
-        "sessionName" = mkOverride 1002 null;
-        "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1.HTTPRouteSpecRulesSessionPersistenceCookieConfig" = {
-
-      options = {
-        "lifetimeType" = mkOption {
-          description = "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\nDefaults to \"Session\".\n\nSupport: Core for \"Session\" type\n\nSupport: Extended for \"Permanent\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "lifetimeType" = mkOverride 1002 null;
       };
 
     };
@@ -4170,11 +3736,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -4764,7 +4330,7 @@ let
           type = (types.listOf types.str);
         };
         "parentRefs" = mkOption {
-          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.";
+          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.";
           type = (
             types.nullOr (
               coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1.TLSRouteSpecParentRefs" "name" [ ]
@@ -4779,15 +4345,10 @@ let
           );
           apply = attrsToList;
         };
-        "useDefaultGateways" = mkOption {
-          description = "UseDefaultGateways indicates the default Gateway scope to use for this\nRoute. If unset (the default) or set to None, the Route will not be\nattached to any default Gateway; if set, it will be attached to any\ndefault Gateway supporting the named scope, subject to the usual rules\nabout which Routes a Gateway is allowed to claim.\n\nThink carefully before using this functionality! The set of default\nGateways supporting the requested scope can change over time without\nany notice to the Route author, and in many situations it will not be\nappropriate to request a default Gateway for a given Route -- for\nexample, a Route with specific security requirements should almost\ncertainly not use a default Gateway.";
-          type = (types.nullOr types.str);
-        };
       };
 
       config = {
         "parentRefs" = mkOverride 1002 null;
-        "useDefaultGateways" = mkOverride 1002 null;
       };
 
     };
@@ -4807,11 +4368,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -4972,553 +4533,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "sectionName" = mkOption {
-          description = "SectionName is the name of a section within the target resource. In the\nfollowing resources, SectionName is interpreted as the following:\n\n* Gateway: Listener name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n* Service: Port name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n\nImplementations MAY choose to support attaching Routes to other resources.\nIf that is the case, they MUST clearly document how SectionName is\ninterpreted.\n\nWhen unspecified (empty string), this will reference the entire resource.\nFor the purpose of status, an attachment is considered successful if at\nleast one section in the parent resource accepts it. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment from\nthe referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route, the\nRoute MUST be considered detached from the Gateway.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "sectionName" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRoute" = {
-
-      options = {
-        "apiVersion" = mkOption {
-          description = "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds";
-          type = (types.nullOr types.str);
-        };
-        "metadata" = mkOption {
-          description = "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata";
-          type = (types.nullOr (globalSubmoduleOf "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"));
-        };
-        "spec" = mkOption {
-          description = "Spec defines the desired state of TCPRoute.";
-          type = (submoduleOf "gateway.networking.k8s.io.v1alpha2.TCPRouteSpec");
-        };
-        "status" = mkOption {
-          description = "Status defines the current state of TCPRoute.";
-          type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1alpha2.TCPRouteStatus"));
-        };
-      };
-
-      config = {
-        "apiVersion" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "metadata" = mkOverride 1002 null;
-        "status" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteSpec" = {
-
-      options = {
-        "parentRefs" = mkOption {
-          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.";
-          type = (
-            types.nullOr (
-              coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1alpha2.TCPRouteSpecParentRefs"
-                "name"
-                [ ]
-            )
-          );
-          apply = attrsToList;
-        };
-        "rules" = mkOption {
-          description = "Rules are a list of TCP matchers and actions.";
-          type = (
-            coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1alpha2.TCPRouteSpecRules" "name" [ ]
-          );
-          apply = attrsToList;
-        };
-        "useDefaultGateways" = mkOption {
-          description = "UseDefaultGateways indicates the default Gateway scope to use for this\nRoute. If unset (the default) or set to None, the Route will not be\nattached to any default Gateway; if set, it will be attached to any\ndefault Gateway supporting the named scope, subject to the usual rules\nabout which Routes a Gateway is allowed to claim.\n\nThink carefully before using this functionality! The set of default\nGateways supporting the requested scope can change over time without\nany notice to the Route author, and in many situations it will not be\nappropriate to request a default Gateway for a given Route -- for\nexample, a Route with specific security requirements should almost\ncertainly not use a default Gateway.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "parentRefs" = mkOverride 1002 null;
-        "useDefaultGateways" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteSpecParentRefs" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent.\nWhen unspecified, \"gateway.networking.k8s.io\" is inferred.\nTo set the core API group (such as for a \"Service\" kind referent),\nGroup must be explicitly set to \"\" (empty string).\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the referent.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nSupport for other resources is Implementation-Specific.";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.\n\nSupport: Core";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "sectionName" = mkOption {
-          description = "SectionName is the name of a section within the target resource. In the\nfollowing resources, SectionName is interpreted as the following:\n\n* Gateway: Listener name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n* Service: Port name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n\nImplementations MAY choose to support attaching Routes to other resources.\nIf that is the case, they MUST clearly document how SectionName is\ninterpreted.\n\nWhen unspecified (empty string), this will reference the entire resource.\nFor the purpose of status, an attachment is considered successful if at\nleast one section in the parent resource accepts it. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment from\nthe referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route, the\nRoute MUST be considered detached from the Gateway.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "sectionName" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteSpecRules" = {
-
-      options = {
-        "backendRefs" = mkOption {
-          description = "BackendRefs defines the backend(s) where matching requests should be\nsent. If unspecified or invalid (refers to a nonexistent resource or a\nService with no endpoints), the underlying implementation MUST actively\nreject connection attempts to this backend. Connection rejections must\nrespect weight; if an invalid backend is requested to have 80% of\nconnections, then 80% of connections must be rejected instead.\n\nSupport: Core for Kubernetes Service\n\nSupport: Extended for Kubernetes ServiceImport\n\nSupport: Implementation-specific for any other resource\n\nSupport for weight: Extended";
-          type = (
-            coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1alpha2.TCPRouteSpecRulesBackendRefs"
-              "name"
-              [ ]
-          );
-          apply = attrsToList;
-        };
-        "name" = mkOption {
-          description = "Name is the name of the route rule. This name MUST be unique within a Route if it is set.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "name" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteSpecRulesBackendRefs" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred.";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is the Kubernetes resource kind of the referent. For example\n\"Service\".\n\nDefaults to \"Service\" when not specified.\n\nExternalName services can refer to CNAME DNS records that may live\noutside of the cluster and as such are difficult to reason about in\nterms of conformance. They also may not be safe to forward to (see\nCVE-2021-25740 for more information). Implementations SHOULD NOT\nsupport ExternalName Services.\n\nSupport: Core (Services with a type other than ExternalName)\n\nSupport: Implementation-specific (Services with type ExternalName)";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the backend. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port specifies the destination port number to use for this resource.\nPort is required when the referent is a Kubernetes Service. In this\ncase, the port number is the service port number, not the target port.\nFor other resources, destination port might be derived from the referent\nresource or this field.";
-          type = (types.nullOr types.int);
-        };
-        "weight" = mkOption {
-          description = "Weight specifies the proportion of requests forwarded to the referenced\nbackend. This is computed as weight/(sum of all weights in this\nBackendRefs list). For non-zero values, there may be some epsilon from\nthe exact proportion defined here depending on the precision an\nimplementation supports. Weight is not a percentage and the sum of\nweights does not need to equal 100.\n\nIf only one backend is specified and it has a weight greater than 0, 100%\nof the traffic is forwarded to that backend. If weight is set to 0, no\ntraffic should be forwarded for this entry. If unspecified, weight\ndefaults to 1.\n\nSupport for this field varies based on the context where used.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "weight" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteStatus" = {
-
-      options = {
-        "parents" = mkOption {
-          description = "Parents is a list of parent resources (usually Gateways) that are\nassociated with the route, and the status of the route with respect to\neach parent. When this route attaches to a parent, the controller that\nmanages the parent must add an entry to this list when the controller\nfirst sees the route and should update the entry as appropriate when the\nroute or gateway is modified.\n\nNote that parent references that cannot be resolved by an implementation\nof this API will not be added to this list. Implementations of this API\ncan only populate Route status for the Gateways/parent resources they are\nresponsible for.\n\nA maximum of 32 Gateways will be represented in this list. An empty list\nmeans the route has not been attached to any Gateway.";
-          type = (types.listOf (submoduleOf "gateway.networking.k8s.io.v1alpha2.TCPRouteStatusParents"));
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteStatusParents" = {
-
-      options = {
-        "conditions" = mkOption {
-          description = "Conditions describes the status of the route with respect to the Gateway.\nNote that the route's availability is also subject to the Gateway's own\nstatus conditions and listener status.\n\nIf the Route's ParentRef specifies an existing Gateway that supports\nRoutes of this kind AND that Gateway's controller has sufficient access,\nthen that Gateway's controller MUST set the \"Accepted\" condition on the\nRoute, to indicate whether the route has been accepted or rejected by the\nGateway, and why.\n\nA Route MUST be considered \"Accepted\" if at least one of the Route's\nrules is implemented by the Gateway.\n\nThere are a number of cases where the \"Accepted\" condition may not be set\ndue to lack of controller visibility, that includes when:\n\n* The Route refers to a nonexistent parent.\n* The Route is of a type that the controller does not support.\n* The Route is in a namespace to which the controller does not have access.";
-          type = (
-            types.listOf (submoduleOf "gateway.networking.k8s.io.v1alpha2.TCPRouteStatusParentsConditions")
-          );
-        };
-        "controllerName" = mkOption {
-          description = "ControllerName is a domain/path string that indicates the name of the\ncontroller that wrote this status. This corresponds with the\ncontrollerName field on GatewayClass.\n\nExample: \"example.net/gateway-controller\".\n\nThe format of this field is DOMAIN \"/\" PATH, where DOMAIN and PATH are\nvalid Kubernetes names\n(https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names).\n\nControllers MUST populate this field when writing status. Controllers should ensure that\nentries to status populated with their ControllerName are cleaned up when they are no\nlonger necessary.";
-          type = types.str;
-        };
-        "parentRef" = mkOption {
-          description = "ParentRef corresponds with a ParentRef in the spec that this\nRouteParentStatus struct describes the status of.";
-          type = (submoduleOf "gateway.networking.k8s.io.v1alpha2.TCPRouteStatusParentsParentRef");
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteStatusParentsConditions" = {
-
-      options = {
-        "lastTransitionTime" = mkOption {
-          description = "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.";
-          type = types.str;
-        };
-        "message" = mkOption {
-          description = "message is a human readable message indicating details about the transition.\nThis may be an empty string.";
-          type = types.str;
-        };
-        "observedGeneration" = mkOption {
-          description = "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.";
-          type = (types.nullOr types.int);
-        };
-        "reason" = mkOption {
-          description = "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.";
-          type = types.str;
-        };
-        "status" = mkOption {
-          description = "status of the condition, one of True, False, Unknown.";
-          type = types.str;
-        };
-        "type" = mkOption {
-          description = "type of condition in CamelCase or in foo.example.com/CamelCase.";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "observedGeneration" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.TCPRouteStatusParentsParentRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent.\nWhen unspecified, \"gateway.networking.k8s.io\" is inferred.\nTo set the core API group (such as for a \"Service\" kind referent),\nGroup must be explicitly set to \"\" (empty string).\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the referent.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nSupport for other resources is Implementation-Specific.";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.\n\nSupport: Core";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "sectionName" = mkOption {
-          description = "SectionName is the name of a section within the target resource. In the\nfollowing resources, SectionName is interpreted as the following:\n\n* Gateway: Listener name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n* Service: Port name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n\nImplementations MAY choose to support attaching Routes to other resources.\nIf that is the case, they MUST clearly document how SectionName is\ninterpreted.\n\nWhen unspecified (empty string), this will reference the entire resource.\nFor the purpose of status, an attachment is considered successful if at\nleast one section in the parent resource accepts it. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment from\nthe referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route, the\nRoute MUST be considered detached from the Gateway.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "sectionName" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRoute" = {
-
-      options = {
-        "apiVersion" = mkOption {
-          description = "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds";
-          type = (types.nullOr types.str);
-        };
-        "metadata" = mkOption {
-          description = "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata";
-          type = (types.nullOr (globalSubmoduleOf "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"));
-        };
-        "spec" = mkOption {
-          description = "Spec defines the desired state of UDPRoute.";
-          type = (submoduleOf "gateway.networking.k8s.io.v1alpha2.UDPRouteSpec");
-        };
-        "status" = mkOption {
-          description = "Status defines the current state of UDPRoute.";
-          type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1alpha2.UDPRouteStatus"));
-        };
-      };
-
-      config = {
-        "apiVersion" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "metadata" = mkOverride 1002 null;
-        "status" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteSpec" = {
-
-      options = {
-        "parentRefs" = mkOption {
-          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.";
-          type = (
-            types.nullOr (
-              coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1alpha2.UDPRouteSpecParentRefs"
-                "name"
-                [ ]
-            )
-          );
-          apply = attrsToList;
-        };
-        "rules" = mkOption {
-          description = "Rules are a list of UDP matchers and actions.";
-          type = (
-            coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1alpha2.UDPRouteSpecRules" "name" [ ]
-          );
-          apply = attrsToList;
-        };
-        "useDefaultGateways" = mkOption {
-          description = "UseDefaultGateways indicates the default Gateway scope to use for this\nRoute. If unset (the default) or set to None, the Route will not be\nattached to any default Gateway; if set, it will be attached to any\ndefault Gateway supporting the named scope, subject to the usual rules\nabout which Routes a Gateway is allowed to claim.\n\nThink carefully before using this functionality! The set of default\nGateways supporting the requested scope can change over time without\nany notice to the Route author, and in many situations it will not be\nappropriate to request a default Gateway for a given Route -- for\nexample, a Route with specific security requirements should almost\ncertainly not use a default Gateway.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "parentRefs" = mkOverride 1002 null;
-        "useDefaultGateways" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteSpecParentRefs" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent.\nWhen unspecified, \"gateway.networking.k8s.io\" is inferred.\nTo set the core API group (such as for a \"Service\" kind referent),\nGroup must be explicitly set to \"\" (empty string).\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the referent.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nSupport for other resources is Implementation-Specific.";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.\n\nSupport: Core";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "sectionName" = mkOption {
-          description = "SectionName is the name of a section within the target resource. In the\nfollowing resources, SectionName is interpreted as the following:\n\n* Gateway: Listener name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n* Service: Port name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n\nImplementations MAY choose to support attaching Routes to other resources.\nIf that is the case, they MUST clearly document how SectionName is\ninterpreted.\n\nWhen unspecified (empty string), this will reference the entire resource.\nFor the purpose of status, an attachment is considered successful if at\nleast one section in the parent resource accepts it. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment from\nthe referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route, the\nRoute MUST be considered detached from the Gateway.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "sectionName" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteSpecRules" = {
-
-      options = {
-        "backendRefs" = mkOption {
-          description = "BackendRefs defines the backend(s) where matching requests should be\nsent. If unspecified or invalid (refers to a nonexistent resource or a\nService with no endpoints), the underlying implementation MUST actively\nreject connection attempts to this backend. Packet drops must\nrespect weight; if an invalid backend is requested to have 80% of\nthe packets, then 80% of packets must be dropped instead.\n\nSupport: Core for Kubernetes Service\n\nSupport: Extended for Kubernetes ServiceImport\n\nSupport: Implementation-specific for any other resource\n\nSupport for weight: Extended";
-          type = (
-            coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1alpha2.UDPRouteSpecRulesBackendRefs"
-              "name"
-              [ ]
-          );
-          apply = attrsToList;
-        };
-        "name" = mkOption {
-          description = "Name is the name of the route rule. This name MUST be unique within a Route if it is set.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "name" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteSpecRulesBackendRefs" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred.";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is the Kubernetes resource kind of the referent. For example\n\"Service\".\n\nDefaults to \"Service\" when not specified.\n\nExternalName services can refer to CNAME DNS records that may live\noutside of the cluster and as such are difficult to reason about in\nterms of conformance. They also may not be safe to forward to (see\nCVE-2021-25740 for more information). Implementations SHOULD NOT\nsupport ExternalName Services.\n\nSupport: Core (Services with a type other than ExternalName)\n\nSupport: Implementation-specific (Services with type ExternalName)";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the backend. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port specifies the destination port number to use for this resource.\nPort is required when the referent is a Kubernetes Service. In this\ncase, the port number is the service port number, not the target port.\nFor other resources, destination port might be derived from the referent\nresource or this field.";
-          type = (types.nullOr types.int);
-        };
-        "weight" = mkOption {
-          description = "Weight specifies the proportion of requests forwarded to the referenced\nbackend. This is computed as weight/(sum of all weights in this\nBackendRefs list). For non-zero values, there may be some epsilon from\nthe exact proportion defined here depending on the precision an\nimplementation supports. Weight is not a percentage and the sum of\nweights does not need to equal 100.\n\nIf only one backend is specified and it has a weight greater than 0, 100%\nof the traffic is forwarded to that backend. If weight is set to 0, no\ntraffic should be forwarded for this entry. If unspecified, weight\ndefaults to 1.\n\nSupport for this field varies based on the context where used.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "weight" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteStatus" = {
-
-      options = {
-        "parents" = mkOption {
-          description = "Parents is a list of parent resources (usually Gateways) that are\nassociated with the route, and the status of the route with respect to\neach parent. When this route attaches to a parent, the controller that\nmanages the parent must add an entry to this list when the controller\nfirst sees the route and should update the entry as appropriate when the\nroute or gateway is modified.\n\nNote that parent references that cannot be resolved by an implementation\nof this API will not be added to this list. Implementations of this API\ncan only populate Route status for the Gateways/parent resources they are\nresponsible for.\n\nA maximum of 32 Gateways will be represented in this list. An empty list\nmeans the route has not been attached to any Gateway.";
-          type = (types.listOf (submoduleOf "gateway.networking.k8s.io.v1alpha2.UDPRouteStatusParents"));
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteStatusParents" = {
-
-      options = {
-        "conditions" = mkOption {
-          description = "Conditions describes the status of the route with respect to the Gateway.\nNote that the route's availability is also subject to the Gateway's own\nstatus conditions and listener status.\n\nIf the Route's ParentRef specifies an existing Gateway that supports\nRoutes of this kind AND that Gateway's controller has sufficient access,\nthen that Gateway's controller MUST set the \"Accepted\" condition on the\nRoute, to indicate whether the route has been accepted or rejected by the\nGateway, and why.\n\nA Route MUST be considered \"Accepted\" if at least one of the Route's\nrules is implemented by the Gateway.\n\nThere are a number of cases where the \"Accepted\" condition may not be set\ndue to lack of controller visibility, that includes when:\n\n* The Route refers to a nonexistent parent.\n* The Route is of a type that the controller does not support.\n* The Route is in a namespace to which the controller does not have access.";
-          type = (
-            types.listOf (submoduleOf "gateway.networking.k8s.io.v1alpha2.UDPRouteStatusParentsConditions")
-          );
-        };
-        "controllerName" = mkOption {
-          description = "ControllerName is a domain/path string that indicates the name of the\ncontroller that wrote this status. This corresponds with the\ncontrollerName field on GatewayClass.\n\nExample: \"example.net/gateway-controller\".\n\nThe format of this field is DOMAIN \"/\" PATH, where DOMAIN and PATH are\nvalid Kubernetes names\n(https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names).\n\nControllers MUST populate this field when writing status. Controllers should ensure that\nentries to status populated with their ControllerName are cleaned up when they are no\nlonger necessary.";
-          type = types.str;
-        };
-        "parentRef" = mkOption {
-          description = "ParentRef corresponds with a ParentRef in the spec that this\nRouteParentStatus struct describes the status of.";
-          type = (submoduleOf "gateway.networking.k8s.io.v1alpha2.UDPRouteStatusParentsParentRef");
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteStatusParentsConditions" = {
-
-      options = {
-        "lastTransitionTime" = mkOption {
-          description = "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.";
-          type = types.str;
-        };
-        "message" = mkOption {
-          description = "message is a human readable message indicating details about the transition.\nThis may be an empty string.";
-          type = types.str;
-        };
-        "observedGeneration" = mkOption {
-          description = "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.";
-          type = (types.nullOr types.int);
-        };
-        "reason" = mkOption {
-          description = "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.";
-          type = types.str;
-        };
-        "status" = mkOption {
-          description = "status of the condition, one of True, False, Unknown.";
-          type = types.str;
-        };
-        "type" = mkOption {
-          description = "type of condition in CamelCase or in foo.example.com/CamelCase.";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "observedGeneration" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1alpha2.UDPRouteStatusParentsParentRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent.\nWhen unspecified, \"gateway.networking.k8s.io\" is inferred.\nTo set the core API group (such as for a \"Service\" kind referent),\nGroup must be explicitly set to \"\" (empty string).\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the referent.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nSupport for other resources is Implementation-Specific.";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.\n\nSupport: Core";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -5743,10 +4762,6 @@ let
           description = "AllowedListeners defines which ListenerSets can be attached to this Gateway.\nThe default value is to allow no ListenerSets.";
           type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1beta1.GatewaySpecAllowedListeners"));
         };
-        "defaultScope" = mkOption {
-          description = "DefaultScope, when set, configures the Gateway as a default Gateway,\nmeaning it will dynamically and implicitly have Routes (e.g. HTTPRoute)\nattached to it, according to the scope configured here.\n\nIf unset (the default) or set to None, the Gateway will not act as a\ndefault Gateway; if set, the Gateway will claim any Route with a\nmatching scope set in its UseDefaultGateway field, subject to the usual\nrules about which routes the Gateway can attach to.\n\nThink carefully before using this functionality! While the normal rules\nabout which Route can apply are still enforced, it is simply easier for\nthe wrong Route to be accidentally attached to this Gateway in this\nconfiguration. If the Gateway operator is not also the operator in\ncontrol of the scope (e.g. namespace) with tight controls and checks on\nwhat kind of workloads and Routes get added in that scope, we strongly\nrecommend not using this just because it seems convenient, and instead\nstick to direct Route attachment.";
-          type = (types.nullOr types.str);
-        };
         "gatewayClassName" = mkOption {
           description = "GatewayClassName used for this Gateway. This is the name of a\nGatewayClass resource.";
           type = types.str;
@@ -5773,7 +4788,6 @@ let
       config = {
         "addresses" = mkOverride 1002 null;
         "allowedListeners" = mkOverride 1002 null;
-        "defaultScope" = mkOverride 1002 null;
         "infrastructure" = mkOverride 1002 null;
         "tls" = mkOverride 1002 null;
       };
@@ -6606,7 +5620,7 @@ let
           type = (types.nullOr (types.listOf types.str));
         };
         "parentRefs" = mkOption {
-          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.";
+          description = "ParentRefs references the resources (usually Gateways) that a Route wants\nto be attached to. Note that the referenced parent resource needs to\nallow this for the attachment to be complete. For Gateways, that means\nthe Gateway needs to allow attachment from Routes of this kind and\nnamespace. For Services, that means the Service must either be in the same\nnamespace for a \"producer\" route, or the mesh implementation must support\nand allow \"consumer\" routes for the referenced Service. ReferenceGrant is\nnot applicable for governing ParentRefs to Services - it is not possible to\ncreate a \"producer\" route for a Service in a different namespace from the\nRoute.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nThis API may be extended in the future to support additional kinds of parent\nresources.\n\nParentRefs must be _distinct_. This means either that:\n\n* They select different objects.  If this is the case, then parentRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, `namespace`, and `name` must\n  be unique across all parentRef entries in the Route.\n* They do not select different objects, but for each optional field used,\n  each ParentRef that selects the same object must set the same set of\n  optional fields to different values. If one ParentRef sets a\n  combination of optional fields, all must set the same combination.\n\nSome examples:\n\n* If one ParentRef sets `sectionName`, all ParentRefs referencing the\n  same object must also set `sectionName`.\n* If one ParentRef sets `port`, all ParentRefs referencing the same\n  object must also set `port`.\n* If one ParentRef sets `sectionName` and `port`, all ParentRefs\n  referencing the same object must also set `sectionName` and `port`.\n\nIt is possible to separately reference multiple distinct objects that may\nbe collapsed by an implementation. For example, some implementations may\nchoose to merge compatible Gateway Listeners together. If that is the\ncase, the list of routes attached to those resources should also be\nmerged.\n\nNote that for ParentRefs that cross namespace boundaries, there are specific\nrules. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example,\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable other kinds of cross-namespace reference.";
           type = (
             types.nullOr (
               coerceAttrsOfSubmodulesToListByKey "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecParentRefs"
@@ -6625,17 +5639,12 @@ let
           );
           apply = attrsToList;
         };
-        "useDefaultGateways" = mkOption {
-          description = "UseDefaultGateways indicates the default Gateway scope to use for this\nRoute. If unset (the default) or set to None, the Route will not be\nattached to any default Gateway; if set, it will be attached to any\ndefault Gateway supporting the named scope, subject to the usual rules\nabout which Routes a Gateway is allowed to claim.\n\nThink carefully before using this functionality! The set of default\nGateways supporting the requested scope can change over time without\nany notice to the Route author, and in many situations it will not be\nappropriate to request a default Gateway for a given Route -- for\nexample, a Route with specific security requirements should almost\ncertainly not use a default Gateway.";
-          type = (types.nullOr types.str);
-        };
       };
 
       config = {
         "hostnames" = mkOverride 1002 null;
         "parentRefs" = mkOverride 1002 null;
         "rules" = mkOverride 1002 null;
-        "useDefaultGateways" = mkOverride 1002 null;
       };
 
     };
@@ -6655,11 +5664,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -6711,16 +5720,6 @@ let
           description = "Name is the name of the route rule. This name MUST be unique within a Route if it is set.\n\nSupport: Extended";
           type = (types.nullOr types.str);
         };
-        "retry" = mkOption {
-          description = "Retry defines the configuration for when to retry an HTTP request.\n\nSupport: Extended";
-          type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesRetry"));
-        };
-        "sessionPersistence" = mkOption {
-          description = "SessionPersistence defines and configures session persistence\nfor the route rule.\n\nSupport: Extended";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesSessionPersistence")
-          );
-        };
         "timeouts" = mkOption {
           description = "Timeouts defines the timeouts that can be configured for an HTTP request.\n\nSupport: Extended";
           type = (types.nullOr (submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesTimeouts"));
@@ -6732,8 +5731,6 @@ let
         "filters" = mkOverride 1002 null;
         "matches" = mkOverride 1002 null;
         "name" = mkOverride 1002 null;
-        "retry" = mkOverride 1002 null;
-        "sessionPersistence" = mkOverride 1002 null;
         "timeouts" = mkOverride 1002 null;
       };
 
@@ -6804,14 +5801,6 @@ let
             )
           );
         };
-        "externalAuth" = mkOption {
-          description = "ExternalAuth configures settings related to sending request details\nto an external auth service. The external service MUST authenticate\nthe request, and MAY authorize the request as well.\n\nIf there is any problem communicating with the external service,\nthis filter MUST fail closed.\n\nSupport: Extended";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuth"
-            )
-          );
-        };
         "requestHeaderModifier" = mkOption {
           description = "RequestHeaderModifier defines a schema for a filter that modifies request\nheaders.\n\nSupport: Core";
           type = (
@@ -6861,7 +5850,6 @@ let
       config = {
         "cors" = mkOverride 1002 null;
         "extensionRef" = mkOverride 1002 null;
-        "externalAuth" = mkOverride 1002 null;
         "requestHeaderModifier" = mkOverride 1002 null;
         "requestMirror" = mkOverride 1002 null;
         "requestRedirect" = mkOverride 1002 null;
@@ -6929,137 +5917,6 @@ let
       config = { };
 
     };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuth" = {
-
-      options = {
-        "backendRef" = mkOption {
-          description = "BackendRef is a reference to a backend to send authorization\nrequests to.\n\nThe backend must speak the selected protocol (GRPC or HTTP) on the\nreferenced port.\n\nIf the backend service requires TLS, use BackendTLSPolicy to tell the\nimplementation to supply the TLS details to be used to connect to that\nbackend.";
-          type = (
-            submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthBackendRef"
-          );
-        };
-        "forwardBody" = mkOption {
-          description = "ForwardBody controls if requests to the authorization server should include\nthe body of the client request; and if so, how big that body is allowed\nto be.\n\nIt is expected that implementations will buffer the request body up to\n`forwardBody.maxSize` bytes. Bodies over that size must be rejected with a\n4xx series error (413 or 403 are common examples), and fail processing\nof the filter.\n\nIf unset, or `forwardBody.maxSize` is set to `0`, then the body will not\nbe forwarded.\n\nFeature Name: HTTPRouteExternalAuthForwardBody";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthForwardBody"
-            )
-          );
-        };
-        "grpc" = mkOption {
-          description = "GRPCAuthConfig contains configuration for communication with ext_authz\nprotocol-speaking backends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthGrpc"
-            )
-          );
-        };
-        "http" = mkOption {
-          description = "HTTPAuthConfig contains configuration for communication with HTTP-speaking\nbackends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthHttp"
-            )
-          );
-        };
-        "protocol" = mkOption {
-          description = "ExternalAuthProtocol describes which protocol to use when communicating with an\next_authz authorization server.\n\nWhen this is set to GRPC, each backend must use the Envoy ext_authz protocol\non the port specified in `backendRefs`. Requests and responses are defined\nin the protobufs explained at:\nhttps://www.envoyproxy.io/docs/envoy/latest/api-v3/service/auth/v3/external_auth.proto\n\nWhen this is set to HTTP, each backend must respond with a `200` status\ncode in on a successful authorization. Any other code is considered\nan authorization failure.\n\nFeature Names:\nGRPC Support - HTTPRouteExternalAuthGRPC\nHTTP Support - HTTPRouteExternalAuthHTTP";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "forwardBody" = mkOverride 1002 null;
-        "grpc" = mkOverride 1002 null;
-        "http" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthBackendRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred.";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is the Kubernetes resource kind of the referent. For example\n\"Service\".\n\nDefaults to \"Service\" when not specified.\n\nExternalName services can refer to CNAME DNS records that may live\noutside of the cluster and as such are difficult to reason about in\nterms of conformance. They also may not be safe to forward to (see\nCVE-2021-25740 for more information). Implementations SHOULD NOT\nsupport ExternalName Services.\n\nSupport: Core (Services with a type other than ExternalName)\n\nSupport: Implementation-specific (Services with type ExternalName)";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the backend. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port specifies the destination port number to use for this resource.\nPort is required when the referent is a Kubernetes Service. In this\ncase, the port number is the service port number, not the target port.\nFor other resources, destination port might be derived from the referent\nresource or this field.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthForwardBody" = {
-
-      options = {
-        "maxSize" = mkOption {
-          description = "MaxSize specifies how large in bytes the largest body that will be buffered\nand sent to the authorization server. If the body size is larger than\n`maxSize`, then the body sent to the authorization server must be\ntruncated to `maxSize` bytes.\n\nExperimental note: This behavior needs to be checked against\nvarious dataplanes; it may need to be changed.\nSee https://github.com/kubernetes-sigs/gateway-api/pull/4001#discussion_r2291405746\nfor more.\n\nIf 0, the body will not be sent to the authorization server.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "maxSize" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthGrpc" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what headers from the client request\nwill be sent to the authorization server.\n\nIf this list is empty, then all headers must be sent.\n\nIf the list has entries, only those entries must be sent.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersExternalAuthHttp" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what additional headers from the client request\nwill be sent to the authorization server.\n\nThe following headers must always be sent to the authorization server,\nregardless of this setting:\n\n* `Host`\n* `Method`\n* `Path`\n* `Content-Length`\n* `Authorization`\n\nIf this list is empty, then only those headers must be sent.\n\nNote that `Content-Length` has a special behavior, in that the length\nsent must be correct for the actual request to the external authorization\nserver - that is, it must reflect the actual number of bytes sent in the\nbody of the request to the authorization server.\n\nSo if the `forwardBody` stanza is unset, or `forwardBody.maxSize` is set\nto `0`, then `Content-Length` must be `0`. If `forwardBody.maxSize` is set\nto anything other than `0`, then the `Content-Length` of the authorization\nrequest must be set to the actual number of bytes forwarded.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "allowedResponseHeaders" = mkOption {
-          description = "AllowedResponseHeaders specifies what headers from the authorization response\nwill be copied into the request to the backend.\n\nIf this list is empty, then all headers from the authorization server\nexcept Authority or Host must be copied.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "path" = mkOption {
-          description = "Path sets the prefix that paths from the client request will have added\nwhen forwarded to the authorization server.\n\nWhen empty or unspecified, no prefix is added.\n\nValid values are the same as the \"value\" regex for path values in the `match`\nstanza, and the validation regex will screen out invalid paths in the same way.\nEven with the validation, implementations MUST sanitize this input before using it\ndirectly.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-        "allowedResponseHeaders" = mkOverride 1002 null;
-        "path" = mkOverride 1002 null;
-      };
-
-    };
     "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesBackendRefsFiltersRequestHeaderModifier" = {
 
       options = {
@@ -7108,7 +5965,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -7124,7 +5981,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -7322,7 +6179,7 @@ let
             type = types.str;
           };
           "value" = mkOption {
-            description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+            description = "Value is the value of HTTP Header to be matched.";
             type = types.str;
           };
         };
@@ -7339,7 +6196,7 @@ let
             type = types.str;
           };
           "value" = mkOption {
-            description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+            description = "Value is the value of HTTP Header to be matched.";
             type = types.str;
           };
         };
@@ -7408,12 +6265,6 @@ let
             types.nullOr (submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExtensionRef")
           );
         };
-        "externalAuth" = mkOption {
-          description = "ExternalAuth configures settings related to sending request details\nto an external auth service. The external service MUST authenticate\nthe request, and MAY authorize the request as well.\n\nIf there is any problem communicating with the external service,\nthis filter MUST fail closed.\n\nSupport: Extended";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuth")
-          );
-        };
         "requestHeaderModifier" = mkOption {
           description = "RequestHeaderModifier defines a schema for a filter that modifies request\nheaders.\n\nSupport: Core";
           type = (
@@ -7461,7 +6312,6 @@ let
       config = {
         "cors" = mkOverride 1002 null;
         "extensionRef" = mkOverride 1002 null;
-        "externalAuth" = mkOverride 1002 null;
         "requestHeaderModifier" = mkOverride 1002 null;
         "requestMirror" = mkOverride 1002 null;
         "requestRedirect" = mkOverride 1002 null;
@@ -7529,137 +6379,6 @@ let
       config = { };
 
     };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuth" = {
-
-      options = {
-        "backendRef" = mkOption {
-          description = "BackendRef is a reference to a backend to send authorization\nrequests to.\n\nThe backend must speak the selected protocol (GRPC or HTTP) on the\nreferenced port.\n\nIf the backend service requires TLS, use BackendTLSPolicy to tell the\nimplementation to supply the TLS details to be used to connect to that\nbackend.";
-          type = (
-            submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthBackendRef"
-          );
-        };
-        "forwardBody" = mkOption {
-          description = "ForwardBody controls if requests to the authorization server should include\nthe body of the client request; and if so, how big that body is allowed\nto be.\n\nIt is expected that implementations will buffer the request body up to\n`forwardBody.maxSize` bytes. Bodies over that size must be rejected with a\n4xx series error (413 or 403 are common examples), and fail processing\nof the filter.\n\nIf unset, or `forwardBody.maxSize` is set to `0`, then the body will not\nbe forwarded.\n\nFeature Name: HTTPRouteExternalAuthForwardBody";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthForwardBody"
-            )
-          );
-        };
-        "grpc" = mkOption {
-          description = "GRPCAuthConfig contains configuration for communication with ext_authz\nprotocol-speaking backends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthGrpc"
-            )
-          );
-        };
-        "http" = mkOption {
-          description = "HTTPAuthConfig contains configuration for communication with HTTP-speaking\nbackends.\n\nIf unset, implementations must assume the default behavior for each\nincluded field is intended.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthHttp"
-            )
-          );
-        };
-        "protocol" = mkOption {
-          description = "ExternalAuthProtocol describes which protocol to use when communicating with an\next_authz authorization server.\n\nWhen this is set to GRPC, each backend must use the Envoy ext_authz protocol\non the port specified in `backendRefs`. Requests and responses are defined\nin the protobufs explained at:\nhttps://www.envoyproxy.io/docs/envoy/latest/api-v3/service/auth/v3/external_auth.proto\n\nWhen this is set to HTTP, each backend must respond with a `200` status\ncode in on a successful authorization. Any other code is considered\nan authorization failure.\n\nFeature Names:\nGRPC Support - HTTPRouteExternalAuthGRPC\nHTTP Support - HTTPRouteExternalAuthHTTP";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "forwardBody" = mkOverride 1002 null;
-        "grpc" = mkOverride 1002 null;
-        "http" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthBackendRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred.";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is the Kubernetes resource kind of the referent. For example\n\"Service\".\n\nDefaults to \"Service\" when not specified.\n\nExternalName services can refer to CNAME DNS records that may live\noutside of the cluster and as such are difficult to reason about in\nterms of conformance. They also may not be safe to forward to (see\nCVE-2021-25740 for more information). Implementations SHOULD NOT\nsupport ExternalName Services.\n\nSupport: Core (Services with a type other than ExternalName)\n\nSupport: Implementation-specific (Services with type ExternalName)";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the backend. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port specifies the destination port number to use for this resource.\nPort is required when the referent is a Kubernetes Service. In this\ncase, the port number is the service port number, not the target port.\nFor other resources, destination port might be derived from the referent\nresource or this field.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthForwardBody" = {
-
-      options = {
-        "maxSize" = mkOption {
-          description = "MaxSize specifies how large in bytes the largest body that will be buffered\nand sent to the authorization server. If the body size is larger than\n`maxSize`, then the body sent to the authorization server must be\ntruncated to `maxSize` bytes.\n\nExperimental note: This behavior needs to be checked against\nvarious dataplanes; it may need to be changed.\nSee https://github.com/kubernetes-sigs/gateway-api/pull/4001#discussion_r2291405746\nfor more.\n\nIf 0, the body will not be sent to the authorization server.";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "maxSize" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthGrpc" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what headers from the client request\nwill be sent to the authorization server.\n\nIf this list is empty, then all headers must be sent.\n\nIf the list has entries, only those entries must be sent.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersExternalAuthHttp" = {
-
-      options = {
-        "allowedHeaders" = mkOption {
-          description = "AllowedRequestHeaders specifies what additional headers from the client request\nwill be sent to the authorization server.\n\nThe following headers must always be sent to the authorization server,\nregardless of this setting:\n\n* `Host`\n* `Method`\n* `Path`\n* `Content-Length`\n* `Authorization`\n\nIf this list is empty, then only those headers must be sent.\n\nNote that `Content-Length` has a special behavior, in that the length\nsent must be correct for the actual request to the external authorization\nserver - that is, it must reflect the actual number of bytes sent in the\nbody of the request to the authorization server.\n\nSo if the `forwardBody` stanza is unset, or `forwardBody.maxSize` is set\nto `0`, then `Content-Length` must be `0`. If `forwardBody.maxSize` is set\nto anything other than `0`, then the `Content-Length` of the authorization\nrequest must be set to the actual number of bytes forwarded.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "allowedResponseHeaders" = mkOption {
-          description = "AllowedResponseHeaders specifies what headers from the authorization response\nwill be copied into the request to the backend.\n\nIf this list is empty, then all headers from the authorization server\nexcept Authority or Host must be copied.";
-          type = (types.nullOr (types.listOf types.str));
-        };
-        "path" = mkOption {
-          description = "Path sets the prefix that paths from the client request will have added\nwhen forwarded to the authorization server.\n\nWhen empty or unspecified, no prefix is added.\n\nValid values are the same as the \"value\" regex for path values in the `match`\nstanza, and the validation regex will screen out invalid paths in the same way.\nEven with the validation, implementations MUST sanitize this input before using it\ndirectly.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "allowedHeaders" = mkOverride 1002 null;
-        "allowedResponseHeaders" = mkOverride 1002 null;
-        "path" = mkOverride 1002 null;
-      };
-
-    };
     "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesFiltersRequestHeaderModifier" = {
 
       options = {
@@ -7708,7 +6427,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -7724,7 +6443,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -7921,7 +6640,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -7937,7 +6656,7 @@ let
           type = types.str;
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -8050,7 +6769,7 @@ let
           type = (types.nullOr types.str);
         };
         "value" = mkOption {
-          description = "Value is the value of HTTP Header to be matched.\n\nMust consist of printable US-ASCII characters, optionally separated\nby single tabs or spaces. See: https://tools.ietf.org/html/rfc7230#section-3.2";
+          description = "Value is the value of HTTP Header to be matched.";
           type = types.str;
         };
       };
@@ -8098,82 +6817,6 @@ let
 
       config = {
         "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesRetry" = {
-
-      options = {
-        "attempts" = mkOption {
-          description = "Attempts specifies the maximum number of times an individual request\nfrom the gateway to a backend should be retried.\n\nIf the maximum number of retries has been attempted without a successful\nresponse from the backend, the Gateway MUST return an error.\n\nWhen this field is unspecified, the number of times to attempt to retry\na backend request is implementation-specific.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "backoff" = mkOption {
-          description = "Backoff specifies the minimum duration a Gateway should wait between\nretry attempts and is represented in Gateway API Duration formatting.\n\nFor example, setting the `rules[].retry.backoff` field to the value\n`100ms` will cause a backend request to first be retried approximately\n100 milliseconds after timing out or receiving a response code configured\nto be retriable.\n\nAn implementation MAY use an exponential or alternative backoff strategy\nfor subsequent retry attempts, MAY cap the maximum backoff duration to\nsome amount greater than the specified minimum, and MAY add arbitrary\njitter to stagger requests, as long as unsuccessful backend requests are\nnot retried before the configured minimum duration.\n\nIf a Request timeout (`rules[].timeouts.request`) is configured on the\nroute, the entire duration of the initial request and any retry attempts\nMUST not exceed the Request timeout duration. If any retry attempts are\nstill in progress when the Request timeout duration has been reached,\nthese SHOULD be canceled if possible and the Gateway MUST immediately\nreturn a timeout error.\n\nIf a BackendRequest timeout (`rules[].timeouts.backendRequest`) is\nconfigured on the route, any retry attempts which reach the configured\nBackendRequest timeout duration without a response SHOULD be canceled if\npossible and the Gateway should wait for at least the specified backoff\nduration before attempting to retry the backend request again.\n\nIf a BackendRequest timeout is _not_ configured on the route, retry\nattempts MAY time out after an implementation default duration, or MAY\nremain pending until a configured Request timeout or implementation\ndefault duration for total request time is reached.\n\nWhen this field is unspecified, the time to wait between retry attempts\nis implementation-specific.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "codes" = mkOption {
-          description = "Codes defines the HTTP response status codes for which a backend request\nshould be retried.\n\nSupport: Extended";
-          type = (types.nullOr (types.listOf types.int));
-        };
-      };
-
-      config = {
-        "attempts" = mkOverride 1002 null;
-        "backoff" = mkOverride 1002 null;
-        "codes" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesSessionPersistence" = {
-
-      options = {
-        "absoluteTimeout" = mkOption {
-          description = "AbsoluteTimeout defines the absolute timeout of the persistent\nsession. Once the AbsoluteTimeout duration has elapsed, the\nsession becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "cookieConfig" = mkOption {
-          description = "CookieConfig provides configuration settings that are specific\nto cookie-based session persistence.\n\nSupport: Core";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesSessionPersistenceCookieConfig"
-            )
-          );
-        };
-        "idleTimeout" = mkOption {
-          description = "IdleTimeout defines the idle timeout of the persistent session.\nOnce the session has been idle for more than the specified\nIdleTimeout duration, the session becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "sessionName" = mkOption {
-          description = "SessionName defines the name of the persistent session token\nwhich may be reflected in the cookie or the header. Users\nshould avoid reusing session names to prevent unintended\nconsequences, such as rejection or unpredictable behavior.\n\nSupport: Implementation-specific";
-          type = (types.nullOr types.str);
-        };
-        "type" = mkOption {
-          description = "Type defines the type of session persistence such as through\nthe use of a header or cookie. Defaults to cookie based session\npersistence.\n\nSupport: Core for \"Cookie\" type\n\nSupport: Extended for \"Header\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "absoluteTimeout" = mkOverride 1002 null;
-        "cookieConfig" = mkOverride 1002 null;
-        "idleTimeout" = mkOverride 1002 null;
-        "sessionName" = mkOverride 1002 null;
-        "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.k8s.io.v1beta1.HTTPRouteSpecRulesSessionPersistenceCookieConfig" = {
-
-      options = {
-        "lifetimeType" = mkOption {
-          description = "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\nDefaults to \"Session\".\n\nSupport: Core for \"Session\" type\n\nSupport: Extended for \"Permanent\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "lifetimeType" = mkOverride 1002 null;
       };
 
     };
@@ -8280,11 +6923,11 @@ let
           type = types.str;
         };
         "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
+          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\nSupport: Core";
           type = (types.nullOr types.str);
         };
         "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
+          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
           type = (types.nullOr types.int);
         };
         "sectionName" = mkOption {
@@ -8391,492 +7034,6 @@ let
       config = {
         "name" = mkOverride 1002 null;
       };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicy" = {
-
-      options = {
-        "apiVersion" = mkOption {
-          description = "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds";
-          type = (types.nullOr types.str);
-        };
-        "metadata" = mkOption {
-          description = "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata";
-          type = (types.nullOr (globalSubmoduleOf "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"));
-        };
-        "spec" = mkOption {
-          description = "Spec defines the desired state of BackendTrafficPolicy.";
-          type = (submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpec");
-        };
-        "status" = mkOption {
-          description = "Status defines the current state of BackendTrafficPolicy.";
-          type = (
-            types.nullOr (submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatus")
-          );
-        };
-      };
-
-      config = {
-        "apiVersion" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "metadata" = mkOverride 1002 null;
-        "status" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpec" = {
-
-      options = {
-        "retryConstraint" = mkOption {
-          description = "RetryConstraint defines the configuration for when to allow or prevent\nfurther retries to a target backend, by dynamically calculating a 'retry\nbudget'. This budget is calculated based on the percentage of incoming\ntraffic composed of retries over a given time interval. Once the budget\nis exceeded, additional retries will be rejected.\n\nFor example, if the retry budget interval is 10 seconds, there have been\n1000 active requests in the past 10 seconds, and the allowed percentage\nof requests that can be retried is 20% (the default), then 200 of those\nrequests may be composed of retries. Active requests will only be\nconsidered for the duration of the interval when calculating the retry\nbudget. Retrying the same original request multiple times within the\nretry budget interval will lead to each retry being counted towards\ncalculating the budget.\n\nConfiguring a RetryConstraint in BackendTrafficPolicy is compatible with\nHTTPRoute Retry settings for each HTTPRouteRule that targets the same\nbackend. While the HTTPRouteRule Retry stanza can specify whether a\nrequest will be retried, and the number of retry attempts each client\nmay perform, RetryConstraint helps prevent cascading failures such as\nretry storms during periods of consistent failures.\n\nAfter the retry budget has been exceeded, additional retries to the\nbackend MUST return a 503 response to the client.\n\nAdditional configurations for defining a constraint on retries MAY be\ndefined in the future.\n\nSupport: Extended";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecRetryConstraint"
-            )
-          );
-        };
-        "sessionPersistence" = mkOption {
-          description = "SessionPersistence defines and configures session persistence\nfor the backend.\n\nSupport: Extended";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecSessionPersistence"
-            )
-          );
-        };
-        "targetRefs" = mkOption {
-          description = "TargetRefs identifies API object(s) to apply this policy to.\nCurrently, Backends (A grouping of like endpoints such as Service,\nServiceImport, or any implementation-specific backendRef) are the only\nvalid API target references.\n\nCurrently, a TargetRef cannot be scoped to a specific port on a\nService.";
-          type = (
-            coerceAttrsOfSubmodulesToListByKey
-              "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecTargetRefs"
-              "name"
-              [
-                "group"
-                "kind"
-                "name"
-              ]
-          );
-          apply = attrsToList;
-        };
-      };
-
-      config = {
-        "retryConstraint" = mkOverride 1002 null;
-        "sessionPersistence" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecRetryConstraint" = {
-
-      options = {
-        "budget" = mkOption {
-          description = "Budget holds the details of the retry budget configuration.";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecRetryConstraintBudget"
-            )
-          );
-        };
-        "minRetryRate" = mkOption {
-          description = "MinRetryRate defines the minimum rate of retries that will be allowable\nover a specified duration of time.\n\nThe effective overall minimum rate of retries targeting the backend\nservice may be much higher, as there can be any number of clients which\nare applying this setting locally.\n\nThis ensures that requests can still be retried during periods of low\ntraffic, where the budget for retries may be calculated as a very low\nvalue.\n\nSupport: Extended";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecRetryConstraintMinRetryRate"
-            )
-          );
-        };
-      };
-
-      config = {
-        "budget" = mkOverride 1002 null;
-        "minRetryRate" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecRetryConstraintBudget" = {
-
-      options = {
-        "interval" = mkOption {
-          description = "Interval defines the duration in which requests will be considered\nfor calculating the budget for retries.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "percent" = mkOption {
-          description = "Percent defines the maximum percentage of active requests that may\nbe made up of retries.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-      };
-
-      config = {
-        "interval" = mkOverride 1002 null;
-        "percent" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecRetryConstraintMinRetryRate" = {
-
-      options = {
-        "count" = mkOption {
-          description = "Count specifies the number of requests per time interval.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "interval" = mkOption {
-          description = "Interval specifies the divisor of the rate of requests, the amount of\ntime during which the given count of requests occur.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "count" = mkOverride 1002 null;
-        "interval" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecSessionPersistence" = {
-
-      options = {
-        "absoluteTimeout" = mkOption {
-          description = "AbsoluteTimeout defines the absolute timeout of the persistent\nsession. Once the AbsoluteTimeout duration has elapsed, the\nsession becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "cookieConfig" = mkOption {
-          description = "CookieConfig provides configuration settings that are specific\nto cookie-based session persistence.\n\nSupport: Core";
-          type = (
-            types.nullOr (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecSessionPersistenceCookieConfig"
-            )
-          );
-        };
-        "idleTimeout" = mkOption {
-          description = "IdleTimeout defines the idle timeout of the persistent session.\nOnce the session has been idle for more than the specified\nIdleTimeout duration, the session becomes invalid.\n\nSupport: Extended";
-          type = (types.nullOr types.str);
-        };
-        "sessionName" = mkOption {
-          description = "SessionName defines the name of the persistent session token\nwhich may be reflected in the cookie or the header. Users\nshould avoid reusing session names to prevent unintended\nconsequences, such as rejection or unpredictable behavior.\n\nSupport: Implementation-specific";
-          type = (types.nullOr types.str);
-        };
-        "type" = mkOption {
-          description = "Type defines the type of session persistence such as through\nthe use of a header or cookie. Defaults to cookie based session\npersistence.\n\nSupport: Core for \"Cookie\" type\n\nSupport: Extended for \"Header\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "absoluteTimeout" = mkOverride 1002 null;
-        "cookieConfig" = mkOverride 1002 null;
-        "idleTimeout" = mkOverride 1002 null;
-        "sessionName" = mkOverride 1002 null;
-        "type" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecSessionPersistenceCookieConfig" = {
-
-      options = {
-        "lifetimeType" = mkOption {
-          description = "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\nDefaults to \"Session\".\n\nSupport: Core for \"Session\" type\n\nSupport: Extended for \"Permanent\" type";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "lifetimeType" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicySpecTargetRefs" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the target resource.";
-          type = types.str;
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the target resource.";
-          type = types.str;
-        };
-        "name" = mkOption {
-          description = "Name is the name of the target resource.";
-          type = types.str;
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatus" = {
-
-      options = {
-        "ancestors" = mkOption {
-          description = "Ancestors is a list of ancestor resources (usually Gateways) that are\nassociated with the policy, and the status of the policy with respect to\neach ancestor. When this policy attaches to a parent, the controller that\nmanages the parent and the ancestors MUST add an entry to this list when\nthe controller first sees the policy and SHOULD update the entry as\nappropriate when the relevant ancestor is modified.\n\nNote that choosing the relevant ancestor is left to the Policy designers;\nan important part of Policy design is designing the right object level at\nwhich to namespace this status.\n\nNote also that implementations MUST ONLY populate ancestor status for\nthe Ancestor resources they are responsible for. Implementations MUST\nuse the ControllerName field to uniquely identify the entries in this list\nthat they are responsible for.\n\nNote that to achieve this, the list of PolicyAncestorStatus structs\nMUST be treated as a map with a composite key, made up of the AncestorRef\nand ControllerName fields combined.\n\nA maximum of 16 ancestors will be represented in this list. An empty list\nmeans the Policy is not relevant for any ancestors.\n\nIf this slice is full, implementations MUST NOT add further entries.\nInstead they MUST consider the policy unimplementable and signal that\non any related resources such as the ancestor that would be referenced\nhere. For example, if this list was full on BackendTLSPolicy, no\nadditional Gateways would be able to reference the Service targeted by\nthe BackendTLSPolicy.";
-          type = (
-            types.listOf (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatusAncestors"
-            )
-          );
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatusAncestors" = {
-
-      options = {
-        "ancestorRef" = mkOption {
-          description = "AncestorRef corresponds with a ParentRef in the spec that this\nPolicyAncestorStatus struct describes the status of.";
-          type = (
-            submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatusAncestorsAncestorRef"
-          );
-        };
-        "conditions" = mkOption {
-          description = "Conditions describes the status of the Policy with respect to the given Ancestor.";
-          type = (
-            types.listOf (
-              submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatusAncestorsConditions"
-            )
-          );
-        };
-        "controllerName" = mkOption {
-          description = "ControllerName is a domain/path string that indicates the name of the\ncontroller that wrote this status. This corresponds with the\ncontrollerName field on GatewayClass.\n\nExample: \"example.net/gateway-controller\".\n\nThe format of this field is DOMAIN \"/\" PATH, where DOMAIN and PATH are\nvalid Kubernetes names\n(https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names).\n\nControllers MUST populate this field when writing status. Controllers should ensure that\nentries to status populated with their ControllerName are cleaned up when they are no\nlonger necessary.";
-          type = types.str;
-        };
-      };
-
-      config = { };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatusAncestorsAncestorRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent.\nWhen unspecified, \"gateway.networking.k8s.io\" is inferred.\nTo set the core API group (such as for a \"Service\" kind referent),\nGroup must be explicitly set to \"\" (empty string).\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the referent.\n\nThere are two kinds of parent resources with \"Core\" support:\n\n* Gateway (Gateway conformance profile)\n* Service (Mesh conformance profile, ClusterIP Services only)\n\nSupport for other resources is Implementation-Specific.";
-          type = (types.nullOr types.str);
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.\n\nSupport: Core";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent. When unspecified, this refers\nto the local namespace of the Route.\n\nNote that there are specific rules for ParentRefs which cross namespace\nboundaries. Cross-namespace references are only valid if they are explicitly\nallowed by something in the namespace they are referring to. For example:\nGateway has the AllowedRoutes field, and ReferenceGrant provides a\ngeneric way to enable any other kind of cross-namespace reference.\n\n\nParentRefs from a Route to a Service in the same namespace are \"producer\"\nroutes, which apply default routing rules to inbound connections from\nany namespace to the Service.\n\nParentRefs from a Route to a Service in a different namespace are\n\"consumer\" routes, and these routing rules are only applied to outbound\nconnections originating from the same namespace as the Route, for which\nthe intended destination of the connections are a Service targeted as a\nParentRef of the Route.\n\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-        "port" = mkOption {
-          description = "Port is the network port this Route targets. It can be interpreted\ndifferently based on the type of parent resource.\n\nWhen the parent resource is a Gateway, this targets all listeners\nlistening on the specified port that also support this kind of Route(and\nselect this Route). It's not recommended to set `Port` unless the\nnetworking behaviors specified in a Route must apply to a specific port\nas opposed to a listener(s) whose port(s) may be changed. When both Port\nand SectionName are specified, the name and port of the selected listener\nmust match both specified values.\n\n\nWhen the parent resource is a Service, this targets a specific port in the\nService spec. When both Port (experimental) and SectionName are specified,\nthe name and port of the selected port must match both specified values.\n\n\nImplementations MAY choose to support other parent resources.\nImplementations supporting other types of parent resources MUST clearly\ndocument how/if Port is interpreted.\n\nFor the purpose of status, an attachment is considered successful as\nlong as the parent resource accepts it partially. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment\nfrom the referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route,\nthe Route MUST be considered detached from the Gateway.\n\nSupport: Extended";
-          type = (types.nullOr types.int);
-        };
-        "sectionName" = mkOption {
-          description = "SectionName is the name of a section within the target resource. In the\nfollowing resources, SectionName is interpreted as the following:\n\n* Gateway: Listener name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n* Service: Port name. When both Port (experimental) and SectionName\nare specified, the name and port of the selected listener must match\nboth specified values.\n\nImplementations MAY choose to support attaching Routes to other resources.\nIf that is the case, they MUST clearly document how SectionName is\ninterpreted.\n\nWhen unspecified (empty string), this will reference the entire resource.\nFor the purpose of status, an attachment is considered successful if at\nleast one section in the parent resource accepts it. For example, Gateway\nlisteners can restrict which Routes can attach to them by Route kind,\nnamespace, or hostname. If 1 of 2 Gateway listeners accept attachment from\nthe referencing Route, the Route MUST be considered successfully\nattached. If no Gateway listeners accept attachment from this Route, the\nRoute MUST be considered detached from the Gateway.\n\nSupport: Core";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "group" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "namespace" = mkOverride 1002 null;
-        "port" = mkOverride 1002 null;
-        "sectionName" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicyStatusAncestorsConditions" = {
-
-      options = {
-        "lastTransitionTime" = mkOption {
-          description = "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.";
-          type = types.str;
-        };
-        "message" = mkOption {
-          description = "message is a human readable message indicating details about the transition.\nThis may be an empty string.";
-          type = types.str;
-        };
-        "observedGeneration" = mkOption {
-          description = "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.";
-          type = (types.nullOr types.int);
-        };
-        "reason" = mkOption {
-          description = "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.";
-          type = types.str;
-        };
-        "status" = mkOption {
-          description = "status of the condition, one of True, False, Unknown.";
-          type = types.str;
-        };
-        "type" = mkOption {
-          description = "type of condition in CamelCase or in foo.example.com/CamelCase.";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "observedGeneration" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XMesh" = {
-
-      options = {
-        "apiVersion" = mkOption {
-          description = "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources";
-          type = (types.nullOr types.str);
-        };
-        "kind" = mkOption {
-          description = "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds";
-          type = (types.nullOr types.str);
-        };
-        "metadata" = mkOption {
-          description = "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata";
-          type = (types.nullOr (globalSubmoduleOf "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"));
-        };
-        "spec" = mkOption {
-          description = "Spec defines the desired state of XMesh.";
-          type = (submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XMeshSpec");
-        };
-        "status" = mkOption {
-          description = "Status defines the current state of XMesh.";
-          type = (types.nullOr (submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XMeshStatus"));
-        };
-      };
-
-      config = {
-        "apiVersion" = mkOverride 1002 null;
-        "kind" = mkOverride 1002 null;
-        "metadata" = mkOverride 1002 null;
-        "status" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XMeshSpec" = {
-
-      options = {
-        "controllerName" = mkOption {
-          description = "ControllerName is the name of a controller that is managing Gateway API\nresources for mesh traffic management. The value of this field MUST be a\ndomain prefixed path.\n\nExample: \"example.com/awesome-mesh\".\n\nThis field is not mutable and cannot be empty.\n\nSupport: Core";
-          type = types.str;
-        };
-        "description" = mkOption {
-          description = "Description optionally provides a human-readable description of a Mesh.";
-          type = (types.nullOr types.str);
-        };
-        "parametersRef" = mkOption {
-          description = "ParametersRef is an optional reference to a resource that contains\nimplementation-specific configuration for this Mesh. If no\nimplementation-specific parameters are needed, this field MUST be\nomitted.\n\nParametersRef can reference a standard Kubernetes resource, i.e.\nConfigMap, or an implementation-specific custom resource. The resource\ncan be cluster-scoped or namespace-scoped.\n\nIf the referent cannot be found, refers to an unsupported kind, or when\nthe data within that resource is malformed, the Mesh MUST be rejected\nwith the \"Accepted\" status condition set to \"False\" and an\n\"InvalidParameters\" reason.\n\nSupport: Implementation-specific";
-          type = (types.nullOr (submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XMeshSpecParametersRef"));
-        };
-      };
-
-      config = {
-        "description" = mkOverride 1002 null;
-        "parametersRef" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XMeshSpecParametersRef" = {
-
-      options = {
-        "group" = mkOption {
-          description = "Group is the group of the referent.";
-          type = types.str;
-        };
-        "kind" = mkOption {
-          description = "Kind is kind of the referent.";
-          type = types.str;
-        };
-        "name" = mkOption {
-          description = "Name is the name of the referent.";
-          type = types.str;
-        };
-        "namespace" = mkOption {
-          description = "Namespace is the namespace of the referent.\nThis field is required when referring to a Namespace-scoped resource and\nMUST be unset when referring to a Cluster-scoped resource.";
-          type = (types.nullOr types.str);
-        };
-      };
-
-      config = {
-        "namespace" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XMeshStatus" = {
-
-      options = {
-        "conditions" = mkOption {
-          description = "Conditions is the current status from the controller for\nthis Mesh.\n\nControllers should prefer to publish conditions using values\nof MeshConditionType for the type of each Condition.";
-          type = (
-            types.nullOr (
-              types.listOf (submoduleOf "gateway.networking.x-k8s.io.v1alpha1.XMeshStatusConditions")
-            )
-          );
-        };
-        "supportedFeatures" = mkOption {
-          description = "SupportedFeatures is the set of features the Mesh support.\nIt MUST be sorted in ascending alphabetical order by the Name key.";
-          type = (
-            types.nullOr (
-              coerceAttrsOfSubmodulesToListByKey
-                "gateway.networking.x-k8s.io.v1alpha1.XMeshStatusSupportedFeatures"
-                "name"
-                [ "name" ]
-            )
-          );
-          apply = attrsToList;
-        };
-      };
-
-      config = {
-        "conditions" = mkOverride 1002 null;
-        "supportedFeatures" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XMeshStatusConditions" = {
-
-      options = {
-        "lastTransitionTime" = mkOption {
-          description = "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.";
-          type = types.str;
-        };
-        "message" = mkOption {
-          description = "message is a human readable message indicating details about the transition.\nThis may be an empty string.";
-          type = types.str;
-        };
-        "observedGeneration" = mkOption {
-          description = "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.";
-          type = (types.nullOr types.int);
-        };
-        "reason" = mkOption {
-          description = "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.";
-          type = types.str;
-        };
-        "status" = mkOption {
-          description = "status of the condition, one of True, False, Unknown.";
-          type = types.str;
-        };
-        "type" = mkOption {
-          description = "type of condition in CamelCase or in foo.example.com/CamelCase.";
-          type = types.str;
-        };
-      };
-
-      config = {
-        "observedGeneration" = mkOverride 1002 null;
-      };
-
-    };
-    "gateway.networking.x-k8s.io.v1alpha1.XMeshStatusSupportedFeatures" = {
-
-      options = {
-        "name" = mkOption {
-          description = "FeatureName is used to describe distinct features that are covered by\nconformance tests.";
-          type = types.str;
-        };
-      };
-
-      config = { };
 
     };
     "hub.traefik.io.v1alpha1.AIService" = {
@@ -18811,28 +16968,6 @@ in
         );
         default = { };
       };
-      "gateway.networking.k8s.io"."v1alpha2"."TCPRoute" = mkOption {
-        description = "TCPRoute provides a way to route TCP requests. When combined with a Gateway\nlistener, it can be used to forward connections on the port specified by the\nlistener to a set of backends specified by the TCPRoute.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.k8s.io.v1alpha2.TCPRoute" "tcproutes" "TCPRoute"
-              "gateway.networking.k8s.io"
-              "v1alpha2"
-          )
-        );
-        default = { };
-      };
-      "gateway.networking.k8s.io"."v1alpha2"."UDPRoute" = mkOption {
-        description = "UDPRoute provides a way to route UDP traffic. When combined with a Gateway\nlistener, it can be used to forward traffic on the port specified by the\nlistener to a set of backends specified by the UDPRoute.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.k8s.io.v1alpha2.UDPRoute" "udproutes" "UDPRoute"
-              "gateway.networking.k8s.io"
-              "v1alpha2"
-          )
-        );
-        default = { };
-      };
       "gateway.networking.k8s.io"."v1beta1"."Gateway" = mkOption {
         description = "Gateway represents an instance of a service-traffic handling infrastructure\nby binding Listeners to a set of IP addresses.";
         type = (
@@ -18875,30 +17010,6 @@ in
               "ReferenceGrant"
               "gateway.networking.k8s.io"
               "v1beta1"
-          )
-        );
-        default = { };
-      };
-      "gateway.networking.x-k8s.io"."v1alpha1"."XBackendTrafficPolicy" = mkOption {
-        description = "XBackendTrafficPolicy defines the configuration for how traffic to a\ntarget backend should be handled.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicy"
-              "xbackendtrafficpolicies"
-              "XBackendTrafficPolicy"
-              "gateway.networking.x-k8s.io"
-              "v1alpha1"
-          )
-        );
-        default = { };
-      };
-      "gateway.networking.x-k8s.io"."v1alpha1"."XMesh" = mkOption {
-        description = "XMesh defines mesh-wide characteristics of a GAMMA-compliant service mesh.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.x-k8s.io.v1alpha1.XMesh" "xmeshes" "XMesh"
-              "gateway.networking.x-k8s.io"
-              "v1alpha1"
           )
         );
         default = { };
@@ -19479,17 +17590,6 @@ in
         );
         default = { };
       };
-      "tcpRoutes" = mkOption {
-        description = "TCPRoute provides a way to route TCP requests. When combined with a Gateway\nlistener, it can be used to forward connections on the port specified by the\nlistener to a set of backends specified by the TCPRoute.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.k8s.io.v1alpha2.TCPRoute" "tcproutes" "TCPRoute"
-              "gateway.networking.k8s.io"
-              "v1alpha2"
-          )
-        );
-        default = { };
-      };
       "tlsOptions" = mkOption {
         description = "TLSOption is the CRD implementation of a Traefik TLS Option, allowing to configure some parameters of the TLS connection.\nMore info: https://doc.traefik.io/traefik/v3.7/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#tls-options";
         type = (
@@ -19531,46 +17631,11 @@ in
         );
         default = { };
       };
-      "udpRoutes" = mkOption {
-        description = "UDPRoute provides a way to route UDP traffic. When combined with a Gateway\nlistener, it can be used to forward traffic on the port specified by the\nlistener to a set of backends specified by the UDPRoute.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.k8s.io.v1alpha2.UDPRoute" "udproutes" "UDPRoute"
-              "gateway.networking.k8s.io"
-              "v1alpha2"
-          )
-        );
-        default = { };
-      };
       "uplinks" = mkOption {
         description = "Uplink is an inter-cluster service advertisement: a child cluster declares an Uplink to advertise\nto a parent cluster that it can handle a particular workload.";
         type = (
           types.attrsOf (
             submoduleForDefinition "hub.traefik.io.v1alpha1.Uplink" "uplinks" "Uplink" "hub.traefik.io"
-              "v1alpha1"
-          )
-        );
-        default = { };
-      };
-      "xBackendTrafficPolicies" = mkOption {
-        description = "XBackendTrafficPolicy defines the configuration for how traffic to a\ntarget backend should be handled.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.x-k8s.io.v1alpha1.XBackendTrafficPolicy"
-              "xbackendtrafficpolicies"
-              "XBackendTrafficPolicy"
-              "gateway.networking.x-k8s.io"
-              "v1alpha1"
-          )
-        );
-        default = { };
-      };
-      "xMeshes" = mkOption {
-        description = "XMesh defines mesh-wide characteristics of a GAMMA-compliant service mesh.";
-        type = (
-          types.attrsOf (
-            submoduleForDefinition "gateway.networking.x-k8s.io.v1alpha1.XMesh" "xmeshes" "XMesh"
-              "gateway.networking.x-k8s.io"
               "v1alpha1"
           )
         );
@@ -19643,20 +17708,6 @@ in
         attrName = "tlsRoutes";
       }
       {
-        name = "tcproutes";
-        group = "gateway.networking.k8s.io";
-        version = "v1alpha2";
-        kind = "TCPRoute";
-        attrName = "tcpRoutes";
-      }
-      {
-        name = "udproutes";
-        group = "gateway.networking.k8s.io";
-        version = "v1alpha2";
-        kind = "UDPRoute";
-        attrName = "udpRoutes";
-      }
-      {
         name = "gateways";
         group = "gateway.networking.k8s.io";
         version = "v1beta1";
@@ -19683,20 +17734,6 @@ in
         version = "v1beta1";
         kind = "ReferenceGrant";
         attrName = "referenceGrants";
-      }
-      {
-        name = "xbackendtrafficpolicies";
-        group = "gateway.networking.x-k8s.io";
-        version = "v1alpha1";
-        kind = "XBackendTrafficPolicy";
-        attrName = "xBackendTrafficPolicies";
-      }
-      {
-        name = "xmeshes";
-        group = "gateway.networking.x-k8s.io";
-        version = "v1alpha1";
-        kind = "XMesh";
-        attrName = "xMeshes";
       }
       {
         name = "aiservices";
@@ -19924,21 +17961,11 @@ in
       "traefik.io"."v1alpha1"."ServersTransportTCP" =
         mkAliasDefinitions
           options.resources."serversTransportTCPs";
-      "gateway.networking.k8s.io"."v1alpha2"."TCPRoute" =
-        mkAliasDefinitions
-          options.resources."tcpRoutes";
       "traefik.io"."v1alpha1"."TLSOption" = mkAliasDefinitions options.resources."tlsOptions";
       "gateway.networking.k8s.io"."v1"."TLSRoute" = mkAliasDefinitions options.resources."tlsRoutes";
       "traefik.io"."v1alpha1"."TLSStore" = mkAliasDefinitions options.resources."tlsStores";
       "traefik.io"."v1alpha1"."TraefikService" = mkAliasDefinitions options.resources."traefikServices";
-      "gateway.networking.k8s.io"."v1alpha2"."UDPRoute" =
-        mkAliasDefinitions
-          options.resources."udpRoutes";
       "hub.traefik.io"."v1alpha1"."Uplink" = mkAliasDefinitions options.resources."uplinks";
-      "gateway.networking.x-k8s.io"."v1alpha1"."XBackendTrafficPolicy" =
-        mkAliasDefinitions
-          options.resources."xBackendTrafficPolicies";
-      "gateway.networking.x-k8s.io"."v1alpha1"."XMesh" = mkAliasDefinitions options.resources."xMeshes";
 
     };
 
@@ -19989,18 +18016,6 @@ in
       }
       {
         group = "gateway.networking.k8s.io";
-        version = "v1alpha2";
-        kind = "TCPRoute";
-        default.metadata.namespace = lib.mkDefault config.namespace;
-      }
-      {
-        group = "gateway.networking.k8s.io";
-        version = "v1alpha2";
-        kind = "UDPRoute";
-        default.metadata.namespace = lib.mkDefault config.namespace;
-      }
-      {
-        group = "gateway.networking.k8s.io";
         version = "v1beta1";
         kind = "Gateway";
         default.metadata.namespace = lib.mkDefault config.namespace;
@@ -20015,12 +18030,6 @@ in
         group = "gateway.networking.k8s.io";
         version = "v1beta1";
         kind = "ReferenceGrant";
-        default.metadata.namespace = lib.mkDefault config.namespace;
-      }
-      {
-        group = "gateway.networking.x-k8s.io";
-        version = "v1alpha1";
-        kind = "XBackendTrafficPolicy";
         default.metadata.namespace = lib.mkDefault config.namespace;
       }
       {

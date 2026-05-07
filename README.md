@@ -42,7 +42,6 @@ tofu-dev apply -concise
 
 # update ./secrets/dev/k8s/observability.yaml
 tofu-dev state show -show-sensitive google_storage_hmac_key.openobserve
-# update ./secrets/dev/k8s/k8up.yaml
 tofu-dev state show -show-sensitive google_storage_hmac_key.k8up
 ```
 
@@ -66,6 +65,9 @@ screen -dm just forward-kubectl
 tofu-dev apply
 just sync
 
+# because flakes are stupid
+jj
+
 just provision dev eevee
 just provision dev vaporeon
 ...
@@ -74,5 +76,6 @@ just fetch-kubeconfig
 screen -dm just forward-kubectl
 
 patch-pod-cidrs
+nixidy apply .#dev
 nixidy bootstrap .#dev | kubectl apply -f-
 ```

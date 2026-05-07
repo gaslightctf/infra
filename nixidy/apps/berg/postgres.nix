@@ -20,31 +20,51 @@
         };
       };
 
-      resources.clusters.berg-db.spec =
-        let
-          plugin = {
-            name = "barman-cloud.cloudnative-pg.io";
-            isWALArchiver = true;
-            parameters.barmanObjectName = "r2";
-          };
-        in
-        {
-          instances = 3;
-          storage.size = "15Gi";
-
-          plugins = [ plugin ];
-          externalClusters = [
-            {
-              name = "source";
-              inherit plugin;
-            }
-          ];
-
-          bootstrap.recovery.source = "source";
+      resources.clusters.berg-db = {
+        metadata.annotations = {
+          "cnpg.io/skipEmptyWalArchiveCheck" = "enabled";
         };
+        spec =
+          let
+            plugin = {
+              name = "barman-cloud.cloudnative-pg.io";
+              isWALArchiver = true;
+              parameters = {
+                barmanObjectName = "r2";
+                serverName = "berg-db";
+              };
+            };
+          in
+          {
+            instances = 3;
+            storage.size = "15Gi";
+
+            plugins = [ plugin ];
+            # externalClusters = [
+            #   {
+            #     name = "source";
+            #     inherit plugin;
+            #   }
+            # ];
+
+            bootstrap.initdb = { };
+            # bootstrap.recovery.source = "source";
+          };
+      };
 
       resources.backups.berg-db-base.spec = {
         cluster.name = "berg-db";
+        method = "plugin";
+        pluginConfiguration.name = "barman-cloud.cloudnative-pg.io";
+      };
+
+      resources.scheduledBackups.berg-db.spec = {
+        cluster.name = "berg-db";
+        backupOwnerReference = "self";
+        schedule = "0 0 * * *";
+
+        immediate = true;
+
         method = "plugin";
         pluginConfiguration.name = "barman-cloud.cloudnative-pg.io";
       };

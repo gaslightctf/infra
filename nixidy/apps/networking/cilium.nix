@@ -19,7 +19,15 @@ in
 
           values = {
             kubeProxyReplacement = true;
-            k8s.apiServerURLs = "https://${ips.instances.eevee.local}:6443";
+            k8s.apiServerURLs =
+              let
+                servers = [
+                  ips.instances.rayquaza.local
+                  ips.instances.kyogre.local
+                  ips.instances.groudon.local
+                ];
+              in
+              builtins.concatStringsSep " " <| map (ip: "https://${ip}:6443") servers;
 
             ipam = {
               mode = "kubernetes";

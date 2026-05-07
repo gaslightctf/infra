@@ -19,7 +19,7 @@ in
         # nodeIP = config.networking.ipv4;
         # nodeExternalIP = config.networking.ipv4Public;
 
-        serverAddr = lib.mkDefault "https://${ips.instances.eevee.local}:6443";
+        serverAddr = lib.mkDefault "https://${ips.instances.rayquaza.local}:6443";
       };
     };
 }

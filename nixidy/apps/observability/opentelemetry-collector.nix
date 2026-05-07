@@ -51,7 +51,7 @@ in
                     receivers = [
                       "otlp"
                       "filelog"
-                      "journald"
+                      # "journald"
                     ];
                   };
                   metrics = pipeline;
@@ -115,7 +115,7 @@ in
                 };
 
                 journald = {
-                  root_path = "/host";
+                  root_path = "/hostfs";
                   journalctl_path = "/run/current-system/sw/bin/journalctl";
                 };
               };

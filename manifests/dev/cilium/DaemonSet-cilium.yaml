@@ -196,7 +196,7 @@ spec:
         - command:
             - cilium-dbg
             - build-config
-            - --k8s-api-server-urls=https://10.6.7.10:6443
+            - --k8s-api-server-urls=https://10.6.7.10:6443 https://10.6.7.11:6443 https://10.6.7.12:6443
           env:
             - name: K8S_NODE_NAME
               valueFrom:

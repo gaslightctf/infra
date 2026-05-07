@@ -15,6 +15,10 @@ rec {
   dev = import ./keys.dev.nix;
   prod = import ./keys.prod.nix;
 
-  devServers = [ dev.eevee ];
+  devServers = [
+    dev.rayquaza
+    dev.kyogre
+    dev.groudon
+  ];
   prodServers = [ ];
 }

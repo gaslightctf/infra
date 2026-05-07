@@ -8,33 +8,35 @@ creation_rules:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
-    - age1gpv6p3ch0csxkns5te8nselk6jw3zxhk977eh0ygtljz07qwqvrswn54t9
-  path_regex: secrets/dev/eevee\.(yaml|json|env)$
+    - age18n9g69qpq3p6wv0ftqyruwr5ukmn9fj2730dt822as2c44y5nq7sz23l0p
+  path_regex: secrets/dev/groudon\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
-    - age1h3aut8y8l89glhjfj9harw748jef242naklq6hdjkplfz0ald9lq7ggj7j
-  path_regex: secrets/dev/jolteon\.(yaml|json|env)$
+    - age1usfcznclmlmueujc090c003qcm3lptytlqdra0j2py9a5s7a24ysnuswjt
+  path_regex: secrets/dev/kyogre\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
-    - age1gcqcuu4ty9750gnwukthkdpj36ugpg5ktrjg650kxje3qa3me4pqexf65c
-  path_regex: secrets/dev/vaporeon\.(yaml|json|env)$
+    - age1lrp3avvu6y4sxun5lx55lsu6e5sjmeep7jp7tydh2dpj07hl2pdq9t73ak
+  path_regex: secrets/dev/rayquaza\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
-    - age1gpv6p3ch0csxkns5te8nselk6jw3zxhk977eh0ygtljz07qwqvrswn54t9
-    - age1h3aut8y8l89glhjfj9harw748jef242naklq6hdjkplfz0ald9lq7ggj7j
-    - age1gcqcuu4ty9750gnwukthkdpj36ugpg5ktrjg650kxje3qa3me4pqexf65c
+    - age18n9g69qpq3p6wv0ftqyruwr5ukmn9fj2730dt822as2c44y5nq7sz23l0p
+    - age1usfcznclmlmueujc090c003qcm3lptytlqdra0j2py9a5s7a24ysnuswjt
+    - age1lrp3avvu6y4sxun5lx55lsu6e5sjmeep7jp7tydh2dpj07hl2pdq9t73ak
   path_regex: secrets/dev/shared+\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
-    - age1gpv6p3ch0csxkns5te8nselk6jw3zxhk977eh0ygtljz07qwqvrswn54t9
+    - age1lrp3avvu6y4sxun5lx55lsu6e5sjmeep7jp7tydh2dpj07hl2pdq9t73ak
+    - age1usfcznclmlmueujc090c003qcm3lptytlqdra0j2py9a5s7a24ysnuswjt
+    - age18n9g69qpq3p6wv0ftqyruwr5ukmn9fj2730dt822as2c44y5nq7sz23l0p
   path_regex: secrets/dev/k8s/.+\.yaml$
   unencrypted_regex: ^(apiVersion|kind|metadata|type|immutable)$
 - key_groups:

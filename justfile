@@ -12,11 +12,11 @@ sync-sops:
 ssh host *FLAGS:
     ssh -F $PRJ_ROOT/data/ssh/config {{host}} {{FLAGS}}
 
-forward-kubectl env="dev": && (ssh (env + "-eevee") "-ND" "41337")
+forward-kubectl env="dev": && (ssh (env + "-rayquaza") "-ND" "41337")
     @echo "Forwarding to {{env}}"
 
 fetch-kubeconfig env="dev":
-    just ssh {{env}}-eevee -- "cat /etc/rancher/k3s/k3s.yaml" \
+    just ssh {{env}}-rayquaza -- "cat /etc/rancher/k3s/k3s.yaml" \
         | yq -y '.clusters[0].cluster."proxy-url" = "socks5://localhost:41337"' \
         > .kubeconfig
 

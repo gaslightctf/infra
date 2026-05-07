@@ -13,6 +13,7 @@
         self.modules.nixidy.traefik
 
         self.modules.nixidy.k8up
+        self.modules.nixidy.restore
         self.modules.nixidy.observability
 
         self.modules.nixidy.cnpg

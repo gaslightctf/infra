@@ -1,23 +1,9 @@
 let
-  gatewayCRDs =
-    pkgs:
-    pkgs.fetchurl {
-      url = "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/experimental-install.yaml";
-      hash = "sha256-98x9MJp62dMWk4NBBG7YHEDnh9gILwsoHfOSYomnpEU=";
-    };
-
   mkChartAttrs = pkgs: {
     repo = "https://traefik.github.io/charts/";
     chart = "traefik";
-    version = "40.0.0-rc.2";
-    chartHash = "sha256-F6YpdM0SXZy6ovQQH3AZKSFVNL7zoEPkULcAw+SfXFo=";
-
-    extraFlags =
-      # bash
-      ''
-        # THIS LINE allows command injection in extraFlags, hella hacky
-        cp ${gatewayCRDs pkgs} $OUT_DIR/traefik/crds/gateway-standard-install.yaml
-      '';
+    version = "40.0.0";
+    chartHash = "sha256-2YAGig2vyN0zjVBmYexK3vDV0E2CkCsaF0eilPchA/g=";
   };
 in
 {

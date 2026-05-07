@@ -1,0 +1,22 @@
+apiVersion: k8up.io/v1
+kind: Restore
+metadata:
+  name: openobserve
+  namespace: openobserve
+spec:
+  backend:
+    repoPasswordSecretRef:
+      key: password
+      name: restic-password
+    s3:
+      accessKeyIDSecretRef:
+        key: accessKeyID
+        name: k8up-gcs
+      bucket: k8up-dev-gaslightctf-cooking
+      endpoint: https://storage.googleapis.com
+      secretAccessKeySecretRef:
+        key: secretAccessKey
+        name: k8up-gcs
+  restoreMethod:
+    folder:
+      claimName: data-openobserve-openobserve-standalone-0
