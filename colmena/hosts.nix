@@ -90,7 +90,7 @@ in
             self.nixosModules.common
 
             (self.nixosModules.${n} or { })
-            (mkNetworkingModule devOutputs n)
+            (mkNetworkingModule prodOutputs n)
           ];
         };
       }) prodInstances);
@@ -120,7 +120,7 @@ in
             self.nixosModules.common
 
             (self.nixosModules.${n} or { })
-            (mkNetworkingModule devOutputs n)
+            (mkNetworkingModule prodOutputs n)
           ];
         };
       }) prodInstances);
