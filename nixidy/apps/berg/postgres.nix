@@ -40,15 +40,15 @@
             storage.size = "15Gi";
 
             plugins = [ plugin ];
-            # externalClusters = [
-            #   {
-            #     name = "source";
-            #     inherit plugin;
-            #   }
-            # ];
+            externalClusters = [
+              {
+                name = "source";
+                inherit plugin;
+              }
+            ];
 
-            bootstrap.initdb = { };
-            # bootstrap.recovery.source = "source";
+            # bootstrap.initdb = { };
+            bootstrap.recovery.source = "source";
           };
       };
 

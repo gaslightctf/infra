@@ -7,7 +7,16 @@ metadata:
   namespace: berg
 spec:
   bootstrap:
-    initdb: {}
+    recovery:
+      source: source
+  externalClusters:
+    - name: source
+      plugin:
+        isWALArchiver: true
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: r2
+          serverName: berg-db
   instances: 3
   plugins:
     - isWALArchiver: true
