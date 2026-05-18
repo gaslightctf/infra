@@ -30,6 +30,11 @@ in
             frontend.enabled = false;
 
             berg = {
+              image = {
+                repository = "ghcr.io/sportshead/berg/frontend";
+                tag = "latest";
+              };
+
               resources = {
                 limits = {
                   cpu = "1000m";
