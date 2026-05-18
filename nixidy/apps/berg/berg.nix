@@ -209,7 +209,7 @@ in
 
         resources.horizontalPodAutoscalers.berg-api.spec = {
           minReplicas = 2;
-          maxReplicas = 10;
+          maxReplicas = 4;
 
           scaleTargetRef = {
             apiVersion = "apps/v1";
