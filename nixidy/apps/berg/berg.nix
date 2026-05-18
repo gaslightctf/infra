@@ -31,18 +31,18 @@ in
 
             berg = {
               image = {
-                repository = "ghcr.io/sportshead/berg/frontend";
+                repository = "ghcr.io/sportshead/berg/api";
                 tag = "latest";
               };
 
               resources = {
                 limits = {
-                  cpu = "1000m";
+                  cpu = "2000m";
                   memory = "1Gi";
                 };
                 requests = {
-                  cpu = "250m";
-                  memory = "300Mi";
+                  cpu = "1000m";
+                  memory = "500Mi";
                 };
               };
               extraEnv = [

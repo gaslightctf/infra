@@ -80,18 +80,18 @@ spec:
               value: http://$(NODE_IP):4317
             - name: infra__openTelemetryGrpcLoggingEndpoint
               value: http://$(NODE_IP):4317
-          image: ghcr.io/sportshead/berg/frontend:latest
+          image: ghcr.io/sportshead/berg/api:latest
           imagePullPolicy: IfNotPresent
           name: berg-api
           ports:
             - containerPort: 8080
           resources:
             limits:
-              cpu: 1000m
+              cpu: 2000m
               memory: 1Gi
             requests:
-              cpu: 250m
-              memory: 300Mi
+              cpu: 1000m
+              memory: 500Mi
           volumeMounts:
             - mountPath: /app/appsettings.json
               name: appsettings
