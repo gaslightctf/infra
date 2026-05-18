@@ -9,15 +9,13 @@
       project = "default";
 
       source = {
-        repoURL = "https://github.com/gaslightctf/challs-2026.git";
+        repoURL = "https://github.com/gaslightctf/challs-2026-manifests.git";
         path = ".";
 
         targetRevision = "prod";
 
         directory = {
           recurse = true;
-
-          exclude = "template/**/*";
         };
       };
 
