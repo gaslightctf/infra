@@ -29,7 +29,7 @@ creation_rules:
     - age18n9g69qpq3p6wv0ftqyruwr5ukmn9fj2730dt822as2c44y5nq7sz23l0p
     - age1usfcznclmlmueujc090c003qcm3lptytlqdra0j2py9a5s7a24ysnuswjt
     - age1lrp3avvu6y4sxun5lx55lsu6e5sjmeep7jp7tydh2dpj07hl2pdq9t73ak
-  path_regex: secrets/dev/shared+\.(yaml|json|env)$
+  path_regex: secrets/dev/shared[\w_]*\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
@@ -50,7 +50,7 @@ creation_rules:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc
     - age1chacvhtf5y0vjvh7a762780t84846h8hl72wskjcr99a3qjylgxse30hdf
     - age10lfklpwc9tcqd4c9erkc86vxhel5nzaxtepurl8g0msgx7xdaugqduytk8
-  path_regex: secrets/prod/shared+\.(yaml|json|env)$
+  path_regex: secrets/prod/shared[\w_]*\.(yaml|json|env)$
 - key_groups:
   - age:
     - age1tag1qw6cx6k7s34zt378mgwlmcy4jq4jdzgs4auuwlugyhx8td59wg96q8kyajc

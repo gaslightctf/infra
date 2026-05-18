@@ -17,7 +17,7 @@ let
     ) keys.${env})
     ++ [
       {
-        path_regex = "secrets/${env}/shared+\\.(yaml|json|env)$";
+        path_regex = "secrets/${env}/shared[\\w_]*\\.(yaml|json|env)$";
         key_groups = [
           {
             age = admins ++ mapAttrsToList (_: { age, ... }: age) keys.${env};

@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: c047650ecf2e8ce3329256378b7717c2fcb31ed8e8ccdb7ec02b688373db158c
+        checksum/config: 7fb77f4aa3a6aaa85c15a4f1920dbd0ebdfdbb74a9f1ca6447f86650ebdc93b3
       labels:
         app.kubernetes.io/instance: berg
         app.kubernetes.io/name: berg
@@ -96,8 +96,6 @@ spec:
             - mountPath: /app/appsettings.json
               name: appsettings
               subPath: appsettings.json
-      imagePullSecrets:
-        - name: challs-pull-secret
       serviceAccountName: berg
       volumes:
         - configMap:

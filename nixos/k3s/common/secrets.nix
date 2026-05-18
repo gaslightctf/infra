@@ -6,6 +6,12 @@
         restartUnits = [ config.systemd.services.k3s.name ];
         sopsFile = config.sops.sharedSopsFile;
       };
+      sops.secrets.k3s-registries = {
+        restartUnits = [ config.systemd.services.k3s.name ];
+        sopsFile = "${config.sops.secretsDir}/shared_registries.yaml";
+        path = "/etc/rancher/k3s/registries.yaml";
+        key = "";
+      };
       sops.secrets.k3s-node-password = {
         restartUnits = [ config.systemd.services.k3s.name ];
         path = "/etc/rancher/node/password";

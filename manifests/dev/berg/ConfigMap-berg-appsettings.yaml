@@ -27,7 +27,7 @@ data:
         "redirectUris": ["http://localhost:5000/frontend/oidc-callback","https://play-dev.gaslightctf.cooking/frontend/oidc-callback"],
         "postLogoutRedirectUris": ["http://localhost:5000","https://play-dev.gaslightctf.cooking"],
         "corsOrigins": [],
-        "pullSecretName": "challs-pull-secret",
+        "pullSecretName": "",
         "challengeImagePullPolicy": "Always",
         "challengeInstanceTimeout": "0.02:00:00",
         "challengeAdditionalHeadlessService": false,
