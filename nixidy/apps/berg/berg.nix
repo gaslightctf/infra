@@ -59,6 +59,7 @@ in
                   value = "http://$(NODE_IP):4317";
                 }
               ];
+              pullSecretName = "challs-pull-secret";
 
               domain = "api.gaslightctf.cooking";
               redirectUris = [
