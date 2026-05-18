@@ -1,21 +1,44 @@
-let
-  chartAttrs = {
-    repo = "https://charts.openobserve.ai";
-    chart = "openobserve-standalone";
-    version = "0.80.3";
-    chartHash = "sha256-pzu+wBIH1FALVQgDWr2B4Wt2vL8fHfjLLzkXqJt2rxw=";
-  };
-in
 {
   flake.modules.nixidy.observability =
-    { lib, config, ... }:
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+
+    let
+      chart = pkgs.stdenv.mkDerivation {
+        name = "openobserve-helm-chart";
+
+        src = pkgs.fetchFromGitHub {
+          owner = "openobserve";
+          repo = "openobserve-helm-chart";
+          rev = "36a52fcc59c73021828f4ff4ef55eb3e0d087210";
+          hash = "sha256-fTo05nbRDhBqvH7Ag1C1/84jwW3ZvPbUfUQBrH5cpK8=";
+        };
+
+        nativeBuildInputs = [ pkgs.kubernetes-helm ];
+        buildPhase = ''
+          export HOME="$TMP/.nix-helm-home"
+          helm repo add minio https://charts.min.io
+          helm repo update
+
+          helm package -u "charts/openobserve-standalone"
+
+          # probably there is a better way to do this?
+          tar -xf "openobserve-standalone-0.80.3.tgz" -C $TMP
+          mv "$TMP/openobserve-standalone" $out
+        '';
+      };
+    in
     {
       applications.openobserve = {
         namespace = "openobserve";
         createNamespace = true;
 
         helm.releases.openobserve = {
-          chart = lib.helm.downloadHelmChart chartAttrs;
+          inherit chart;
 
           values = {
             auth.existingRootUserSecret = {

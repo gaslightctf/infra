@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 608eeb826b26ce3014ecf88ee84a8616765487662c33f424ca5cded99988db21
+        checksum/config: 6d551223d5498b5e8c8bbd57e14856a9cf615603721403fbc9ceeb78949fc46e
       labels:
         app.kubernetes.io/component: openobserve
         app.kubernetes.io/instance: openobserve

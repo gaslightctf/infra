@@ -10,11 +10,10 @@ spec:
   project: default
   source:
     directory:
-      exclude: template/**/*
       recurse: true
     path: .
-    repoURL: https://github.com/gaslightctf/challs-2026.git
-    targetRevision: master
+    repoURL: https://github.com/gaslightctf/challs-2026-manifests.git
+    targetRevision: dev
   syncPolicy:
     automated:
       prune: true
