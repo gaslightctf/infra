@@ -4,7 +4,7 @@ metadata:
   name: berg-api
   namespace: berg
 spec:
-  maxReplicas: 10
+  maxReplicas: 4
   metrics:
     - resource:
         name: cpu
