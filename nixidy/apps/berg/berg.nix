@@ -75,6 +75,10 @@ in
 
               postgresql.existingSecret.name = "berg-db-app";
 
+              challengeInstanceTimeout = "00:30:00";
+              challengeCpuLimit = "250m";
+              challengeMemoryLimit = "256Mi";
+
               discord =
                 let
                   guildId = "1463881187159441619";
