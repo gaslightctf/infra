@@ -189,8 +189,8 @@ in
           acme = {
             email = "acme@gaslightctf.cooking";
             profile = "tlsserver";
-            server = "https://acme-staging-v02.api.letsencrypt.org/directory";
-            privateKeySecretRef.name = "acme-account-letsencrypt-staging";
+            server = "https://acme-v02.api.letsencrypt.org/directory";
+            privateKeySecretRef.name = "acme-account-letsencrypt";
 
             solvers = [
               {
