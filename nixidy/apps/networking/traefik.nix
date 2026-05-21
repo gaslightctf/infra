@@ -64,7 +64,7 @@ in
             ];
 
             logs = {
-              general.level = "DEBUG";
+              # general.level = "DEBUG";
               access.enabled = true;
             };
 

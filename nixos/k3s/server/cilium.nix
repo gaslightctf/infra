@@ -16,6 +16,8 @@ in
         "--cluster-cidr=${ips.podCIDR}"
         # we will do it ourself
         "--kube-controller-manager-arg=allocate-node-cidrs=false"
+
+        "--service-node-port-range=31338-32338"
       ];
     };
   };

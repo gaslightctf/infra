@@ -28,6 +28,7 @@ in
                 ];
               in
               builtins.concatStringsSep " " <| map (ip: "https://${ip}:6443") servers;
+            nodePort.range = "31338,32338";
 
             ipam = {
               mode = "kubernetes";

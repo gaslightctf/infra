@@ -41,7 +41,7 @@ spec:
             - --providers.kubernetesingress.allowEmptyServices=true
             - --providers.kubernetesgateway
             - --entryPoints.websecure.http.tls=true
-            - --log.level=DEBUG
+            - --log.level=INFO
             - --accesslog=true
             - --accesslog.fields.defaultmode=keep
             - --accesslog.fields.headers.defaultmode=drop
