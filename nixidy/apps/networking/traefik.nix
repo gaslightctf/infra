@@ -64,13 +64,17 @@ in
             ];
 
             logs = {
-              # general.level = "DEBUG";
+              general.level = "DEBUG";
               access.enabled = true;
             };
 
             tlsOptions.default = {
               sniStrict = false;
-              alpnProtocols = [ "http/1.1" ];
+              alpnProtocols = [
+                "h2"
+                "http/1.1"
+                "acme-tls/1"
+              ];
             };
 
             ingressClass = {
