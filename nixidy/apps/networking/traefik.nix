@@ -2,8 +2,8 @@ let
   mkChartAttrs = pkgs: {
     repo = "https://traefik.github.io/charts/";
     chart = "traefik";
-    version = "40.0.0";
-    chartHash = "sha256-2YAGig2vyN0zjVBmYexK3vDV0E2CkCsaF0eilPchA/g=";
+    version = "40.2.0";
+    chartHash = "sha256-KSiEnX4nLX4+3b1KSK88c7PYeEURmoSnY3+U3h4HdzA=";
   };
 in
 {
@@ -80,7 +80,6 @@ in
 
             providers.kubernetesGateway = {
               enabled = true;
-              experimentalChannel = false;
             };
             gateway = {
               enabled = true;

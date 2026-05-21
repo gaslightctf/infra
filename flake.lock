@@ -228,11 +228,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776883240,
-        "narHash": "sha256-xGxatDgU8dxSxHIM+NxGFVj8n2DDXWrv5a06+C4Gnn4=",
+        "lastModified": 1779323144,
+        "narHash": "sha256-0BUQ2v1dcpg8bgFPhK/lRG0gDfnbmFHGaBNFfOhc8go=",
         "owner": "sportshead",
         "repo": "nixidy",
-        "rev": "dc4565784f64d17221f8527059afb5fc24c3a4e8",
+        "rev": "0b4b86e6cda3008e016fa07a648338ae3ef8dc7d",
         "type": "github"
       },
       "original": {
