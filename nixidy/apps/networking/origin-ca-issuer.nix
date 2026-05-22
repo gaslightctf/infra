@@ -24,6 +24,19 @@ in
 
         helm.releases.origin-ca-issuer = {
           chart = lib.helm.downloadHelmChart chartAttrs;
+
+          values = {
+            controller.resources = {
+              limits = {
+                cpu = "100m";
+                memory = "512Mi";
+              };
+              requests = {
+                cpu = "20m";
+                memory = "64Mi";
+              };
+            };
+          };
         };
 
         yamls =

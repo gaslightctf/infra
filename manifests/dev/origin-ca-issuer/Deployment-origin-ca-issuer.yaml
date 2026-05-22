@@ -36,9 +36,9 @@ spec:
           name: origin-ca-issuer
           resources:
             limits:
-              cpu: "1"
+              cpu: 100m
               memory: 512Mi
             requests:
-              cpu: "1"
-              memory: 512Mi
+              cpu: 20m
+              memory: 64Mi
       serviceAccountName: origin-ca-issuer

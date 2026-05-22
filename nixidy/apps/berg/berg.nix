@@ -37,11 +37,11 @@ in
 
               resources = {
                 limits = {
-                  cpu = "2000m";
-                  memory = "1Gi";
+                  cpu = "1000m";
+                  memory = "1000Mi";
                 };
                 requests = {
-                  cpu = "1000m";
+                  cpu = "300m";
                   memory = "500Mi";
                 };
               };
