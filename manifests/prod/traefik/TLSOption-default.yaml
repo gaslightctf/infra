@@ -8,4 +8,6 @@ metadata:
   namespace: traefik
 spec:
   alpnProtocols:
+    - h2
     - http/1.1
+    - acme-tls/1

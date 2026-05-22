@@ -7,9 +7,9 @@ spec:
   acme:
     email: acme@gaslightctf.cooking
     privateKeySecretRef:
-      name: acme-account-letsencrypt-staging
+      name: acme-account-letsencrypt
     profile: tlsserver
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
       - dns01:
           cloudflare:

@@ -113,6 +113,7 @@ data:
   nat-map-stats-entries: "32"
   nat-map-stats-interval: 30s
   node-port-bind-protection: "true"
+  node-port-range: 31338,32338
   nodeport-addresses: ""
   nodes-gc-interval: 5m0s
   operator-api-serve-addr: 127.0.0.1:9234

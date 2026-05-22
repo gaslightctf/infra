@@ -1,21 +1,26 @@
 {
   flake.modules.nixidy.berg = {
     applications.berg = {
-      resources.objectStores.r2.spec.configuration = {
-        wal.compression = "zstd";
+      resources.objectStores.r2.spec = {
+        retentionPolicy = "30d";
 
-        destinationPath = "s3://barman";
-        endpointURL = "https://7a7328f4f35d8ae675edeeb50d34c40e.r2.cloudflarestorage.com";
+        configuration = {
+          wal.compression = "bzip2";
+          data.compression = "bzip2";
 
-        s3Credentials = {
-          accessKeyId = {
-            name = "barman-r2";
-            key = "accessKeyId";
-          };
+          destinationPath = "s3://barman";
+          endpointURL = "https://7a7328f4f35d8ae675edeeb50d34c40e.r2.cloudflarestorage.com";
 
-          secretAccessKey = {
-            name = "barman-r2";
-            key = "secretAccessKey";
+          s3Credentials = {
+            accessKeyId = {
+              name = "barman-r2";
+              key = "accessKeyId";
+            };
+
+            secretAccessKey = {
+              name = "barman-r2";
+              key = "secretAccessKey";
+            };
           };
         };
       };
@@ -61,7 +66,10 @@
       resources.scheduledBackups.berg-db.spec = {
         cluster.name = "berg-db";
         backupOwnerReference = "self";
-        schedule = "0 0 * * *";
+
+        # TODO: prod change to 0 0 0 * * * for daily!
+        # -- sunday 00:00:00
+        schedule = "0 0 0 * * 0";
 
         immediate = true;
 

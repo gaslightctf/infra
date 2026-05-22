@@ -5,6 +5,8 @@ metadata:
   namespace: berg
 spec:
   configuration:
+    data:
+      compression: bzip2
     destinationPath: s3://barman
     endpointURL: https://7a7328f4f35d8ae675edeeb50d34c40e.r2.cloudflarestorage.com
     s3Credentials:
@@ -15,4 +17,5 @@ spec:
         key: secretAccessKey
         name: barman-r2
     wal:
-      compression: zstd
+      compression: bzip2
+  retentionPolicy: 30d
