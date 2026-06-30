@@ -63,7 +63,7 @@ screen -dm just forward-kubectl
 
 ```sh
 tofu-dev apply
-just sync
+just sync dev
 
 # because flakes are stupid
 jj
@@ -72,8 +72,8 @@ just provision dev eevee
 just provision dev vaporeon
 ...
 
-just fetch-kubeconfig
-screen -dm just forward-kubectl
+just fetch-kubeconfig dev
+screen -dm just forward-kubectl dev
 
 patch-pod-cidrs
 nixidy apply .#dev

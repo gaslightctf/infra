@@ -2,7 +2,7 @@
 let
   mkStorageModule = n: {
     resource.google_storage_bucket.${n} = {
-      name = lib.tfRef ''replace("${n}''${var.dns_record_suffix}", ".", "-")'';
+      name = lib.tfRef ''replace("${n}''${var.dns_record_suffix}-01", ".", "-")'';
       location = "EUROPE-NORTH1";
       public_access_prevention = "enforced";
       uniform_bucket_level_access = true;

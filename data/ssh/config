@@ -18,5 +18,5 @@ Host dev-rayquaza
 
 Host prod-rayquaza
   User root
-  HostName 35.217.50.14
+  HostName 35.217.39.10
 
