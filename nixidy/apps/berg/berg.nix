@@ -200,6 +200,7 @@ in
             ];
             accessControlAllowOriginList = [
               "https://play.gaslightctf.cooking"
+              "http://localhost:5000"
             ];
             addVaryHeader = true;
 
