@@ -6,15 +6,15 @@ Host *
 
 Host dev-groudon
   User root
-  HostName 35.217.26.12
+  HostName 35.217.16.250
 
 Host dev-kyogre
   User root
-  HostName 35.217.12.194
+  HostName 35.217.34.81
 
 Host dev-rayquaza
   User root
-  HostName 35.217.39.223
+  HostName 35.217.13.255
 
 Host prod-rayquaza
   User root

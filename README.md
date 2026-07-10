@@ -14,11 +14,11 @@ Manages the following resources:
   - [x] Cloudflare DNS records
     - [x] `play[-dev].` -> network-lb
     - [x] `chall[-dev].` -> network-lb
-- `colmena/`
+- `nixos/`
   - [x] NixOS config for k3s nodes
-  - [ ] monitoring
-    - [ ] logs go somewhere
-    - [ ] metrics go somewhere
+  - [x] monitoring
+    - [x] logs go somewhere
+    - [x] metrics go somewhere
 - `nixidy/`
   - [ ] storage
     - [ ] CSI GCE PD driver
@@ -26,7 +26,7 @@ Manages the following resources:
   - [x] Traefik config
     - [x] cert-manager
   - [x] [berg](https://github.com/NoRelect/berg) deployment
-  - [ ] argocd config
+  - [x] argocd config
 
 ## adding a new host
 

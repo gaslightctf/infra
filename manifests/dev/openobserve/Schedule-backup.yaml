@@ -12,7 +12,7 @@ spec:
       accessKeyIDSecretRef:
         key: accessKeyID
         name: k8up-gcs
-      bucket: k8up-dev-gaslightctf-cooking
+      bucket: k8up-dev-gaslightctf-cooking-01
       endpoint: https://storage.googleapis.com
       secretAccessKeySecretRef:
         key: secretAccessKey

@@ -10,7 +10,7 @@
 
           s3 = {
             endpoint = "https://storage.googleapis.com";
-            bucket = "k8up-gaslightctf-cooking";
+            bucket = "k8up-gaslightctf-cooking-01";
 
             accessKeyIDSecretRef = {
               name = "k8up-gcs";

@@ -5,7 +5,6 @@
     {
       imports = [
         self.modules.nixidy.k8up
-        self.modules.nixidy.restore
         self.modules.nixidy.observability
 
         self.modules.nixidy.challs-2026
@@ -79,6 +78,6 @@
         lib.mkForce "s3://barman-dev";
 
       applications.openobserve.resources.k8upSchedules.backup.spec.backend.s3.bucket =
-        lib.mkForce "k8up-dev-gaslightctf-cooking";
+        lib.mkForce "k8up-dev-gaslightctf-cooking-01";
     };
 }
