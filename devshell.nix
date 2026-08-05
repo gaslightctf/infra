@@ -106,14 +106,17 @@
             name = "countdown";
             help = "Display countdown to gaslightCTF 2026";
             command =
+              let
+                date = "${pkgs.toybox}/bin/date";
+              in
               # bash
               ''
                 START_DATE="2026-08-14T12:00:00Z"
                 END_DATE="2026-08-17T12:00:00Z"
 
-                current_epoch=$(date +%s)
-                start_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$START_DATE" +%s 2>/dev/null || date -d "$START_DATE" +%s)
-                end_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$END_DATE" +%s 2>/dev/null || date -d "$END_DATE" +%s)
+                current_epoch=$(${date} +%s)
+                start_epoch=$(${date} -d "$START_DATE" +%s)
+                end_epoch=$(${date} -d "$END_DATE" +%s)
 
                 if [ $current_epoch -lt $start_epoch ]; then
                     diff=$((start_epoch - current_epoch))
