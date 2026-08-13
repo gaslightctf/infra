@@ -32,7 +32,7 @@ in
             berg = {
               image = {
                 repository = "ghcr.io/sportshead/berg/api";
-                tag = "0.4.0";
+                tag = "0.5.0";
               };
 
               resources = {

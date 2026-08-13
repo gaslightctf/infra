@@ -80,7 +80,7 @@ spec:
               value: http://$(NODE_IP):4317
             - name: infra__openTelemetryGrpcLoggingEndpoint
               value: http://$(NODE_IP):4317
-          image: ghcr.io/sportshead/berg/api:0.4.0
+          image: ghcr.io/sportshead/berg/api:0.5.0
           imagePullPolicy: IfNotPresent
           name: berg-api
           ports:
