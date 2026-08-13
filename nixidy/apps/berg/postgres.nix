@@ -67,9 +67,7 @@
         cluster.name = "berg-db";
         backupOwnerReference = "self";
 
-        # TODO: prod change to 0 0 0 * * * for daily!
-        # -- sunday 00:00:00
-        schedule = "0 0 0 * * 0";
+        schedule = "0 0 0 * * *";
 
         immediate = true;
 

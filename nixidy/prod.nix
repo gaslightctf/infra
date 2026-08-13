@@ -1,5 +1,5 @@
 {
-  # temp overrides for mini cluster
+  # TODO: temp overrides for mini cluster
   flake.modules.nixidy.prod =
     { lib, ... }:
     {

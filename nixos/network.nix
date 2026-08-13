@@ -13,7 +13,6 @@
           "cilium*"
         ];
 
-        # TODO: is this actually necessary?
         wireguard.enable = true;
 
         firewall = {
