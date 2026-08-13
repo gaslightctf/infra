@@ -65,7 +65,18 @@ in
 
             logs = {
               # general.level = "DEBUG";
-              access.enabled = true;
+              access = {
+                enabled = true;
+                format = "json";
+                fields.headers = {
+                  defaultmode = "keep";
+                  names = {
+                    Authorization = "redact";
+                    Cookie = "redact";
+                    Set-Cookie = "redact";
+                  };
+                };
+              };
             };
 
             tlsOptions.default = {

@@ -43,6 +43,8 @@ in
 
             nodeIPAM.enabled = true;
 
+            logOptions.level = "warn";
+
             operator.replicas = 2;
 
             hubble = {

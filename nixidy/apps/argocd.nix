@@ -19,6 +19,7 @@ in
 
           values = {
             global.domain = "argocd.gaslightctf.cooking";
+            global.logging.level = "warn";
 
             server.httproute = {
               enabled = true;

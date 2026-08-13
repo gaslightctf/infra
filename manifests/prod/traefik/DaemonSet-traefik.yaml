@@ -43,8 +43,12 @@ spec:
             - --entryPoints.websecure.http.tls=true
             - --log.level=INFO
             - --accesslog=true
+            - --accesslog.format=json
             - --accesslog.fields.defaultmode=keep
-            - --accesslog.fields.headers.defaultmode=drop
+            - --accesslog.fields.headers.defaultmode=keep
+            - --accesslog.fields.headers.names.Authorization=redact
+            - --accesslog.fields.headers.names.Cookie=redact
+            - --accesslog.fields.headers.names.Set-Cookie=redact
             - --ping.entrypoint=websecure
           env:
             - name: POD_NAME

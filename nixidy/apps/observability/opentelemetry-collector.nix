@@ -53,12 +53,22 @@ in
                       "filelog"
                       # "journald"
                     ];
+                    processors = [ "filter/coredns-noise" ] ++ pipeline.processors;
                   };
                   metrics = pipeline;
                   traces = pipeline;
                 };
 
               processors = {
+                # coredns logs this on every reload, since the custom import dir
+                # is empty
+                "filter/coredns-noise" = {
+                  error_mode = "ignore";
+                  logs.log_record = [
+                    ''IsMatch(body, "No files matching import glob pattern")''
+                  ];
+                };
+
                 "attributes/hostname".actions = [
                   {
                     key = "host.name";

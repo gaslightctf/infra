@@ -24,6 +24,11 @@ data:
           key: host.name
           value: ${OTEL_K8S_NODE_NAME}
       batch: {}
+      filter/coredns-noise:
+        error_mode: ignore
+        logs:
+          log_record:
+          - IsMatch(body, "No files matching import glob pattern")
       k8sattributes:
         extract:
           metadata:
@@ -197,6 +202,7 @@ data:
           exporters:
           - otlp_http/openobserve
           processors:
+          - filter/coredns-noise
           - k8sattributes
           - attributes/hostname
           - memory_limiter
