@@ -219,8 +219,8 @@ in
         resources.deployments.berg-api.spec.replicas = lib.mkForce null;
 
         resources.horizontalPodAutoscalers.berg-api.spec = {
-          minReplicas = 2;
-          maxReplicas = 4;
+          minReplicas = 4;
+          maxReplicas = 10;
 
           scaleTargetRef = {
             apiVersion = "apps/v1";
