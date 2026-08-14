@@ -16,6 +16,14 @@ Host dev-rayquaza
   User root
   HostName 35.217.13.255
 
+Host prod-groudon
+  User root
+  HostName 35.217.42.79
+
+Host prod-kyogre
+  User root
+  HostName 35.217.6.242
+
 Host prod-rayquaza
   User root
   HostName 35.217.39.10

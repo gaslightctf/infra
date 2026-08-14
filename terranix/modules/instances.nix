@@ -56,7 +56,7 @@ in
 
             allow_stopping_for_update = true;
 
-            machine_type = "t2d-standard-4";
+            machine_type = "t2d-standard-8";
 
             boot_disk.initialize_params = {
               size = 50;

@@ -22,5 +22,7 @@ rec {
   ];
   prodServers = [
     prod.rayquaza
+    prod.kyogre
+    prod.groudon
   ];
 }

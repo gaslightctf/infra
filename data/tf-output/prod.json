@@ -1,8 +1,18 @@
 {
+  "groudon_ip_public": {
+    "sensitive": false,
+    "type": "string",
+    "value": "35.217.42.79"
+  },
   "kanto_lb_ip": {
     "sensitive": false,
     "type": "string",
     "value": "35.217.52.57"
+  },
+  "kyogre_ip_public": {
+    "sensitive": false,
+    "type": "string",
+    "value": "35.217.6.242"
   },
   "rayquaza_ip_public": {
     "sensitive": false,

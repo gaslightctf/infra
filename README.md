@@ -32,7 +32,9 @@ Manages the following resources:
 
 - add `instances.[name].enable = true` to ./terranix/infra/default.nix
   - `tofu-dev apply`
-- `just sync dev`, update ./data/keys.nix
+- add a ./secrets/dev/[name].yaml
+- update ./data/ips.nix
+- `just sync dev`
 
 ## terranix
 
