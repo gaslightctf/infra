@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/instance: opentelemetry-operator
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/part-of: opentelemetry-operator
+  name: opentelemetry-operator-serving-cert
+  namespace: opentelemetry
+spec:
+  dnsNames:
+    - opentelemetry-operator-webhook.opentelemetry.svc
+    - opentelemetry-operator-webhook.opentelemetry.svc.cluster.local
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: cluster-selfsigned
+  secretName: opentelemetry-operator-controller-manager-service-cert
+  subject:
+    organizationalUnits:
+      - opentelemetry-operator

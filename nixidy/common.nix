@@ -14,6 +14,9 @@
 
         self.modules.nixidy.cnpg
         self.modules.nixidy.berg
+
+        self.modules.nixidy.k8up
+        self.modules.nixidy.observability
       ];
 
       nixidy = {

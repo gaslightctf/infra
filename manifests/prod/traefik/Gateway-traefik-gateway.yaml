@@ -29,6 +29,8 @@ spec:
             name: berg-api-tls
           - kind: Secret
             name: berg-play-tls
+          - kind: Secret
+            name: openobserve-tls
         mode: Terminate
     - allowedRoutes:
         namespaces:
@@ -44,6 +46,8 @@ spec:
             name: berg-api-tls
           - kind: Secret
             name: berg-play-tls
+          - kind: Secret
+            name: openobserve-tls
         mode: Terminate
     - allowedRoutes:
         namespaces:
@@ -65,6 +69,8 @@ spec:
             name: berg-api-tls
           - kind: Secret
             name: berg-play-tls
+          - kind: Secret
+            name: openobserve-tls
         mode: Terminate
   tls:
     frontend:
