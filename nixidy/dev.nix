@@ -4,7 +4,6 @@
     { lib, ... }:
     {
       imports = [
-        self.modules.nixidy.challs-2026
       ];
 
       nixidy.target.rootPath = lib.mkForce "./manifests/dev";

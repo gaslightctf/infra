@@ -17,6 +17,8 @@
 
         self.modules.nixidy.k8up
         self.modules.nixidy.observability
+
+        self.modules.nixidy.challs-2026
       ];
 
       nixidy = {
