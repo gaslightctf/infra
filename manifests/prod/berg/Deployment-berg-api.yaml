@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 95404e214d511a8d2c4736a3c986723bfd9de984bfbcbedc44721286ce
+        checksum/config: bc33bf58ce53974d932d71c93dce0e7276a38560876e0aa23e4efb429a0df9a1
       labels:
         app.kubernetes.io/instance: berg
         app.kubernetes.io/name: berg
@@ -90,7 +90,7 @@ spec:
               cpu: 1000m
               memory: 1000Mi
             requests:
-              cpu: 300m
+              cpu: 100m
               memory: 500Mi
           volumeMounts:
             - mountPath: /app/appsettings.json
